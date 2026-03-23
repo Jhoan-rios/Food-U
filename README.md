@@ -56,10 +56,12 @@ Aplicando conceptos como encapsulación, herencia y polimorfismo.
 ```bash
 git clone https://github.com/tu-usuario/foodu.git
 ```
-```Entrar a la carpeta:
+2. Entrar a la carpeta:
+```bash
 cd foodu
 ```
-```Ejecutar el proyecto:
+3. Ejecutar el proyecto:
+```bash
 python main.py
 ```
 
