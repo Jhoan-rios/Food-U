@@ -49,6 +49,14 @@ Aplicando conceptos como encapsulación, herencia y polimorfismo.
 
 ---
 
+## 📊 Diagrama de Clases
+
+El siguiente diagrama representa la estructura del sistema FoodU, incluyendo las principales clases, sus atributos, métodos y relaciones.
+
+<p align="center">
+  <img src="Docs/Diagrama de Clase - FoodU.png" width="600">
+</p>
+
 ## ⚙️ Instalación y ejecución
 
 1. Clonar el repositorio:
