@@ -62,11 +62,11 @@ El siguiente diagrama representa la estructura del sistema FoodU, incluyendo las
 1. Clonar el repositorio:
 
 ```bash
-git clone https://github.com/tu-usuario/foodu.git
+git clone https://github.com/tu-usuario/food-u.git
 ```
 2. Entrar a la carpeta:
 ```bash
-cd foodu
+cd food-u
 ```
 3. Ejecutar el proyecto:
 ```bash
@@ -78,5 +78,5 @@ python main.py
 | Nombre | GitHub |
 |--------|--------|
 | Jhoan Ríos | [@jhoan-rios](https://github.com/jhoan-rios) |
-| Andrés Rosas | [@Andres-rosas](https://github.com/usuario-compañero) |
+| Andrés Rosas | [@andrescoc2810](https://github.com/andrescoc2810) |
 | David Ríos | [@drios6275](https://github.com/drios6275) |
