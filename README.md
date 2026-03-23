@@ -71,4 +71,4 @@ python main.py
 |--------|--------|
 | Jhoan Ríos | [@jhoan-rios](https://github.com/jhoan-rios) |
 | Andrés Rosas | [@Andres-rosas](https://github.com/usuario-compañero) |
-| David Ríos | [@David-rios](https://github.com/usuario-compañero) |
+| David Ríos | [@drios6275](https://github.com/drios6275) |
