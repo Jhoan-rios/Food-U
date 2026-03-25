@@ -56,14 +56,6 @@ class Vendedor:
 
 
 
-class Pedido:
-    def __init__(self,id:int,usuario:Usuario,estado:str,tiempo_estimado:int,total:float):
-        self.id:int = id
-        self.usuario:Usuario = usuario
-        self.productos:list = []
-        self.estado:str = estado
-        self.tiempo_estimado:int = tiempo_estimado
-        self.total:float= total
 
 
 class SistemaFoodU:
