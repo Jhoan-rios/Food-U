@@ -15,9 +15,21 @@ class Vendedor:
 
 
         self.nombre: str = nombre
-        self.productos: list = []
+        self.productos: list[Producto] = []
         self.pedidos_activos: list = []
         self.calificacion: float = calificaciones
+
+
+
+class  Producto:
+    def __init__(self,int:int,nombre:str,precio:float,tiempo_preparacion:int,disponible:bool):
+
+        self.int:int = int
+        self.nombre:str =nombre
+        self.precio:float = precio
+        self.tiempo_preparacion:int = tiempo_preparacion
+        self.disponibile:bool=disponible
+
 
 
 
