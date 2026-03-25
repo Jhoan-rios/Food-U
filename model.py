@@ -7,3 +7,19 @@ class Usuario:
         self.tiempo_disponible:int=tiempo_disponible
 
 
+
+
+
+class Vendedor:
+    def __init__(self,nombre:str,calificaciones:float):
+
+
+        self.nombre: str = nombre
+        self.productos: list = []
+        self.pedidos_activos: list = []
+        self.calificacion: float = calificaciones
+
+
+
+
+
