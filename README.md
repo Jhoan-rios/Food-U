@@ -78,5 +78,5 @@ python main.py
 | Nombre | GitHub |
 |--------|--------|
 | Jhoan Ríos | [@jhoan-rios](https://github.com/jhoan-rios) |
-| Andrés Rosas | [@andrescoc2810](https://github.com/andrescoc2810) |
+| Andrés Rosas | [@andres-rosas](https://github.com/andres-rosas) |
 | David Ríos | [@drios6275](https://github.com/drios6275) |
