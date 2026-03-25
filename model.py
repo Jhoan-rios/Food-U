@@ -1,3 +1,6 @@
+from mimetypes import init
+
+
 class Usuario:
     def __init__(self,id:int,nombre:str,correo:str,tiempo_disponible:int):
         self.id:int=id
@@ -29,6 +32,18 @@ class  Producto:
         self.precio:float = precio
         self.tiempo_preparacion:int = tiempo_preparacion
         self.disponibile:bool=disponible
+
+
+
+
+class Pedido:
+    def __init__(self,id:int,usuario:Usuario,estado:str,tiempo_estimado:int,total:float):
+        self.id:int = id
+        self.usuario:Usuario = Usuario
+        self.productos:list = []
+        self.estado:str = estado
+        self.tiempo_estimado:int = tiempo_estimado
+        self.total:float= total
 
 
 
