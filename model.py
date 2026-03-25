@@ -6,7 +6,7 @@ class Usuario:
         self.id:int=id
         self.nombre:str=nombre
         self.correo:str=correo
-        self.historial_pedidos:list= []
+        self.historial_pedidos:list [Pedido]= []
         self.tiempo_disponible:int=tiempo_disponible
 
 
@@ -19,7 +19,7 @@ class Vendedor:
 
         self.nombre: str = nombre
         self.productos: list[Producto] = []
-        self.pedidos_activos: list = []
+        self.pedidos_activos: list[Pedido] = []
         self.calificacion: float = calificaciones
 
 
@@ -39,11 +39,23 @@ class  Producto:
 class Pedido:
     def __init__(self,id:int,usuario:Usuario,estado:str,tiempo_estimado:int,total:float):
         self.id:int = id
-        self.usuario:Usuario = Usuario
+        self.usuario:Usuario = usuario
         self.productos:list = []
         self.estado:str = estado
         self.tiempo_estimado:int = tiempo_estimado
         self.total:float= total
+
+
+class SistemaFoodU:
+    def __init__(self):
+        self.usuarios: list[Usuario] = []
+        self.vendedor: list [Vendedor] = []
+        self.pedidos: list [Pedido] = []
+
+
+
+
+
 
 
 
