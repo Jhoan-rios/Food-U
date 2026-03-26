@@ -146,6 +146,20 @@ class SistemaFoodU:
                 return i + 1
         return -1
 
+    def calcularCongestion(self, vendedor: Vendedor):
+        return len(vendedor.pedidos_activos) / 10
+
+    def recomendarMenu(self, usuario: Usuario):
+        todos = []
+        for v in self.vendedores:
+            for p in v.productos:
+                todos.append(p)
+        return self.recomendador.recomendar(usuario, todos)
+
+
+
+
+
 
 
 
