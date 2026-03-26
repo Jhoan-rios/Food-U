@@ -1,13 +1,12 @@
-from mimetypes import init
 class  Producto:
-    def __init__(self, id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool):
-        self.id = id
+    def __init__(self, producto_id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool):
+        self.id = producto_id
         self.nombre = nombre
         self.precio = precio
         self.tiempo_preparacion = tiempo_preparacion
         self.disponible = disponible
 
-    def actualizarDisponibilidad(self, estado: bool):
+    def actualizar_disponibilidad(self, estado: bool):
         self.disponible = estado
 
     def __str__(self):
@@ -18,15 +17,15 @@ class  Producto:
         return f"[{self.id}] {self.nombre} - ${self.precio} | {self.tiempo_preparacion} min | {estado}"
 
 class Pedido:
-    def __init__(self, id: int, usuario: "Usuario"):
-        self.id = id
+    def __init__(self, pedido_id: int, usuario: "Usuario"):
+        self.id = pedido_id
         self.usuario = usuario
         self.productos = []
         self.estado = "pendiente"
         self.tiempo_estimado = 0
         self.total = 0.0
 
-    def calcularTiempo(self):
+    def calcular_tiempo(self):
         mayor = 0
         for p in self.productos:
             if p.tiempo_preparacion > mayor:
@@ -34,14 +33,14 @@ class Pedido:
         self.tiempo_estimado = mayor
         return self.tiempo_estimado
 
-    def calcularTotal(self):
+    def calcular_total(self):
         suma = 0
         for p in self.productos:
             suma = suma + p.precio
         self.total = suma
         return self.total
 
-    def cambiarEstado(self, nuevo_estado: str):
+    def cambiar_estado(self, nuevo_estado: str):
         self.estado = nuevo_estado
 
     def __str__(self):
@@ -55,25 +54,25 @@ class Pedido:
         return texto
 
 class Usuario:
-    def __init__(self, id: int, nombre: str, correo: str, tiempo_disponible: int):
-        self.id: int = id
+    def __init__(self, usuario_id: int, nombre: str, correo: str, tiempo_disponible: int):
+        self.id: int = usuario_id
         self.nombre: str = nombre
         self.correo: str = correo
         self.historial_pedidos: list[Pedido] = []
 
-    def realizarPedido(self, productos: list):
+    def realizar_pedido(self, productos: list):
         id_nuevo = len(self.historial_pedidos) + 1
         pedido = Pedido(id_nuevo, self)
         pedido.productos = productos
-        pedido.calcularTiempo()
-        pedido.calcularTotal()
+        pedido.calcular_tiempo()
+        pedido.calcular_total()
         self.historial_pedidos.append(pedido)
         return pedido
 
-    def verHistorial(self):
+    def ver_historial(self):
         return self.historial_pedidos
 
-    def calificarVendedor(self, vendedor: "Vendedor", puntuacion: int):
+    def calificar_vendedor(self, vendedor: "Vendedor", puntuacion: int):
         if puntuacion >= 1 and puntuacion <= 5:
             if vendedor.calificacion == 0:
                 vendedor.calificacion = puntuacion
@@ -94,14 +93,14 @@ class Vendedor:
         self.calificacion = 0.0
 
 
-    def agregarProducto(self, producto: Producto):
+    def agregar_producto(self, producto: Producto):
         self.productos.append(producto)
         print("Producto agregado correctamente")
 
-    def editarProducto(self, id: int, nuevo_nombre: str, nuevo_precio: float, nuevo_tiempo: int,
+    def editar_producto(self, producto_id: int, nuevo_nombre: str, nuevo_precio: float, nuevo_tiempo: int,
                        nueva_disponibilidad: bool):
         for p in self.productos:
-            if p.id == id:
+            if p.id == producto_id:
                 p.nombre = nuevo_nombre
                 p.precio = nuevo_precio
                 p.tiempo_preparacion = nuevo_tiempo
@@ -110,15 +109,15 @@ class Vendedor:
                 return
         print("No se encontro un producto con ese ID")
 
-    def eliminarProducto(self, id: int):
+    def eliminar_producto(self, producto_id: int):
         for p in self.productos:
-            if p.id == id:
+            if p.id == producto_id:
                 self.productos.remove(p)
                 print("Producto eliminado correctamente")
                 return
         print("No se encontro un producto con ese ID")
 
-    def gestionarPedidos(self):
+    def gestionar_pedidos(self):
         return self.pedidos_activos
 
     def __str__(self):
@@ -177,7 +176,7 @@ class SistemaFoodU:
         self.pedidos = []
         self.recomendador = Recomendador()
 
-    def registrarUsuario(self, usuario: Usuario):
+    def registrar_usuario(self, usuario: Usuario):
         for u in self.usuarios:
             if u.nombre == usuario.nombre:
                 return "Error: ese nombre de usuario ya existe"
@@ -186,15 +185,15 @@ class SistemaFoodU:
         self.usuarios.append(usuario)
         return "Usuario registrado correctamente"
 
-    def registrarVendedor(self, vendedor: Vendedor):
+    def registrar_vendedor(self, vendedor: Vendedor):
         for v in self.vendedores:
             if v.nombre == vendedor.nombre:
                 return "Error: ese nombre de vendedor ya existe"
         self.vendedores.append(vendedor)
         return "Vendedor registrado correctamente"
 
-    def crearPedido(self, usuario: Usuario, productos: list):
-        pedido = usuario.realizarPedido(productos)
+    def crear_pedido(self, usuario: Usuario, productos: list):
+        pedido = usuario.realizar_pedido(productos)
         self.pedidos.append(pedido)
 
         for vendedor in self.vendedores:
@@ -204,29 +203,29 @@ class SistemaFoodU:
                         vendedor.pedidos_activos.append(pedido)
         return pedido
 
-    def asignarTurno(self, pedido: Pedido):
+    def asignar_turno(self, pedido: Pedido):
         for i in range(len(self.pedidos)):
             if self.pedidos[i] == pedido:
                 return i + 1
         return -1
 
-    def calcularCongestion(self, vendedor: Vendedor):
+    def calcular_congestion(self, vendedor: Vendedor):
         return len(vendedor.pedidos_activos) / 10
 
-    def recomendarMenu(self, usuario: Usuario):
+    def recomendar_menu(self, usuario: Usuario):
         todos = []
         for v in self.vendedores:
             for p in v.productos:
                 todos.append(p)
         return self.recomendador.recomendar(usuario, todos)
 
-    def buscarUsuario(self, nombre: str):
+    def buscar_usuario(self, nombre: str):
         for u in self.usuarios:
             if u.nombre == nombre:
                 return u
         return None
 
-    def buscarVendedor(self, nombre: str):
+    def buscar_vendedor(self, nombre: str):
         for v in self.vendedores:
             if v.nombre == nombre:
                 return v
