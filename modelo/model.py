@@ -16,7 +16,6 @@ def actualizarDisponibilidad(self, estado: bool):
             estado = "No disponible"
         return f"[{self.id}] {self.nombre} - ${self.precio} | {self.tiempo_preparacion} min | {estado}"
 
-
 class Pedido:
     def _init_(self, id: int, usuario: "Usuario"):
         self.id = id
@@ -98,8 +97,6 @@ class Vendedor:
         nuevo_producto =  Producto(nombre, precio, tiempo_preparacion, disponible)
         self.productos.append(nuevo_producto)
         return nuevo_producto
-
-
 
 class Recomendador:
     def recomendar(self, usuario: Usuario, todos_productos: list):
@@ -207,25 +204,3 @@ class SistemaFoodU:
             if v.nombre == nombre:
                 return v
         return None
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
