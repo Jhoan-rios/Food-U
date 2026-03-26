@@ -16,7 +16,6 @@ def actualizar_disponibilidad(self, estado: bool):
             estado = "No disponible"
         return f"[{self.id}] {self.nombre} - ${self.precio} | {self.tiempo_preparacion} min | {estado}"
 
-
 class Pedido:
     def __init__(self, id: int, usuario: "Usuario", estado: str, tiempo_estimado: int, total: float):
         self.id: int = id
@@ -26,9 +25,6 @@ class Pedido:
         self.tiempo_estimado: int = tiempo_estimado
         self.total: float = total
 
-
-
-
 class Usuario:
     def __init__(self, id: int, nombre: str, correo: str, tiempo_disponible: int):
         self.id: int = id
@@ -36,15 +32,30 @@ class Usuario:
         self.correo: str = correo
         self.historial_pedidos: list[Pedido] = []
 
-    def realizarPedido(self,produtos:list[Producto])->Pedido:
-        pass
+    def realizarPedido(self, productos: list):
+        id_nuevo = len(self.historial_pedidos) + 1
+        pedido = Pedido(id_nuevo, self)
+        pedido.productos = productos
+        pedido.calcularTiempo()
+        pedido.calcularTotal()
+        self.historial_pedidos.append(pedido)
+        return pedido
 
+    def verHistorial(self):
+        return self.historial_pedidos
 
+    def calificarVendedor(self, vendedor: "Vendedor", puntuacion: int):
+        if puntuacion >= 1 and puntuacion <= 5:
+            if vendedor.calificacion == 0:
+                vendedor.calificacion = puntuacion
+            else:
+                vendedor.calificacion = (vendedor.calificacion + puntuacion) / 2
+            print("Calificacion registrada correctamente")
+        else:
+            print("La calificacion debe ser entre 1 y 5")
 
-
-
-
-
+    def _str_(self):
+        return f"Usuario: {self.nombre} | Correo: {self.correo}"
 
 class Vendedor:
     def __init__(self,nombre:str,calificaciones:float):
