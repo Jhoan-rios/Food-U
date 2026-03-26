@@ -1,10 +1,10 @@
 class  Producto:
     def __init__(self, producto_id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool):
-        self.id :int = producto_id
-        self.nombre :str = nombre
-        self.precio :float = precio
-        self.tiempo_preparacion :int = tiempo_preparacion
-        self.disponible :bool = disponible
+        self.id: int = producto_id
+        self.nombre: str = nombre
+        self.precio: float = precio
+        self.tiempo_preparacion: int = tiempo_preparacion
+        self.disponible: bool = disponible
 
     def actualizar_disponibilidad(self, estado: bool)->str | None:
         self.disponible = estado
@@ -18,12 +18,12 @@ class  Producto:
 
 class Pedido:
     def __init__(self, pedido_id: int, usuario: "Usuario"):
-        self.id = pedido_id
-        self.usuario = usuario
-        self.productos = []
-        self.estado = "pendiente"
-        self.tiempo_estimado = 0
-        self.total = 0.0
+        self.id: int = pedido_id
+        self.usuario: Usuario = usuario
+        self.productos: list[Producto] = []
+        self.estado: str = "pendiente"
+        self.tiempo_estimado: int = 0
+        self.total: float = 0.0
 
     def calcular_tiempo(self):
         mayor = 0
@@ -87,10 +87,10 @@ class Usuario:
 
 class Vendedor:
     def __init__(self, nombre: str):
-        self.nombre = nombre
-        self.productos = []
-        self.pedidos_activos = []
-        self.calificacion = 0.0
+        self.nombre: str = nombre
+        self.productos: list[Producto] = []
+        self.pedidos_activos: list = []
+        self.calificacion: float = 0.0
 
 
     def agregar_producto(self, producto: Producto):
@@ -171,9 +171,9 @@ class Recomendador:
 
 class SistemaFoodU:
     def __init__(self):
-        self.usuarios = []
-        self.vendedores = []
-        self.pedidos = []
+        self.usuarios: list = []
+        self.vendedores: list= []
+        self.pedidos: list = []
         self.recomendador = Recomendador()
 
     def registrar_usuario(self, usuario: Usuario):

@@ -1,6 +1,3 @@
-
-
-
 from modelo.model import Usuario
 from modelo.model import Vendedor
 from modelo.model import Producto
@@ -10,8 +7,8 @@ from modelo.model import SistemaFoodU
 class Interfaz:
     def __init__(self):
         self.sistema = SistemaFoodU()
-        self.id_usuario = 1
-        self.id_producto = 1
+        self.id_usuario: int = 1
+        self.id_producto: int = 1
 
     def registrar_usuario(self):
         print("\n-- REGISTRAR USUARIO --")
@@ -20,7 +17,7 @@ class Interfaz:
         tiempo = input("Tiempo disponible en minutos (ejemplo: 60): ")
 
         usuario = Usuario(self.id_usuario, nombre, correo, int(tiempo))
-        resultado = self.sistema.registrarUsuario(usuario)
+        resultado = self.sistema.registrar_usuario(usuario)
         print(resultado)
 
         if resultado == "Usuario registrado correctamente":
@@ -42,7 +39,7 @@ class Interfaz:
             return
 
         nombre = input("Ingrese su nombre de usuario: ")
-        usuario = self.sistema.buscarUsuario(nombre)
+        usuario = self.sistema.buscar_usuario(nombre)
 
         if usuario == None:
             print("Usuario no encontrado.")
@@ -84,14 +81,14 @@ class Interfaz:
             input("\nPresione ENTER para continuar...")
             return
 
-        pedido = self.sistema.crearPedido(usuario, seleccionados)
-        turno = self.sistema.asignarTurno(pedido)
+        pedido = self.sistema.crear_pedido(usuario, seleccionados)
+        turno = self.sistema.asignar_turno(pedido)
 
         print("\nPedido creado exitosamente:")
         print(pedido)
         print(f"\nSu turno en la cola es el numero: {turno}")
 
-        recomendados = self.sistema.recomendarMenu(usuario)
+        recomendados = self.sistema.recomendar_menu(usuario)
         if len(recomendados) > 0:
             print("\nTambien te puede interesar:")
             for r in recomendados:
@@ -102,14 +99,14 @@ class Interfaz:
     def ver_historial(self):
         print("\n-- HISTORIAL DE PEDIDOS --")
         nombre = input("Ingrese su nombre de usuario: ")
-        usuario = self.sistema.buscarUsuario(nombre)
+        usuario = self.sistema.buscar_usuario(nombre)
 
         if usuario == None:
             print("Usuario no encontrado.")
             input("\nPresione ENTER para continuar...")
             return
 
-        historial = usuario.verHistorial()
+        historial = usuario.ver_historial()
 
         if len(historial) == 0:
             print(f"{usuario.nombre} no tiene pedidos registrados.")
@@ -123,7 +120,7 @@ class Interfaz:
     def calificar_vendedor(self):
         print("\n-- CALIFICAR VENDEDOR --")
         nombre_usuario = input("Su nombre de usuario: ")
-        usuario = self.sistema.buscarUsuario(nombre_usuario)
+        usuario = self.sistema.buscar_usuario(nombre_usuario)
 
         if usuario == None:
             print("Usuario no encontrado.")
@@ -131,7 +128,7 @@ class Interfaz:
             return
 
         nombre_vendedor = input("Nombre del vendedor a calificar: ")
-        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
+        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
@@ -141,7 +138,7 @@ class Interfaz:
         puntuacion = input("Puntuacion del 1 al 5: ")
 
         if puntuacion.isdigit():
-            usuario.calificarVendedor(vendedor, int(puntuacion))
+            usuario.calificar_vendedor(vendedor, int(puntuacion))
         else:
             print("Puntuacion invalida.")
 
@@ -150,14 +147,14 @@ class Interfaz:
     def ver_recomendaciones(self):
         print("\n-- RECOMENDACIONES --")
         nombre = input("Ingrese su nombre de usuario: ")
-        usuario = self.sistema.buscarUsuario(nombre)
+        usuario = self.sistema.buscar_usuario(nombre)
 
         if usuario == None:
             print("Usuario no encontrado.")
             input("\nPresione ENTER para continuar...")
             return
 
-        recomendados = self.sistema.recomendarMenu(usuario)
+        recomendados = self.sistema.recomendar_menu(usuario)
 
         if len(recomendados) == 0:
             print("No hay productos disponibles para recomendar.")
@@ -172,14 +169,14 @@ class Interfaz:
         print("\n-- REGISTRAR VENDEDOR --")
         nombre = input("Nombre del vendedor: ")
         vendedor = Vendedor(nombre)
-        resultado = self.sistema.registrarVendedor(vendedor)
+        resultado = self.sistema.registrar_vendedor(vendedor)
         print(resultado)
         input("\nPresione ENTER para continuar...")
 
     def agregar_producto(self):
         print("\n-- AGREGAR PRODUCTO --")
         nombre_vendedor = input("Nombre del vendedor: ")
-        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
+        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
@@ -197,7 +194,7 @@ class Interfaz:
             disponible = False
 
         producto = Producto(self.id_producto, nombre, precio, tiempo, disponible)
-        vendedor.agregarProducto(producto)
+        vendedor.agregar_producto(producto)
         self.id_producto = self.id_producto + 1
 
         input("\nPresione ENTER para continuar...")
@@ -205,7 +202,7 @@ class Interfaz:
     def editar_producto(self):
         print("\n-- EDITAR PRODUCTO --")
         nombre_vendedor = input("Nombre del vendedor: ")
-        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
+        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
@@ -237,13 +234,13 @@ class Interfaz:
         else:
             nueva_disp = False
 
-        vendedor.editarProducto(int(id_str), nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
+        vendedor.editar_producto(int(id_str), nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
         input("\nPresione ENTER para continuar...")
 
     def eliminar_producto(self):
         print("\n-- ELIMINAR PRODUCTO --")
         nombre_vendedor = input("Nombre del vendedor: ")
-        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
+        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
@@ -262,7 +259,7 @@ class Interfaz:
         id_str = input("\nID del producto a eliminar: ")
 
         if id_str.isdigit():
-            vendedor.eliminarProducto(int(id_str))
+            vendedor.eliminar_producto(int(id_str))
         else:
             print("ID invalido.")
 
@@ -271,21 +268,21 @@ class Interfaz:
     def gestionar_pedidos(self):
         print("\n-- GESTIONAR PEDIDOS --")
         nombre_vendedor = input("Nombre del vendedor: ")
-        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
+        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
             input("\nPresione ENTER para continuar...")
             return
 
-        pedidos = vendedor.gestionarPedidos()
+        pedidos = vendedor.gestionar_pedidos()
 
         if len(pedidos) == 0:
             print("No hay pedidos activos.")
             input("\nPresione ENTER para continuar...")
             return
 
-        congestion = self.sistema.calcularCongestion(vendedor)
+        congestion = self.sistema.calcular_congestion(vendedor)
         print(f"Nivel de congestion: {congestion * 100}%")
 
         print(f"\nPedidos activos de {vendedor.nombre}:")
@@ -306,7 +303,7 @@ class Interfaz:
             else:
                 print("Estados posibles: pendiente | en preparacion | listo | entregado | cancelado")
                 nuevo_estado = input("Nuevo estado: ")
-                pedido_encontrado.cambiarEstado(nuevo_estado)
+                pedido_encontrado.cambiar_estado(nuevo_estado)
                 print("Estado actualizado.")
 
         input("\nPresione ENTER para continuar...")
@@ -385,7 +382,7 @@ class Interfaz:
     def show_menu(self):
         while True:
             print("\n========================================")
-            print("  BIENVENIDO A FOODU - UDEA MEDELLIN")
+            print("  BIENVENIDO A FOODU - UDEM MEDELLIN")
             print("========================================")
             print("U) Soy Usuario")
             print("V) Soy Vendedor")
