@@ -1,6 +1,7 @@
 from mimetypes import init
 class  Producto:
-    def __init__(self,nombre:str,precio:float,tiempo_preparacion:int,disponible:bool):
+    def __init__(self,nombre:str,precio:float, id: int, tiempo_preparacion:int,disponible:bool):
+        self.id: int = id
         self.nombre:str =nombre
         self.precio:float = precio
         self.tiempo_preparacion:int = tiempo_preparacion
@@ -9,7 +10,7 @@ class  Producto:
 def actualizar_disponibilidad(self, estado: bool):
     self.disponible = estado
 
-    def _str_(self):
+    def _str_(self) -> str:
         if self.disponible:
             estado = "Disponible"
         else:
@@ -36,8 +37,16 @@ class Usuario:
         self.correo: str = correo
         self.historial_pedidos: list[Pedido] = []
 
-    def realizarPedido(self,produtos:list[Producto])->Pedido:
-        pass
+    def realizarPedido(self, productos: list):
+            id_nuevo = len(self.historial_pedidos) + 1
+            pedido = Pedido(id_nuevo, self)
+            pedido.productos = productos
+            pedido.calcularTiempo()
+            pedido.calcularTotal()
+            self.historial_pedidos.append(pedido)
+            return pedido
+
+
 
 
 
