@@ -62,17 +62,13 @@ class Vendedor:
                 return
         print("No se encontro un producto con ese ID")
 
-
-
-
-
-
-
-
-
-
-
-
+    def eliminarProducto(self, id: int):
+        for p in self.productos:
+            if p.id == id:
+                self.productos.remove(p)
+                print("Producto eliminado correctamente")
+                return
+        print("No se encontro un producto con ese ID")
 
 
 class SistemaFoodU:
