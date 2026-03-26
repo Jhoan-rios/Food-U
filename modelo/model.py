@@ -67,11 +67,23 @@ class SistemaFoodU:
 
     def registrar_usuario(self,usuario:Usuario):
         for i in self.usuarios:
-            if usuario == i.nombre:
+            if usuario.nombre == i.nombre:
                 return "!Error Este nombre de usuario ya Existe en nuestro sistema"
 
 
         self.usuarios.append(usuario)
+
+
+
+    def registrar_vendedor(self,vendedor:Vendedor):
+        for i in self.vendedor:
+            if vendedor.nombre == i.nombre:
+                return "!Error Este nombre ve vendedor ya Existre en nuestro sistema"
+
+
+
+        self.vendedor.append(vendedor)
+
 
 
 
