@@ -156,6 +156,11 @@ class SistemaFoodU:
                 todos.append(p)
         return self.recomendador.recomendar(usuario, todos)
 
+    def buscarUsuario(self, nombre: str):
+        for u in self.usuarios:
+            if u.nombre == nombre:
+                return u
+        return None
 
 
 
