@@ -41,13 +41,13 @@ class Usuario:
 
 
 class Vendedor:
-    def __init__(self,nombre:str,calificaciones:float):
+    def __init__(self,nombre:str):
 
 
         self.nombre: str = nombre
         self.productos: list[Producto] = []
         self.pedidos_activos: list[Pedido] = []
-        self.calificacion: float = calificaciones
+        self.calificacion: float = 0
 
 
 

@@ -1,6 +1,7 @@
 
 from modelo.model import Usuario
 from modelo.model import SistemaFoodU
+from modelo.model import Vendedor
 
 
 class Interfaz:
@@ -18,6 +19,17 @@ class Interfaz:
 
 
         SistemaFoodU.registrar_usuario(usuario)
+
+
+    def datos_vendedor(self):
+        print("Ingrese los siguientes datos")
+        nombre = input("Nombre:")
+        vendedor= Vendedor(nombre)
+        SistemaFoodU.registrar_vendedor(vendedor)
+
+
+
+
 
 
 
