@@ -4,12 +4,17 @@ class  Producto:
         self.nombre:str =nombre
         self.precio:float = precio
         self.tiempo_preparacion:int = tiempo_preparacion
-        self.disponibile:bool= disponible
+        self.disponible: bool = False
 
+def actualizar_disponibilidad(self, estado: bool):
+    self.disponible = estado
 
-
-
-
+    def _str_(self):
+        if self.disponible:
+            estado = "Disponible"
+        else:
+            estado = "No disponible"
+        return f"[{self.id}] {self.nombre} - ${self.precio} | {self.tiempo_preparacion} min | {estado}"
 
 
 class Pedido:
@@ -20,6 +25,7 @@ class Pedido:
         self.estado: str = estado
         self.tiempo_estimado: int = tiempo_estimado
         self.total: float = total
+
 
 
 
@@ -41,13 +47,17 @@ class Usuario:
 
 
 class Vendedor:
-    def __init__(self, nombre: str):
-        self.nombre = nombre
-        self.productos = []
-        self.pedidos_activos = []
-        self.calificacion = 0.0
+    def __init__(self,nombre:str,calificaciones:float):
 
+        self.nombre: str = nombre
+        self.productos: list[Producto] = []
+        self.pedidos_activos: list[Pedido] = []
+        self.calificacion: float = calificaciones
 
+    def crearProducto(self, nombre:str, precio: float, tiempo_preparacion: int ,disponible: bool):
+        nuevo_producto =  Producto(nombre, precio, tiempo_preparacion, disponible)
+        self.productos.append(nuevo_producto)
+        return nuevo_producto
 
 
 
@@ -83,6 +93,7 @@ class SistemaFoodU:
 
 
     def CrearPedido(self,usuario:Usuario,productos):
+        pass
 
 
 
