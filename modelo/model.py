@@ -9,16 +9,12 @@ class  Producto:
 def actualizar_disponibilidad(self, estado: bool):
     self.disponible = estado
 
-
-
-
-
-
-
-
-
-
-
+    def _str_(self):
+        if self.disponible:
+            estado = "Disponible"
+        else:
+            estado = "No disponible"
+        return f"[{self.id}] {self.nombre} - ${self.precio} | {self.tiempo_preparacion} min | {estado}"
 
 
 class Pedido:
