@@ -80,7 +80,7 @@ class SistemaFoodU:
             if vendedor.nombre == i.nombre:
                 return "!Error Este nombre ve vendedor ya Existre en nuestro sistema"
         self.vendedor.append(vendedor)
-        
+
 
 
 
