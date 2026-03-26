@@ -4,7 +4,16 @@ class  Producto:
         self.nombre:str =nombre
         self.precio:float = precio
         self.tiempo_preparacion:int = tiempo_preparacion
-        self.disponible:bool= disponible
+        self.disponible: bool = False
+
+def actualizar_disponibilidad(self, estado: bool):
+    self.disponible = estado
+
+
+
+
+
+
 
 
 
