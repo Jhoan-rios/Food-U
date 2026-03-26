@@ -47,6 +47,26 @@ class Vendedor:
         self.pedidos_activos = []
         self.calificacion = 0.0
 
+    def agregarProducto(self, producto: Producto):
+        self.productos.append(producto)
+        print("Producto agregado correctamente")
+
+    def editarProducto(self, id: int, nuevo_nombre: str, nuevo_precio: float, nuevo_tiempo: int,nueva_disponibilidad: bool):
+        for p in self.productos:
+            if p.id == id:
+                p.nombre = nuevo_nombre
+                p.precio = nuevo_precio
+                p.tiempo_preparacion = nuevo_tiempo
+                p.disponible = nueva_disponibilidad
+                print("Producto editado correctamente")
+                return
+        print("No se encontro un producto con ese ID")
+
+
+
+
+
+
 
 
 
