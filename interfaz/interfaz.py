@@ -66,7 +66,10 @@ class Interfaz:
                 print("1)Resgistrar Vendedor")
                 print("2)Gistion De Pedidos")
 
-                opcion = input("ingrese alguna opcion:")
+                opcion = int(input("ingrese alguna opcion:"))
+
+                if opcion == 2:
+                    self.datos_vendedor()
 
 
 
