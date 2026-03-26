@@ -108,9 +108,10 @@ class Recomendador:
 
 class SistemaFoodU:
     def __init__(self):
-        self.usuarios: list[Usuario] = []
-        self.vendedor: list [Vendedor] = []
-        self.pedidos: list [Pedido] = []
+        self.usuarios = []
+        self.vendedores = []
+        self.pedidos = []
+        self.recomendador = Recomendador()
 
 
     def registrar_usuario(self,usuario:Usuario)->str:
