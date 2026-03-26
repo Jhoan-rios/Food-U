@@ -32,6 +32,7 @@ class Pedido:
 
 
 
+
 class Usuario:
     def __init__(self, id: int, nombre: str, correo: str, tiempo_disponible: int):
         self.id: int = id
@@ -52,14 +53,15 @@ class Usuario:
 class Vendedor:
     def __init__(self,nombre:str,calificaciones:float):
 
-
         self.nombre: str = nombre
         self.productos: list[Producto] = []
         self.pedidos_activos: list[Pedido] = []
         self.calificacion: float = calificaciones
 
-
-
+    def crearProducto(self, nombre:str, precio: float, tiempo_preparacion: int ,disponible: bool):
+        nuevo_producto =  Producto(nombre, precio, tiempo_preparacion, disponible)
+        self.productos.append(nuevo_producto)
+        return nuevo_producto
 
 
 
