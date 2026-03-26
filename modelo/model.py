@@ -70,6 +70,12 @@ class Vendedor:
                 return
         print("No se encontro un producto con ese ID")
 
+    def gestionarPedidos(self):
+        return self.pedidos_activos
+
+    def __str__(self):
+        return f"Vendedor: {self.nombre} | Calificacion: {self.calificacion}"
+
 
 class SistemaFoodU:
     def __init__(self):
