@@ -59,7 +59,7 @@ El siguiente diagrama representa la estructura del sistema FoodU, incluyendo las
 
 ## 📊 Diagrama de Casos de uso
 <p align="center">
-  <img src="docs/Diagrama de casos de uso - FoodU.png" width="600">
+  <img src="docs/Diagrama de casos de uso - FoodU.jpeg" width="600">
 </p>
 
 ## ⚙️ Instalación y ejecución
