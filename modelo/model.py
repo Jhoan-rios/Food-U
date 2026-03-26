@@ -10,7 +10,7 @@ class  Producto:
     def actualizarDisponibilidad(self, estado: bool):
         self.disponible = estado
 
-    def _str_(self):
+    def __str__(self):
         if self.disponible:
             estado = "Disponible"
         else:
@@ -18,7 +18,7 @@ class  Producto:
         return f"[{self.id}] {self.nombre} - ${self.precio} | {self.tiempo_preparacion} min | {estado}"
 
 class Pedido:
-    def _init_(self, id: int, usuario: "Usuario"):
+    def __init__(self, id: int, usuario: "Usuario"):
         self.id = id
         self.usuario = usuario
         self.productos = []
@@ -44,7 +44,7 @@ class Pedido:
     def cambiarEstado(self, nuevo_estado: str):
         self.estado = nuevo_estado
 
-    def _str_(self):
+    def __str__(self):
         texto = f"Pedido #{self.id} | Estado: {self.estado}\n"
         texto = texto + f"  Usuario: {self.usuario.nombre}\n"
         texto = texto + f"  Productos:\n"
@@ -83,7 +83,7 @@ class Usuario:
         else:
             print("La calificacion debe ser entre 1 y 5")
 
-    def _str_(self):
+    def __str__(self):
         return f"Usuario: {self.nombre} | Correo: {self.correo}"
 
 class Vendedor:
