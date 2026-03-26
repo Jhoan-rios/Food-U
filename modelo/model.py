@@ -6,7 +6,7 @@ class  Producto:
         self.tiempo_preparacion:int = tiempo_preparacion
         self.disponible: bool = False
 
-def actualizar_disponibilidad(self, estado: bool):
+def actualizarDisponibilidad(self, estado: bool):
     self.disponible = estado
 
     def _str_(self):
@@ -18,16 +18,41 @@ def actualizar_disponibilidad(self, estado: bool):
 
 
 class Pedido:
-    def __init__(self, id: int, usuario: "Usuario", estado: str, tiempo_estimado: int, total: float):
-        self.id: int = id
-        self.usuario: Usuario = usuario
-        self.productos: list = []
-        self.estado: str = estado
-        self.tiempo_estimado: int = tiempo_estimado
-        self.total: float = total
+    def _init_(self, id: int, usuario: "Usuario"):
+        self.id = id
+        self.usuario = usuario
+        self.productos = []
+        self.estado = "pendiente"
+        self.tiempo_estimado = 0
+        self.total = 0.0
 
+    def calcularTiempo(self):
+        mayor = 0
+        for p in self.productos:
+            if p.tiempo_preparacion > mayor:
+                mayor = p.tiempo_preparacion
+        self.tiempo_estimado = mayor
+        return self.tiempo_estimado
 
+    def calcularTotal(self):
+        suma = 0
+        for p in self.productos:
+            suma = suma + p.precio
+        self.total = suma
+        return self.total
 
+    def cambiarEstado(self, nuevo_estado: str):
+        self.estado = nuevo_estado
+
+    def _str_(self):
+        texto = f"Pedido #{self.id} | Estado: {self.estado}\n"
+        texto = texto + f"  Usuario: {self.usuario.nombre}\n"
+        texto = texto + f"  Productos:\n"
+        for p in self.productos:
+            texto = texto + f"    - {p.nombre} ${p.precio}\n"
+        texto = texto + f"  Tiempo estimado: {self.tiempo_estimado} min\n"
+        texto = texto + f"  Total: ${self.total}"
+        return texto
 
 class Usuario:
     def __init__(self, id: int, nombre: str, correo: str, tiempo_disponible: int):
@@ -36,7 +61,7 @@ class Usuario:
         self.correo: str = correo
         self.historial_pedidos: list[Pedido] = []
 
-    def realizar_pedido(self, productos: list):
+    def realizarPedido(self, productos: list):
         id_nuevo = len(self.historial_pedidos) + 1
         pedido = Pedido(id_nuevo, self)
         pedido.productos = productos
@@ -45,10 +70,10 @@ class Usuario:
         self.historial_pedidos.append(pedido)
         return pedido
 
-    def ver_historial(self):
+    def verHistorial(self):
         return self.historial_pedidos
 
-    def calificar_vendedor(self, vendedor: "Vendedor", puntuacion: int):
+    def calificarVendedor(self, vendedor: "Vendedor", puntuacion: int):
         if puntuacion >= 1 and puntuacion <= 5:
             if vendedor.calificacion == 0:
                 vendedor.calificacion = puntuacion
@@ -60,11 +85,6 @@ class Usuario:
 
     def _str_(self):
         return f"Usuario: {self.nombre} | Correo: {self.correo}"
-
-
-
-
-
 
 class Vendedor:
     def __init__(self,nombre:str,calificaciones:float):
