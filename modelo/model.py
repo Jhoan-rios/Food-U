@@ -142,18 +142,54 @@ class SistemaFoodU:
         self.usuarios.append(usuario)
         return "Usuario registrado correctamente"
 
-    def registrar_vendedor(self,vendedor:Vendedor)->str:
-        for i in self.vendedor:
-            if vendedor.nombre == i.nombre:
-                return "!Error Este nombre ve vendedor ya Existre en nuestro sistema"
-        self.vendedor.append(vendedor)
+    def registrarVendedor(self, vendedor: Vendedor):
+        for v in self.vendedores:
+            if v.nombre == vendedor.nombre:
+                return "Error: ese nombre de vendedor ya existe"
+        self.vendedores.append(vendedor)
+        return "Vendedor registrado correctamente"
+
+    def crearPedido(self, usuario: Usuario, productos: list):
+        pedido = usuario.realizarPedido(productos)
+        self.pedidos.append(pedido)
+
+        for vendedor in self.vendedores:
+            for p in productos:
+                if p in vendedor.productos:
+                    if pedido not in vendedor.pedidos_activos:
+                        vendedor.pedidos_activos.append(pedido)
+        return pedido
+
+    def asignarTurno(self, pedido: Pedido):
+        for i in range(len(self.pedidos)):
+            if self.pedidos[i] == pedido:
+                return i + 1
+        return -1
+
+    def calcularCongestion(self, vendedor: Vendedor):
+        return len(vendedor.pedidos_activos) / 10
+
+    def recomendarMenu(self, usuario: Usuario):
+        todos = []
+        for v in self.vendedores:
+            for p in v.productos:
+                todos.append(p)
+        return self.recomendador.recomendar(usuario, todos)
+
+    def buscarUsuario(self, nombre: str):
+        for u in self.usuarios:
+            if u.nombre == nombre:
+                return u
+        return None
+
+    def buscarVendedor(self, nombre: str):
+        for v in self.vendedores:
+            if v.nombre == nombre:
+                return v
+        return None
 
 
 
-
-
-    def CrearPedido(self,usuario:Usuario,productos):
-        pass
 
 
 
