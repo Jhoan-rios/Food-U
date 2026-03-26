@@ -122,18 +122,29 @@ class SistemaFoodU:
         self.usuarios.append(usuario)
         return "Usuario registrado correctamente"
 
-    def registrar_vendedor(self,vendedor:Vendedor)->str:
-        for i in self.vendedor:
-            if vendedor.nombre == i.nombre:
-                return "!Error Este nombre ve vendedor ya Existre en nuestro sistema"
-        self.vendedor.append(vendedor)
+    def registrarVendedor(self, vendedor: Vendedor):
+        for v in self.vendedores:
+            if v.nombre == vendedor.nombre:
+                return "Error: ese nombre de vendedor ya existe"
+        self.vendedores.append(vendedor)
+        return "Vendedor registrado correctamente"
 
+    def crearPedido(self, usuario: Usuario, productos: list):
+        pedido = usuario.realizarPedido(productos)
+        self.pedidos.append(pedido)
 
+        for vendedor in self.vendedores:
+            for p in productos:
+                if p in vendedor.productos:
+                    if pedido not in vendedor.pedidos_activos:
+                        vendedor.pedidos_activos.append(pedido)
+        return pedido
 
-
-
-    def CrearPedido(self,usuario:Usuario,productos):
-        pass
+    def asignarTurno(self, pedido: Pedido):
+        for i in range(len(self.pedidos)):
+            if self.pedidos[i] == pedido:
+                return i + 1
+        return -1
 
 
 
