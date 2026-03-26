@@ -6,8 +6,8 @@ class  Producto:
         self.tiempo_preparacion:int = tiempo_preparacion
         self.disponible: bool = False
 
-def actualizarDisponibilidad(self, estado: bool):
-    self.disponible = estado
+    def actualizarDisponibilidad(self, estado: bool):
+        self.disponible = estado
 
     def _str_(self):
         if self.disponible:
