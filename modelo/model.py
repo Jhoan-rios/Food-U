@@ -162,6 +162,12 @@ class SistemaFoodU:
                 return u
         return None
 
+    def buscarVendedor(self, nombre: str):
+        for v in self.vendedores:
+            if v.nombre == nombre:
+                return v
+        return None
+
 
 
 
