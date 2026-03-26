@@ -1,4 +1,7 @@
 from mimetypes import init
+from wsgiref.validate import validator
+
+
 class  Producto:
     def __init__(self,nombre:str,precio:float,tiempo_preparacion:int,disponible:bool):
         self.nombre:str =nombre
@@ -20,6 +23,8 @@ class Pedido:
         self.estado: str = estado
         self.tiempo_estimado: int = tiempo_estimado
         self.total: float = total
+
+
 
 
 
@@ -48,6 +53,13 @@ class Vendedor:
         self.productos: list[Producto] = []
         self.pedidos_activos: list[Pedido] = []
         self.calificacion: float = 0
+
+
+    def __str__(self)->str:
+        return f"Nombre: {self.nombre}\n Calificacion: {self.calificacion}"
+
+
+
 
 
 
@@ -86,6 +98,7 @@ class SistemaFoodU:
 
 
     def CrearPedido(self,usuario:Usuario,productos):
+        pass
 
 
 
