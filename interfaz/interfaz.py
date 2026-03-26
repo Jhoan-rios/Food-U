@@ -17,7 +17,7 @@ class Interfaz:
         print("\n-- REGISTRAR USUARIO --")
         nombre = input("Nombre: ")
         correo = input("Correo: ")
-        tiempo = input("Tiempo disponible en minutos (ejemplo: 60): ")
+
 
         usuario = Usuario(self.id_usuario, nombre, correo, int(tiempo))
         resultado = self.sistema.registrar_usuario(usuario)
@@ -402,18 +402,3 @@ class Interfaz:
                 break
             else:
                 print("Opcion invalida.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
