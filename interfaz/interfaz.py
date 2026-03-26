@@ -26,6 +26,27 @@ class Interfaz:
 
         input("\nPresione ENTER para continuar...")
 
+    def crear_pedido(self):
+        print("\n-- CREAR PEDIDO --")
+
+        if len(self.sistema.usuarios) == 0:
+            print("No hay usuarios registrados.")
+            input("\nPresione ENTER para continuar...")
+            return
+
+        if len(self.sistema.vendedores) == 0:
+            print("No hay vendedores registrados.")
+            input("\nPresione ENTER para continuar...")
+            return
+
+        nombre = input("Ingrese su nombre de usuario: ")
+        usuario = self.sistema.buscarUsuario(nombre)
+
+        if usuario == None:
+            print("Usuario no encontrado.")
+            input("\nPresione ENTER para continuar...")
+            return
+
 
 
 
