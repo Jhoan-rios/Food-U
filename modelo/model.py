@@ -61,26 +61,66 @@ class Vendedor:
 
 
 
+class Recomendador:
+    def recomendar(self, usuario: Usuario, todos_productos: list):
+        if len(usuario.historial_pedidos) == 0:
+            disponibles = []
+            for p in todos_productos:
+                if p.disponible:
+                    disponibles.append(p)
 
+            for i in range(len(disponibles)):
+                for j in range(i + 1, len(disponibles)):
+                    if disponibles[i].precio > disponibles[j].precio:
+                        temp = disponibles[i]
+                        disponibles[i] = disponibles[j]
+                        disponibles[j] = temp
 
+            return disponibles[:3]
+
+        conteo = {}
+        for pedido in usuario.historial_pedidos:
+            for producto in pedido.productos:
+                if producto.id in conteo:
+                    conteo[producto.id] = conteo[producto.id] + 1
+                else:
+                    conteo[producto.id] = 1
+        disponibles = []
+        for p in todos_productos:
+            if p.disponible:
+                disponibles.append(p)
+
+        for i in range(len(disponibles)):
+            for j in range(i + 1, len(disponibles)):
+                veces_i = 0
+                veces_j = 0
+                if disponibles[i].id in conteo:
+                    veces_i = conteo[disponibles[i].id]
+                if disponibles[j].id in conteo:
+                    veces_j = conteo[disponibles[j].id]
+                if veces_i < veces_j:
+                    temp = disponibles[i]
+                    disponibles[i] = disponibles[j]
+                    disponibles[j] = temp
+
+        return disponibles[:3]
 
 
 class SistemaFoodU:
     def __init__(self):
-        self.usuarios: list[Usuario] = []
-        self.vendedor: list [Vendedor] = []
-        self.pedidos: list [Pedido] = []
+        self.usuarios = []
+        self.vendedores = []
+        self.pedidos = []
+        self.recomendador = Recomendador()
 
-
-    def registrar_usuario(self,usuario:Usuario)->str:
-        for i in self.usuarios:
-            if usuario.nombre == i.nombre:
-                return "!Error Este nombre de usuario ya Existe en nuestro sistema"
-
-
+    def registrarUsuario(self, usuario: Usuario):
+        for u in self.usuarios:
+            if u.nombre == usuario.nombre:
+                return "Error: ese nombre de usuario ya existe"
+            if u.correo == usuario.correo:
+                return "Error: ese correo ya esta registrado"
         self.usuarios.append(usuario)
-
-
+        return "Usuario registrado correctamente"
 
     def registrar_vendedor(self,vendedor:Vendedor)->str:
         for i in self.vendedor:
