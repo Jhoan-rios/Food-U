@@ -36,10 +36,30 @@ class Usuario:
         self.correo: str = correo
         self.historial_pedidos: list[Pedido] = []
 
-    def realizarPedido(self,produtos:list[Producto])->Pedido:
-        pass
+    def realizar_pedido(self, productos: list):
+        id_nuevo = len(self.historial_pedidos) + 1
+        pedido = Pedido(id_nuevo, self)
+        pedido.productos = productos
+        pedido.calcularTiempo()
+        pedido.calcularTotal()
+        self.historial_pedidos.append(pedido)
+        return pedido
 
+    def ver_historial(self):
+        return self.historial_pedidos
 
+    def calificar_vendedor(self, vendedor: "Vendedor", puntuacion: int):
+        if puntuacion >= 1 and puntuacion <= 5:
+            if vendedor.calificacion == 0:
+                vendedor.calificacion = puntuacion
+            else:
+                vendedor.calificacion = (vendedor.calificacion + puntuacion) / 2
+            print("Calificacion registrada correctamente")
+        else:
+            print("La calificacion debe ser entre 1 y 5")
+
+    def _str_(self):
+        return f"Usuario: {self.nombre} | Correo: {self.correo}"
 
 
 
