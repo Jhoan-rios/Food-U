@@ -65,6 +65,20 @@ class SistemaFoodU:
         self.pedidos: list [Pedido] = []
 
 
+    def registrar_usuario(self,usuario:Usuario):
+        for i in self.usuarios:
+            if usuario == i.nombre:
+                return "!Error Este nombre de usuario ya Existe en nuestro sistema"
+
+
+        self.usuarios.append(usuario)
+
+
+
+
+
+
+
 
 
 
