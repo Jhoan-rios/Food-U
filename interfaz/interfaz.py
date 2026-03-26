@@ -17,10 +17,10 @@ class Interfaz:
         print("\n-- REGISTRAR USUARIO --")
         nombre = input("Nombre: ")
         correo = input("Correo: ")
-
+        tiempo = input("Tiempo disponible en minutos (ejemplo: 60): ")
 
         usuario = Usuario(self.id_usuario, nombre, correo, int(tiempo))
-        resultado = self.sistema.registrar_usuario(usuario)
+        resultado = self.sistema.registrarUsuario(usuario)
         print(resultado)
 
         if resultado == "Usuario registrado correctamente":
@@ -42,7 +42,7 @@ class Interfaz:
             return
 
         nombre = input("Ingrese su nombre de usuario: ")
-        usuario = self.sistema.buscar_usuario(nombre)
+        usuario = self.sistema.buscarUsuario(nombre)
 
         if usuario == None:
             print("Usuario no encontrado.")
@@ -84,14 +84,14 @@ class Interfaz:
             input("\nPresione ENTER para continuar...")
             return
 
-        pedido = self.sistema.crear_pedido(usuario, seleccionados)
-        turno = self.sistema.asignar_turno(pedido)
+        pedido = self.sistema.crearPedido(usuario, seleccionados)
+        turno = self.sistema.asignarTurno(pedido)
 
         print("\nPedido creado exitosamente:")
         print(pedido)
         print(f"\nSu turno en la cola es el numero: {turno}")
 
-        recomendados = self.sistema.recomendar_menu(usuario)
+        recomendados = self.sistema.recomendarMenu(usuario)
         if len(recomendados) > 0:
             print("\nTambien te puede interesar:")
             for r in recomendados:
@@ -102,14 +102,14 @@ class Interfaz:
     def ver_historial(self):
         print("\n-- HISTORIAL DE PEDIDOS --")
         nombre = input("Ingrese su nombre de usuario: ")
-        usuario = self.sistema.buscar_usuario(nombre)
+        usuario = self.sistema.buscarUsuario(nombre)
 
         if usuario == None:
             print("Usuario no encontrado.")
             input("\nPresione ENTER para continuar...")
             return
 
-        historial = usuario.ver_historial()
+        historial = usuario.verHistorial()
 
         if len(historial) == 0:
             print(f"{usuario.nombre} no tiene pedidos registrados.")
@@ -123,7 +123,7 @@ class Interfaz:
     def calificar_vendedor(self):
         print("\n-- CALIFICAR VENDEDOR --")
         nombre_usuario = input("Su nombre de usuario: ")
-        usuario = self.sistema.buscar_usuario(nombre_usuario)
+        usuario = self.sistema.buscarUsuario(nombre_usuario)
 
         if usuario == None:
             print("Usuario no encontrado.")
@@ -131,7 +131,7 @@ class Interfaz:
             return
 
         nombre_vendedor = input("Nombre del vendedor a calificar: ")
-        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
+        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
@@ -141,7 +141,7 @@ class Interfaz:
         puntuacion = input("Puntuacion del 1 al 5: ")
 
         if puntuacion.isdigit():
-            usuario.calificar_vendedor(vendedor, int(puntuacion))
+            usuario.calificarVendedor(vendedor, int(puntuacion))
         else:
             print("Puntuacion invalida.")
 
@@ -150,14 +150,14 @@ class Interfaz:
     def ver_recomendaciones(self):
         print("\n-- RECOMENDACIONES --")
         nombre = input("Ingrese su nombre de usuario: ")
-        usuario = self.sistema.buscar_usuario(nombre)
+        usuario = self.sistema.buscarUsuario(nombre)
 
         if usuario == None:
             print("Usuario no encontrado.")
             input("\nPresione ENTER para continuar...")
             return
 
-        recomendados = self.sistema.recomendar_menu(usuario)
+        recomendados = self.sistema.recomendarMenu(usuario)
 
         if len(recomendados) == 0:
             print("No hay productos disponibles para recomendar.")
@@ -172,14 +172,14 @@ class Interfaz:
         print("\n-- REGISTRAR VENDEDOR --")
         nombre = input("Nombre del vendedor: ")
         vendedor = Vendedor(nombre)
-        resultado = self.sistema.registrar_vendedor(vendedor)
+        resultado = self.sistema.registrarVendedor(vendedor)
         print(resultado)
         input("\nPresione ENTER para continuar...")
 
     def agregar_producto(self):
         print("\n-- AGREGAR PRODUCTO --")
         nombre_vendedor = input("Nombre del vendedor: ")
-        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
+        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
@@ -197,7 +197,7 @@ class Interfaz:
             disponible = False
 
         producto = Producto(self.id_producto, nombre, precio, tiempo, disponible)
-        vendedor.agregar_producto(producto)
+        vendedor.agregarProducto(producto)
         self.id_producto = self.id_producto + 1
 
         input("\nPresione ENTER para continuar...")
@@ -205,7 +205,7 @@ class Interfaz:
     def editar_producto(self):
         print("\n-- EDITAR PRODUCTO --")
         nombre_vendedor = input("Nombre del vendedor: ")
-        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
+        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
@@ -237,13 +237,13 @@ class Interfaz:
         else:
             nueva_disp = False
 
-        vendedor.editar_producto(int(id_str), nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
+        vendedor.editarProducto(int(id_str), nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
         input("\nPresione ENTER para continuar...")
 
     def eliminar_producto(self):
         print("\n-- ELIMINAR PRODUCTO --")
         nombre_vendedor = input("Nombre del vendedor: ")
-        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
+        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
@@ -262,7 +262,7 @@ class Interfaz:
         id_str = input("\nID del producto a eliminar: ")
 
         if id_str.isdigit():
-            vendedor.eliminar_producto(int(id_str))
+            vendedor.eliminarProducto(int(id_str))
         else:
             print("ID invalido.")
 
@@ -271,21 +271,21 @@ class Interfaz:
     def gestionar_pedidos(self):
         print("\n-- GESTIONAR PEDIDOS --")
         nombre_vendedor = input("Nombre del vendedor: ")
-        vendedor = self.sistema.buscar_vendedor(nombre_vendedor)
+        vendedor = self.sistema.buscarVendedor(nombre_vendedor)
 
         if vendedor == None:
             print("Vendedor no encontrado.")
             input("\nPresione ENTER para continuar...")
             return
 
-        pedidos = vendedor.gestionar_pedidos()
+        pedidos = vendedor.gestionarPedidos()
 
         if len(pedidos) == 0:
             print("No hay pedidos activos.")
             input("\nPresione ENTER para continuar...")
             return
 
-        congestion = self.sistema.calcular_congestion(vendedor)
+        congestion = self.sistema.calcularCongestion(vendedor)
         print(f"Nivel de congestion: {congestion * 100}%")
 
         print(f"\nPedidos activos de {vendedor.nombre}:")
@@ -306,7 +306,7 @@ class Interfaz:
             else:
                 print("Estados posibles: pendiente | en preparacion | listo | entregado | cancelado")
                 nuevo_estado = input("Nuevo estado: ")
-                pedido_encontrado.cambiar_estado(nuevo_estado)
+                pedido_encontrado.cambiarEstado(nuevo_estado)
                 print("Estado actualizado.")
 
         input("\nPresione ENTER para continuar...")
@@ -402,3 +402,18 @@ class Interfaz:
                 break
             else:
                 print("Opcion invalida.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
