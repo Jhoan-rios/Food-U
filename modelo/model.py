@@ -1,7 +1,6 @@
 from mimetypes import init
 class  Producto:
-    def __init__(self,nombre:str,precio:float, id: int, tiempo_preparacion:int,disponible:bool):
-        self.id: int = id
+    def __init__(self,nombre:str,precio:float,tiempo_preparacion:int,disponible:bool):
         self.nombre:str =nombre
         self.precio:float = precio
         self.tiempo_preparacion:int = tiempo_preparacion
@@ -10,7 +9,7 @@ class  Producto:
 def actualizar_disponibilidad(self, estado: bool):
     self.disponible = estado
 
-    def _str_(self) -> str:
+    def _str_(self):
         if self.disponible:
             estado = "Disponible"
         else:
@@ -37,32 +36,8 @@ class Usuario:
         self.correo: str = correo
         self.historial_pedidos: list[Pedido] = []
 
-    def realizar_pedido(self, productos: list):
-            id_nuevo = len(self.historial_pedidos) + 1
-            pedido = Pedido(id_nuevo, self)
-            pedido.productos = productos
-            pedido.calcularTiempo()
-            pedido.calcularTotal()
-            self.historial_pedidos.append(pedido)
-            return pedido
-
-    def ver_historial(self):
-        return self.historial_pedidos
-
-    def calificar_vendedor(self, vendedor: "Vendedor", puntuacion: int):
-        if puntuacion >= 1 and puntuacion <= 5:
-            if vendedor.calificacion == 0:
-                vendedor.calificacion = puntuacion
-            else:
-                vendedor.calificacion = (vendedor.calificacion + puntuacion) / 2
-            print("Calificacion registrada correctamente")
-        else:
-            print("La calificacion debe ser entre 1 y 5")
-
-    def _str_(self):
-        return f"Usuario: {self.nombre} | Correo: {self.correo}"
-
-
+    def realizarPedido(self,produtos:list[Producto])->Pedido:
+        pass
 
 
 

@@ -1,10 +1,11 @@
 
 from modelo.model import Usuario
 from modelo.model import SistemaFoodU
+from modelo.model import Vendedor
 
 
 class Interfaz:
-
+    sistema =SistemaFoodU()
 
     def datos_usuarios(self):
         print("Ingrese los siguientes datos")
@@ -18,6 +19,26 @@ class Interfaz:
 
 
         SistemaFoodU.registrar_usuario(usuario)
+
+
+    def datos_vendedor(self):
+        print("Ingrese los siguientes datos")
+        nombre = input("Nombre:")
+        vendedor= Vendedor(nombre)
+        SistemaFoodU.registrar_vendedor(vendedor)
+
+
+    def mostrar_vendedores(self):
+        print()
+        for i in self.sistema.vendedor:
+            print(i)
+
+
+
+
+
+
+
 
 
 
@@ -54,7 +75,17 @@ class Interfaz:
                 print("1)Resgistrar Vendedor")
                 print("2)Gistion De Pedidos")
 
-                opcion = input("ingrese alguna opcion:")
+                opcion = int(input("ingrese alguna opcion:"))
+
+                if opcion == 1:
+                    self.datos_vendedor()
+
+                if opcion == 2:
+
+                    self.mostrar_vendedores()
+
+
+
 
 
 
