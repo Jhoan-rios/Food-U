@@ -1,3 +1,4 @@
+import re
 from modelo.model import Usuario
 from modelo.model import Vendedor
 from modelo.model import Producto
@@ -12,9 +13,32 @@ class Interfaz:
 
     def registrar_usuario(self):
         print("\n-- REGISTRAR USUARIO --")
-        nombre = input("Nombre: ")
-        correo = input("Correo: ")
-        tiempo = input("Tiempo disponible en minutos (ejemplo: 60): ")
+        while True:
+            nombre = input("Ingrese su nombre: ").strip()
+            if not nombre:
+                print("Debe ingresar el nombre.")
+            elif len(nombre) >= 1 and len(nombre) <= 2:
+                print(f"El nombre debe ser más largo {nombre} no es válido.")
+            else:
+                break
+
+        while True:
+            correo = input("Ingrese su correo: ").strip()
+            if not correo:
+                print("Debe ingresar el correo.")
+                continue
+            if not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", correo):
+                print("Debe ingresar un correo válido (ej: usuario@gmail.com).")
+                continue
+            else:
+                break
+
+        while True:
+            tiempo = input("Tiempo disponible en minutos (ejemplo: 60): ")
+            if not tiempo:
+                print("Debe ingresar el tiempo disponible.")
+            else:
+                break
 
         usuario = Usuario(self.id_usuario, nombre, correo, int(tiempo))
         resultado = self.sistema.registrar_usuario(usuario)
@@ -167,7 +191,14 @@ class Interfaz:
 
     def registrar_vendedor(self):
         print("\n-- REGISTRAR VENDEDOR --")
-        nombre = input("Nombre del vendedor: ")
+        while True:
+            nombre = input("Ingrese el nombre del vendedor: ")
+            if nombre == "":
+                print("Debe ingresar un nombre para registrar.")
+            elif len(nombre) >= 1 and len(nombre) <= 2:
+                print(f"El nombre {nombre} no es valido, debe ser más largo.")
+            else:
+                break
         vendedor = Vendedor(nombre)
         resultado = self.sistema.registrar_vendedor(vendedor)
         print(resultado)
@@ -399,18 +430,3 @@ class Interfaz:
                 break
             else:
                 print("Opcion invalida.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
