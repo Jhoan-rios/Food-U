@@ -3,13 +3,13 @@ from modelo.model import Usuario
 from modelo.model import Vendedor
 from modelo.model import Producto
 from modelo.model import SistemaFoodU
+from modelo.persistencia import guardar_datos, cargar_datos
 
 
 class Interfaz:
     def __init__(self):
         self.sistema = SistemaFoodU()
-        self.id_usuario: int = 1
-        self.id_producto: int = 1
+        self.id_usuario, self.id_producto = cargar_datos(self.sistema)
 
     def registrar_usuario(self):
         print("\n-- REGISTRAR USUARIO --")
@@ -46,6 +46,7 @@ class Interfaz:
 
         if resultado == "Usuario registrado correctamente":
             self.id_usuario = self.id_usuario + 1
+            guardar_datos(self.sistema, self.id_usuario, self.id_producto)
 
         input("\nPresione ENTER para continuar...")
 
@@ -117,6 +118,7 @@ class Interfaz:
             print("\nTambien te puede interesar:")
             for r in recomendados:
                 print(" -", r)
+        guardar_datos(self.sistema, self.id_usuario, self.id_producto)
 
         input("\nPresione ENTER para continuar...")
 
@@ -163,6 +165,7 @@ class Interfaz:
 
         if puntuacion.isdigit():
             usuario.calificar_vendedor(vendedor, int(puntuacion))
+            guardar_datos(self.sistema, self.id_usuario, self.id_producto)
         else:
             print("Puntuacion invalida.")
 
@@ -199,9 +202,14 @@ class Interfaz:
                 print(f"El nombre {nombre} no es valido, debe ser más largo.")
             else:
                 break
+
         vendedor = Vendedor(nombre)
         resultado = self.sistema.registrar_vendedor(vendedor)
         print(resultado)
+
+        if resultado == "Vendedor registrado correctamente":
+            guardar_datos(self.sistema, self.id_usuario, self.id_producto)
+
         input("\nPresione ENTER para continuar...")
 
     def agregar_producto(self):
@@ -227,6 +235,7 @@ class Interfaz:
         producto = Producto(self.id_producto, nombre, precio, tiempo, disponible)
         vendedor.agregar_producto(producto)
         self.id_producto = self.id_producto + 1
+        guardar_datos(self.sistema, self.id_usuario, self.id_producto)
 
         input("\nPresione ENTER para continuar...")
 
@@ -266,6 +275,8 @@ class Interfaz:
             nueva_disp = False
 
         vendedor.editar_producto(int(id_str), nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
+        guardar_datos(self.sistema, self.id_usuario, self.id_producto)
+
         input("\nPresione ENTER para continuar...")
 
     def eliminar_producto(self):
@@ -291,6 +302,7 @@ class Interfaz:
 
         if id_str.isdigit():
             vendedor.eliminar_producto(int(id_str))
+            guardar_datos(self.sistema, self.id_usuario, self.id_producto)
         else:
             print("ID invalido.")
 
@@ -413,7 +425,7 @@ class Interfaz:
     def show_menu(self):
         while True:
             print("\n========================================")
-            print("  BIENVENIDO A FOODU - UDEM MEDELLIN")
+            print("  BIENVENIDO A FOODU - UDEMEDELLÍN")
             print("========================================")
             print("U) Soy Usuario")
             print("V) Soy Vendedor")
