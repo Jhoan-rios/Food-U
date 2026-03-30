@@ -34,11 +34,17 @@ class Interfaz:
                 break
 
         while True:
-            tiempo = input("Tiempo disponible en minutos (ejemplo: 60): ")
+            tiempo = input("Tiempo disponible en minutos (ejemplo: 60): ").strip()
+
             if not tiempo:
                 print("Debe ingresar el tiempo disponible.")
-            else:
-                break
+                continue
+
+            try:
+                tiempo = int(tiempo)
+                return tiempo
+            except ValueError:
+                print("Debe ingresar un número entero.")
 
         usuario = Usuario(self.id_usuario, nombre, correo, int(tiempo))
         resultado = self.sistema.registrar_usuario(usuario)
