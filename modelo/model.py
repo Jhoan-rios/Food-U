@@ -1,4 +1,4 @@
-class  Producto:
+class Producto:
     def __init__(self, producto_id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool):
         self.id: int = producto_id
         self.nombre: str = nombre
@@ -6,7 +6,7 @@ class  Producto:
         self.tiempo_preparacion: int = tiempo_preparacion
         self.disponible: bool = disponible
 
-    def actualizar_disponibilidad(self, estado: bool)->str | None:
+    def actualizar_disponibilidad(self, estado: bool) -> str | None:
         self.disponible = estado
 
     def __str__(self):
@@ -15,6 +15,7 @@ class  Producto:
         else:
             estado = "No disponible"
         return f"[{self.id}] {self.nombre} - ${self.precio} | {self.tiempo_preparacion} min | {estado}"
+
 
 class Pedido:
     def __init__(self, pedido_id: int, usuario: "Usuario"):
@@ -53,11 +54,13 @@ class Pedido:
         texto = texto + f"  Total: ${self.total}"
         return texto
 
+
 class Usuario:
-    def __init__(self, usuario_id: int, nombre: str, correo: str, tiempo_disponible: int):
+    def __init__(self, usuario_id: int, nombre: str, correo: str, tiempo_disponible: int, contrasena: str):
         self.id: int = usuario_id
         self.nombre: str = nombre
         self.correo: str = correo
+        self.contrasena: str = contrasena
         self.historial_pedidos: list[Pedido] = []
 
     def realizar_pedido(self, productos: list):
@@ -85,20 +88,21 @@ class Usuario:
     def __str__(self):
         return f"Usuario: {self.nombre} | Correo: {self.correo}"
 
+
 class Vendedor:
-    def __init__(self, nombre: str):
+    def __init__(self, nombre: str, contrasena: str):
         self.nombre: str = nombre
+        self.contrasena: str = contrasena
         self.productos: list[Producto] = []
         self.pedidos_activos: list = []
         self.calificacion: float = 0.0
-
 
     def agregar_producto(self, producto: Producto):
         self.productos.append(producto)
         print("Producto agregado correctamente")
 
     def editar_producto(self, producto_id: int, nuevo_nombre: str, nuevo_precio: float, nuevo_tiempo: int,
-                       nueva_disponibilidad: bool):
+                        nueva_disponibilidad: bool):
         for p in self.productos:
             if p.id == producto_id:
                 p.nombre = nuevo_nombre
@@ -148,6 +152,7 @@ class Recomendador:
                     conteo[producto.id] = conteo[producto.id] + 1
                 else:
                     conteo[producto.id] = 1
+
         disponibles = []
         for p in todos_productos:
             if p.disponible:
@@ -172,7 +177,7 @@ class Recomendador:
 class SistemaFoodU:
     def __init__(self):
         self.usuarios: list = []
-        self.vendedores: list= []
+        self.vendedores: list = []
         self.pedidos: list = []
         self.recomendador = Recomendador()
 

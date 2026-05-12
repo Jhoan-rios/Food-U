@@ -1,9 +1,8 @@
 import json
 import os
 
-from modelo.model import Pedido
-
 RUTA_ARCHIVO = "datos.json"
+
 
 def guardar_datos(sistema, id_usuario, id_producto):
     datos = {
@@ -19,16 +18,17 @@ def guardar_datos(sistema, id_usuario, id_producto):
             "id": u.id,
             "nombre": u.nombre,
             "correo": u.correo,
+            "contrasena": u.contrasena,
             "tiempo_disponible": 0
         })
 
     for v in sistema.vendedores:
         vendedor_dict = {
-            'nombre': v.nombre,
-            'calificacion': v.calificacion,
-            'productos': []
+            "nombre": v.nombre,
+            "calificacion": v.calificacion,
+            "contrasena": v.contrasena,
+            "productos": []
         }
-
         for p in v.productos:
             vendedor_dict["productos"].append({
                 "id": p.id,
@@ -41,7 +41,7 @@ def guardar_datos(sistema, id_usuario, id_producto):
 
     for pedido in sistema.pedidos:
         datos["pedidos"].append({
-            'id': pedido.id,
+            "id": pedido.id,
             "usuario_nombre": pedido.usuario.nombre,
             "productos_ids": [p.id for p in pedido.productos],
             "estado": pedido.estado,
@@ -52,31 +52,48 @@ def guardar_datos(sistema, id_usuario, id_producto):
     with open(RUTA_ARCHIVO, "w", encoding="utf-8") as f:
         json.dump(datos, f, indent=4, ensure_ascii=False)
 
+
 def cargar_datos(sistema):
-    from modelo.model import Usuario, Vendedor, Producto
+    from modelo.model import Usuario, Vendedor, Producto, Pedido
 
     if not os.path.exists(RUTA_ARCHIVO):
-        return 1,1
+        return 1, 1
 
     if os.path.getsize(RUTA_ARCHIVO) == 0:
-        return 1,1
+        return 1, 1
 
     with open(RUTA_ARCHIVO, "r", encoding="utf-8") as f:
         datos = json.load(f)
 
     for u_dict in datos["usuarios"]:
-        usuario = Usuario(u_dict["id"], u_dict["nombre"], u_dict["correo"], u_dict["tiempo_disponible"])
+        usuario = Usuario(
+            u_dict["id"],
+            u_dict["nombre"],
+            u_dict["correo"],
+            u_dict["tiempo_disponible"],
+            u_dict["contrasena"]
+        )
         sistema.usuarios.append(usuario)
 
     for v_dict in datos["vendedores"]:
-        vendedor = Vendedor(v_dict["nombre"])
+        vendedor = Vendedor(v_dict["nombre"], v_dict["contrasena"])
         vendedor.calificacion = v_dict["calificacion"]
         for p_dict in v_dict["productos"]:
-            producto =Producto(p_dict["id"],p_dict["nombre"],p_dict["precio"],p_dict["tiempo_preparacion"], p_dict["disponible"])
+            producto = Producto(
+                p_dict["id"],
+                p_dict["nombre"],
+                p_dict["precio"],
+                p_dict["tiempo_preparacion"],
+                p_dict["disponible"]
+            )
             vendedor.productos.append(producto)
         sistema.vendedores.append(vendedor)
 
     mapa_productos = {}
+    for v in sistema.vendedores:
+        for p in v.productos:
+            mapa_productos[p.id] = p
+
     for p_dict in datos.get("pedidos", []):
         usuario = sistema.buscar_usuario(p_dict["usuario_nombre"])
         if usuario is None:
@@ -93,4 +110,5 @@ def cargar_datos(sistema):
 
         sistema.pedidos.append(pedido)
         usuario.historial_pedidos.append(pedido)
+
     return datos["id_usuario"], datos["id_producto"]
