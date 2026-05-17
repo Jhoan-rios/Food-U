@@ -152,3 +152,24 @@ def historial_usuario():
     if not usuario:
         return redirect(url_for("login_usuario"))
     return render_template("historial_usuario.html", usuario=usuario)
+
+
+@app.route("/usuario/calificar", methods=["GET", "POST"])
+def calificar_vendedor():
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+    if request.method == "POST":
+        nombre_vendedor = request.form["vendedor"].strip()
+        puntuacion = request.form["puntuacion"].strip()
+        vendedor = sistema.buscar_vendedor(nombre_vendedor)
+        if vendedor is None:
+            flash("Vendedor no encontrado.", "error")
+        elif not puntuacion.isdigit() or not (1 <= int(puntuacion) <= 5):
+            flash("La puntuación debe ser un número del 1 al 5.", "error")
+        else:
+            usuario.calificar_vendedor(vendedor, int(puntuacion))
+            guardar_datos(sistema, id_usuario, id_producto)
+            flash(f"¡Calificación registrada para {vendedor.nombre}!", "success")
+        return redirect(url_for("calificar_vendedor"))
+    return render_template("calificar_vendedor.html", usuario=usuario, vendedores=sistema.vendedores)
