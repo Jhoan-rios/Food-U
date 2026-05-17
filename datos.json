@@ -1,0 +1,21 @@
+{
+    "id_usuario": 1,
+    "id_producto": 2,
+    "usuarios": [],
+    "vendedores": [
+        {
+            "nombre": "tavo",
+            "calificacion": 0.0,
+            "productos": [
+                {
+                    "id": 1,
+                    "nombre": "salchipapa",
+                    "precio": 20.0,
+                    "tiempo_preparacion": 10,
+                    "disponible": true
+                }
+            ]
+        }
+    ],
+    "pedidos": []
+}
