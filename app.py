@@ -115,3 +115,40 @@ def menu_productos():
             if p.disponible:
                 todos_disponibles.append((p, v.nombre))
     return render_template("menu_productos.html", usuario=usuario, productos=todos_disponibles)
+
+
+@app.route("/usuario/pedido", methods=["GET", "POST"])
+def crear_pedido():
+    global id_producto
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+    todos_disponibles = []
+    for v in sistema.vendedores:
+        for p in v.productos:
+            if p.disponible:
+                todos_disponibles.append(p)
+    if request.method == "POST":
+        ids_seleccionados = request.form.getlist("productos")
+        seleccionados = []
+        for id_str in ids_seleccionados:
+            id_num = int(id_str)
+            for p in todos_disponibles:
+                if p.id == id_num:
+                    seleccionados.append(p)
+        if not seleccionados:
+            flash("Debes seleccionar al menos un producto.", "error")
+            return redirect(url_for("crear_pedido"))
+        pedido = sistema.crear_pedido(usuario, seleccionados)
+        turno = sistema.asignar_turno(pedido)
+        guardar_datos(sistema, id_usuario, id_producto)
+        flash(f"¡Pedido #{pedido.id} creado! Tu turno es el #{turno}. Total: ${pedido.total:.2f}", "success")
+        return redirect(url_for("historial_usuario"))
+    return render_template("crear_pedido.html", usuario=usuario, productos=todos_disponibles)
+
+@app.route("/usuario/historial")
+def historial_usuario():
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+    return render_template("historial_usuario.html", usuario=usuario)
