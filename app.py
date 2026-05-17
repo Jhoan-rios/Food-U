@@ -15,4 +15,24 @@ sistema=SistemaFoodU()
 id_usuario, id_producto = cargar_datos()
 
 
+#HELPERS
+
+def get_usuario_actual():
+    nombre = session.get("usuario")
+    if nombre:
+        return sistema.buscar_usuario(nombre)
+    return None
+
+def get_venvedor_actual():
+    nombre=session.get("vendedor")
+    if nombre:
+        return sistema.buscar_vendedor(nombre)
+    return None
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+
 
