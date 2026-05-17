@@ -104,4 +104,14 @@ def dashboard_usuario():
     return render_template("dashboard_usuario.html", usuario=usuario, recomendados=recomendados)
 
 
-
+@app.route("/usuario/menu")
+def menu_productos():
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+    todos_disponibles = []
+    for v in sistema.vendedores:
+        for p in v.productos:
+            if p.disponible:
+                todos_disponibles.append((p, v.nombre))
+    return render_template("menu_productos.html", usuario=usuario, productos=todos_disponibles)
