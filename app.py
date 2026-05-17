@@ -87,4 +87,21 @@ def registro_usuario():
     return render_template("registro_usuario.html")
 
 
+@app.route("/usuario/logout")
+def logout_usuario():
+    session.pop("usuario", None)
+    return redirect(url_for("index"))
+
+
+#USUARIO - DASHBOARD
+
+@app.route("/usuario/dashboard")
+def dashboard_usuario():
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+    recomendados = sistema.recomendar_menu(usuario)
+    return render_template("dashboard_usuario.html", usuario=usuario, recomendados=recomendados)
+
+
 
