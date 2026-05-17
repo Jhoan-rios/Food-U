@@ -35,4 +35,20 @@ def index():
 
 
 
+@app.route("/usuario/login", methods=["GET", "POST"])
+def login_usuario():
+    if request.method == "POST":
+        nombre = request.form["nombre"].strip()
+        contrasena = request.form["contrasena"].strip()
+        usuario = sistema.buscar_usuario(nombre)
+        if usuario is None or usuario.contrasena != contrasena:
+            flash("Nombre o contraseña incorrectos.", "error")
+            return redirect(url_for("login_usuario"))
+        session["usuario"] = usuario.nombre
+        flash(f"¡Bienvenido, {usuario.nombre}!", "success")
+        return redirect(url_for("dashboard_usuario"))
+    return render_template("login_usuario.html")
+
+
+
 
