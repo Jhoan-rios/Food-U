@@ -173,3 +173,19 @@ def calificar_vendedor():
             flash(f"¡Calificación registrada para {vendedor.nombre}!", "success")
         return redirect(url_for("calificar_vendedor"))
     return render_template("calificar_vendedor.html", usuario=usuario, vendedores=sistema.vendedores)
+
+
+
+@app.route("/vendedor/login", methods=["GET", "POST"])
+def login_vendedor():
+    if request.method == "POST":
+        nombre = request.form["nombre"].strip()
+        contrasena = request.form["contrasena"].strip()
+        vendedor = sistema.buscar_vendedor(nombre)
+        if vendedor is None or vendedor.contrasena != contrasena:
+            flash("Nombre o contraseña incorrectos.", "error")
+            return redirect(url_for("login_vendedor"))
+        session["vendedor"] = vendedor.nombre
+        flash(f"¡Bienvenido, {vendedor.nombre}!", "success")
+        return redirect(url_for("dashboard_vendedor"))
+    return render_template("login_vendedor.html")
