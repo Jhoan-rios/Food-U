@@ -189,3 +189,35 @@ def login_vendedor():
         flash(f"¡Bienvenido, {vendedor.nombre}!", "success")
         return redirect(url_for("dashboard_vendedor"))
     return render_template("login_vendedor.html")
+
+
+@app.route("/vendedor/registro", methods=["GET", "POST"])
+def registro_vendedor():
+    if request.method == "POST":
+        nombre = request.form["nombre"].strip()
+        contrasena = request.form["contrasena"].strip()
+        errores = []
+        if len(nombre) <= 2:
+            errores.append("El nombre debe tener más de 2 caracteres.")
+        if len(contrasena) < 4:
+            errores.append("La contraseña debe tener al menos 4 caracteres.")
+        if errores:
+            for e in errores:
+                flash(e, "error")
+            return redirect(url_for("registro_vendedor"))
+        vendedor = Vendedor(nombre, contrasena)
+        resultado = sistema.registrar_vendedor(vendedor)
+        if "correctamente" in resultado:
+            guardar_datos(sistema, id_usuario, id_producto)
+            flash("Cuenta de vendedor creada. Inicia sesión.", "success")
+            return redirect(url_for("login_vendedor"))
+        else:
+            flash(resultado, "error")
+            return redirect(url_for("registro_vendedor"))
+    return render_template("registro_vendedor.html")
+
+
+@app.route("/vendedor/logout")
+def logout_vendedor():
+    session.pop("vendedor", None)
+    return redirect(url_for("index"))
