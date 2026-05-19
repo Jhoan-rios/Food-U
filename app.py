@@ -316,3 +316,22 @@ def eliminar_producto(producto_id):
     flash("Producto eliminado.", "success")
     return redirect(url_for("dashboard_vendedor"))
 
+
+
+\@app.route("/vendedor/pedidos", methods=["GET", "POST"])
+def gestionar_pedidos():
+    vendedor = get_vendedor_actual()
+    if not vendedor:
+        return redirect(url_for("login_vendedor"))
+    if request.method == "POST":
+        pedido_id = int(request.form["pedido_id"])
+        nuevo_estado = request.form["estado"]
+        for pedido in vendedor.pedidos_activos:
+            if pedido.id == pedido_id:
+                pedido.cambiar_estado(nuevo_estado)
+                guardar_datos(sistema, id_usuario, id_producto)
+                flash(f"Estado del pedido #{pedido_id} actualizado a '{nuevo_estado}'.", "success")
+                break
+    congestion = sistema.calcular_congestion(vendedor)
+    return render_template("gestionar_pedidos.html", vendedor=vendedor, congestion=congestion)
+
