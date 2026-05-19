@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FoodU – {% block titulo %}{% endblock %}</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --naranja: #FF5C00;
+      --naranja-claro: #FF8C42;
+      --crema: #FFF8F2;
+      --oscuro: #1A1008;
+      --gris: #6B6560;
+      --borde: #E8DED5;
+      --verde: #2D6A4F;
+      --rojo: #C1121F;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--crema);
+      color: var(--oscuro);
+      min-height: 100vh;
+  </style>
+
 </head>
 <body>
   {% block contenido %}{% endblock %}
