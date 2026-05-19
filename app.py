@@ -12,7 +12,7 @@ app.secret_key = "foodu-udem-2024"
 
 
 sistema=SistemaFoodU()
-id_usuario, id_producto = cargar_datos()
+id_usuario, id_producto = cargar_datos(sistema)
 
 
 #HELPERS
@@ -256,29 +256,7 @@ def agregar_producto():
 
 
 
-@app.route("/vendedor/productos/editar/<int:producto_id>", methods=["GET", "POST"])
-def editar_producto(producto_id):
-    vendedor = get_vendedor_actual()
-    if not vendedor:
-        return redirect(url_for("login_vendedor"))
-    producto = None
-    for p in vendedor.productos:
-        if p.id == producto_id:
-            producto = p
-            break
-    if not producto:
-        flash("Producto no encontrado.", "error")
-        return redirect(url_for("dashboard_vendedor"))
-    if request.method == "POST":
-        nuevo_nombre = request.form["nombre"].strip()
-        nuevo_precio = float(request.form["precio"])
-        nuevo_tiempo = int(request.form["tiempo"])
-        nueva_disp = request.form.get("disponible") == "on"
-        vendedor.editar_producto(producto_id, nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
-        guardar_datos(sistema, id_usuario, id_producto)
-        flash("Producto actualizado.", "success")
-        return redirect(url_for("dashboard_vendedor"))
-    return render_template("editar_producto.html", vendedor=vendedor, producto=producto)
+
 
 
 @app.route("/vendedor/productos/editar/<int:producto_id>", methods=["GET", "POST"])
@@ -318,7 +296,7 @@ def eliminar_producto(producto_id):
 
 
 
-\@app.route("/vendedor/pedidos", methods=["GET", "POST"])
+@app.route("/vendedor/pedidos", methods=["GET", "POST"])
 def gestionar_pedidos():
     vendedor = get_vendedor_actual()
     if not vendedor:
