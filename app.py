@@ -221,3 +221,12 @@ def registro_vendedor():
 def logout_vendedor():
     session.pop("vendedor", None)
     return redirect(url_for("index"))
+
+
+@app.route("/vendedor/dashboard")
+def dashboard_vendedor():
+    vendedor = get_vendedor_actual()
+    if not vendedor:
+        return redirect(url_for("login_vendedor"))
+    congestion = sistema.calcular_congestion(vendedor)
+    return render_template("dashboard_vendedor.html", vendedor=vendedor, congestion=congestion)
