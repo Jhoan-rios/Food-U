@@ -15,8 +15,13 @@
           <label>Contraseña</label>
           <input type="password" name="contrasena" placeholder="••••••••" required>
         </div>
+           <button type="submit" class="btn btn-primary">Iniciar sesión</button>
       </form>
     </div>
+      <p class="texto-centro texto-gris" style="margin-top:1rem; font-size:0.9rem;">
+      ¿No tienes cuenta?
+      <a href="{{ url_for('registro_usuario') }}" class="texto-naranja" style="text-decoration:none; font-weight:500;">Regístrate aquí</a>
+      </p>
   </div>
 </div>
 {% endblock %}
