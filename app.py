@@ -230,3 +230,27 @@ def dashboard_vendedor():
         return redirect(url_for("login_vendedor"))
     congestion = sistema.calcular_congestion(vendedor)
     return render_template("dashboard_vendedor.html", vendedor=vendedor, congestion=congestion)
+
+
+@app.route("/vendedor/productos/agregar", methods=["GET", "POST"])
+def agregar_producto():
+    global id_producto
+    vendedor = get_vendedor_actual()
+    if not vendedor:
+        return redirect(url_for("login_vendedor"))
+    if request.method == "POST":
+        nombre = request.form["nombre"].strip()
+        precio = request.form["precio"].strip()
+        tiempo = request.form["tiempo"].strip()
+        disponible = request.form.get("disponible") == "on"
+        try:
+            producto = Producto(id_producto, nombre, float(precio), int(tiempo), disponible)
+            vendedor.agregar_producto(producto)
+            id_producto += 1
+            guardar_datos(sistema, id_usuario, id_producto)
+            flash(f"Producto '{nombre}' agregado correctamente.", "success")
+        except:
+            flash("Error al agregar el producto. Verifica los datos.", "error")
+        return redirect(url_for("dashboard_vendedor"))
+    return render_template("agregar_producto.html", vendedor=vendedor)
+
