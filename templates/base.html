@@ -22,10 +22,55 @@
       background: var(--crema);
       color: var(--oscuro);
       min-height: 100vh;
+
+     }
+    nav {
+      background: var(--oscuro);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--naranja);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: white; }
+    .nav-links { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.875rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); color: white; }
+    .nav-links .btn-nav {
+      background: var(--naranja);
+      color: white !important;
+      font-weight: 500;
+    }
+    .nav-links .btn-nav:hover { background: var(--naranja-claro); }
   </style>
 
 </head>
 <body>
+  <nav>
+    <a href="{{ url_for('index') }}" class="nav-logo">Food<span>U</span></a>
+    <div class="nav-links">
+      <a href="{{ url_for('login_usuario') }}">Soy cliente</a>
+      <a href="{{ url_for('login_vendedor') }}" class="btn-nav">Soy vendedor</a>
+    </div>
+  </nav>
   {% block contenido %}{% endblock %}
 </body>
 </html>
