@@ -1,11 +1,20 @@
 {
-    "id_usuario": 1,
+    "id_usuario": 2,
     "id_producto": 2,
-    "usuarios": [],
+    "usuarios": [
+        {
+            "id": 1,
+            "nombre": "david",
+            "correo": "drios@gmail.com",
+            "contrasena": "12345",
+            "tiempo_disponible": 0
+        }
+    ],
     "vendedores": [
         {
             "nombre": "tavo",
             "calificacion": 0.0,
+            "contrasena": "1234",
             "productos": [
                 {
                     "id": 1,
@@ -17,5 +26,16 @@
             ]
         }
     ],
-    "pedidos": []
+    "pedidos": [
+        {
+            "id": 1,
+            "usuario_nombre": "david",
+            "productos_ids": [
+                1
+            ],
+            "estado": "pendiente",
+            "tiempo_estimado": 10,
+            "total": 20.0
+        }
+    ]
 }
