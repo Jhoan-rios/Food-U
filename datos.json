@@ -1,5 +1,5 @@
 {
-    "id_usuario": 2,
+    "id_usuario": 3,
     "id_producto": 2,
     "usuarios": [
         {
@@ -7,6 +7,13 @@
             "nombre": "david",
             "correo": "drios@gmail.com",
             "contrasena": "12345",
+            "tiempo_disponible": 0
+        },
+        {
+            "id": 2,
+            "nombre": "Jhoan",
+            "correo": "jhoanrios@gmail.com",
+            "contrasena": "1111",
             "tiempo_disponible": 0
         }
     ],
@@ -24,12 +31,28 @@
                     "disponible": true
                 }
             ]
+        },
+        {
+            "nombre": "Daniel Jesus",
+            "calificacion": 5,
+            "contrasena": "4040",
+            "productos": []
         }
     ],
     "pedidos": [
         {
             "id": 1,
             "usuario_nombre": "david",
+            "productos_ids": [
+                1
+            ],
+            "estado": "pendiente",
+            "tiempo_estimado": 10,
+            "total": 20.0
+        },
+        {
+            "id": 1,
+            "usuario_nombre": "Jhoan",
             "productos_ids": [
                 1
             ],
