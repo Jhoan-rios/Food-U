@@ -27,3 +27,33 @@ class VendedorDuplicadoError(VendedorException):
 class VendedorNoEncontradoError(VendedorException):
     pass
 
+class ProductoException(FoodUException):
+    pass
+
+
+class ProductoNoEncontradoError(ProductoException):
+    pass
+
+
+class ProductoNoDisponibleError(ProductoException):
+    pass
+
+
+class PedidoException(FoodUException):
+    pass
+
+
+class PedidoVacioError( PedidoException):
+    pass
+
+
+class PedidoNoEncontradoError(PedidoException):
+    pass
+
+
+class CalificacionException(FoodUException):
+    pass
+
+
+class CalificacionInvalidaError(CalificacionException):
+    pass
