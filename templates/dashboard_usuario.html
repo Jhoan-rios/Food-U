@@ -2,13 +2,34 @@
 {% block titulo %}Mi cuenta{% endblock %}
 {% block contenido %}
 <div class="contenedor">
-  <h1>Hola, {{ usuario.nombre }} 👋</h1>
+  <div style="margin-bottom:2rem;">
+    <h1>Hola, {{ usuario.nombre }} 👋</h1>
     <p class="subtitulo">{{ usuario.correo }}</p>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem;">
-  <div class="card" style="text-align:center; padding:1.25rem;">
-    <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">{{ usuario.historial_pedidos|length }}</div>
-    <div style="font-size:0.8rem; color:var(--gris); margin-top:0.25rem;">Pedidos realizados</div>
   </div>
-</div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem;">
+    <div class="card" style="text-align:center; padding:1.25rem;">
+      <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">{{ usuario.historial_pedidos|length }}</div>
+      <div style="font-size:0.8rem; color:var(--gris); margin-top:0.25rem;">Pedidos realizados</div>
+    </div>
+    <a href="{{ url_for('crear_pedido') }}" style="text-decoration:none;">
+      <div class="card" style="text-align:center; padding:1.25rem; border-color:var(--naranja); cursor:pointer;">
+        <div style="font-size:1.8rem;">🍽️</div>
+        <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem; color:var(--naranja);">Hacer pedido</div>
+      </div>
+    </a>
+    <a href="{{ url_for('historial_usuario') }}" style="text-decoration:none;">
+      <div class="card" style="text-align:center; padding:1.25rem; cursor:pointer;">
+        <div style="font-size:1.8rem;">📋</div>
+        <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem;">Ver historial</div>
+      </div>
+    </a>
+    <a href="{{ url_for('calificar_vendedor') }}" style="text-decoration:none;">
+      <div class="card" style="text-align:center; padding:1.25rem; cursor:pointer;">
+        <div style="font-size:1.8rem;">⭐</div>
+        <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem;">Calificar</div>
+      </div>
+    </a>
+  </div>
 </div>
 {% endblock %}
