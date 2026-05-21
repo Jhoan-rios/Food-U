@@ -1,1 +1,7 @@
-<h1>En construcción</h1>
+{% extends "base.html" %}
+{% block titulo %}Mi cuenta{% endblock %}
+{% block contenido %}
+<div class="contenedor">
+  <h1>Hola, {{ usuario.nombre }} 👋</h1>
+</div>
+{% endblock %}
