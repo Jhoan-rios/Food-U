@@ -31,5 +31,14 @@
       </div>
     </a>
   </div>
-</div>
-{% endblock %}
+
+
+  {% if recomendados %}
+   <div class="card">
+     <h2>✨ Recomendados para ti</h2>
+     <div class="card-grid">{# Los productos se renderizaran aqui en el siguiente commit #}
+     </div>
+   </div>
+   {% endif %}
+ </div>
+ {% endblock %}
