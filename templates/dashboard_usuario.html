@@ -4,5 +4,11 @@
 <div class="contenedor">
   <h1>Hola, {{ usuario.nombre }} 👋</h1>
     <p class="subtitulo">{{ usuario.correo }}</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem;">
+  <div class="card" style="text-align:center; padding:1.25rem;">
+    <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">{{ usuario.historial_pedidos|length }}</div>
+    <div style="font-size:0.8rem; color:var(--gris); margin-top:0.25rem;">Pedidos realizados</div>
+  </div>
+</div>
 </div>
 {% endblock %}
