@@ -1,3 +1,5 @@
+from error import *
+
 class Producto:
     def __init__(self, producto_id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool):
         self.id: int = producto_id
@@ -27,6 +29,8 @@ class Pedido:
         self.total: float = 0.0
 
     def calcular_tiempo(self):
+        if not self.productos:
+            raise PedidoVacioError("El pedido no tiene productos.")
         mayor = 0
         for p in self.productos:
             if p.tiempo_preparacion > mayor:
