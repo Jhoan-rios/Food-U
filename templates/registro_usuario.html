@@ -2,13 +2,21 @@
 {% block titulo %}Registro{% endblock %}
 {% block contenido %}
 <div class="contenedor-sm">
-    <div style="margin-top:2rem;">
+  <div style="margin-top:2rem;">
     <h1>Crea tu cuenta</h1>
     <p class="subtitulo">Regístrate para pedir comida en el campus</p>
     <div class="card">
-      <p>Formulario aquí</p>
+      <form method="POST">
+        <div class="campo">
+          <label>Nombre de usuario</label>
+          <input type="text" name="nombre" placeholder="Tu nombre" required>
+        </div>
+        <div class="campo">
+          <label>Correo electrónico</label>
+          <input type="email" name="correo" placeholder="usuario@udem.edu.co" required>
+        </div>
+      </form>
     </div>
   </div>
-
 </div>
 {% endblock %}
