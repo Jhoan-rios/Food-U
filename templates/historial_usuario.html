@@ -4,5 +4,27 @@
 <div class="contenedor">
   <h1>Mis pedidos</h1>
   <p class="subtitulo">Historial de pedidos de {{ usuario.nombre }}</p>
+
+  {% set historial = usuario.ver_historial() %}
+  {% if historial %}
+    {% for pedido in historial | reverse %}
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="fila" style="margin-bottom:1rem;">
+        <div>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem;">Pedido #{{ pedido.id }}</span>
+        </div>
+        {% if pedido.estado == 'entregado' %}
+          <span class="badge badge-verde">{{ pedido.estado }}</span>
+        {% elif pedido.estado == 'cancelado' %}
+          <span class="badge badge-rojo">{{ pedido.estado }}</span>
+        {% elif pedido.estado == 'en preparacion' %}
+          <span class="badge badge-naranja">{{ pedido.estado }}</span>
+        {% else %}
+          <span class="badge badge-gris">{{ pedido.estado }}</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
 </div>
 {% endblock %}
