@@ -9,5 +9,29 @@
     </div>
     <a href="{{ url_for('agregar_producto') }}" class="btn btn-primary" style="width:auto;">+ Agregar producto</a>
   </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem;">
+    <div class="card" style="text-align:center; padding:1.25rem;">
+      <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">{{ vendedor.productos|length }}</div>
+      <div style="font-size:0.8rem; color:var(--gris);">Productos en menú</div>
+    </div>
+    <div class="card" style="text-align:center; padding:1.25rem;">
+      <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">{{ vendedor.pedidos_activos|length }}</div>
+      <div style="font-size:0.8rem; color:var(--gris);">Pedidos activos</div>
+    </div>
+    <div class="card" style="text-align:center; padding:1.25rem;">
+      <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700;
+        color:{% if congestion > 0.7 %}var(--rojo){% elif congestion > 0.4 %}#e65100{% else %}var(--verde){% endif %};">
+        {{ (congestion * 100)|int }}%
+      </div>
+      <div style="font-size:0.8rem; color:var(--gris);">Congestión</div>
+    </div>
+    <a href="{{ url_for('gestionar_pedidos') }}" style="text-decoration:none;">
+      <div class="card" style="text-align:center; padding:1.25rem; cursor:pointer;">
+        <div style="font-size:1.8rem;">📦</div>
+        <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem;">Ver pedidos</div>
+      </div>
+    </a>
+  </div>
 </div>
 {% endblock %}
