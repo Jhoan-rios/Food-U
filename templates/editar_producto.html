@@ -5,6 +5,19 @@
   <h1>Editar producto</h1>
   <p class="subtitulo">Modifica los datos de {{ producto.nombre }}</p>
 
+  <div class="card">
+    <form method="POST">
+      <div class="campo">
+        <label>Nombre del producto</label>
+        <input type="text" name="nombre" value="{{ producto.nombre }}" required>
+      </div>
+      <div class="campo">
+        <label>Precio ($)</label>
+        <input type="number" name="precio" value="{{ producto.precio }}" step="0.01" min="0" required>
+      </div>
+    </form>
+  </div>
+
   <div style="margin-top:1rem; text-align:center;">
     <a href="{{ url_for('dashboard_vendedor') }}" class="texto-gris" style="font-size:0.9rem; text-decoration:none;">← Volver sin guardar</a>
   </div>
