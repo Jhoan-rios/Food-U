@@ -38,6 +38,18 @@
         <span style="color:var(--gris); font-size:0.85rem;">⏱ {{ pedido.tiempo_estimado }} min</span>
         <span style="font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">${{ "%.2f"|format(pedido.total) }}</span>
       </div>
+
+      <form method="POST" style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+        <input type="hidden" name="pedido_id" value="{{ pedido.id }}">
+        <select name="estado" style="margin:0; flex:1; min-width:160px;">
+          <option value="pendiente" {% if pedido.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+          <option value="en preparacion" {% if pedido.estado == 'en preparacion' %}selected{% endif %}>En preparación</option>
+          <option value="listo" {% if pedido.estado == 'listo' %}selected{% endif %}>Listo</option>
+          <option value="entregado" {% if pedido.estado == 'entregado' %}selected{% endif %}>Entregado</option>
+          <option value="cancelado" {% if pedido.estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+        </select>
+        <button type="submit" class="btn btn-outline btn-sm">Actualizar estado</button>
+      </form>
     </div>
     {% endfor %}
   {% endif %}
