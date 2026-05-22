@@ -1,1 +1,29 @@
-<h1>En construcción</h1>
+{% extends "base.html" %}
+{% block titulo %}Vendedor - Login{% endblock %}
+{% block contenido %}
+<div class="contenedor-sm">
+  <div style="margin-top:2rem;">
+    <h1>Panel de vendedor</h1>
+    <p class="subtitulo">Administra tu menú y pedidos</p>
+
+    <div class="card">
+      <form method="POST">
+        <div class="campo">
+          <label>Nombre del local</label>
+          <input type="text" name="nombre" placeholder="Nombre de tu puesto" required autofocus>
+        </div>
+        <div class="campo">
+          <label>Contraseña</label>
+          <input type="password" name="contrasena" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Ingresar</button>
+      </form>
+    </div>
+
+    <p class="texto-centro texto-gris" style="margin-top:1rem; font-size:0.9rem;">
+      ¿Eres nuevo vendedor?
+      <a href="{{ url_for('registro_vendedor') }}" class="texto-naranja" style="text-decoration:none; font-weight:500;">Regístrate aquí</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
