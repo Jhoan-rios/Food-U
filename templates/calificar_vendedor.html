@@ -16,8 +16,38 @@
           {% endfor %}
         </select>
       </div>
+      <div class="campo">
+        <label>Puntuación (1 al 5)</label>
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+          {% for i in range(1, 6) %}
+          <label style="text-transform:none; letter-spacing:0; font-size:1.5rem; cursor:pointer; margin:0;" title="{{ i }} estrella(s)">
+            <input type="radio" name="puntuacion" value="{{ i }}" style="display:none;" required>
+            <span class="estrella" id="star-{{ i }}" onclick="seleccionarEstrellas({{ i }})">☆</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
       <button type="submit" class="btn btn-primary">Enviar calificación</button>
     </form>
+  </div>
+
+  <div style="margin-top:1.5rem;">
+    <h2>Vendedores registrados</h2>
+    {% for v in vendedores %}
+    <div class="card" style="margin-bottom:0.75rem;">
+      <div class="fila">
+        <div style="font-weight:600;">{{ v.nombre }}</div>
+        <div style="font-size:1rem;" class="estrella">
+          {% if v.calificacion == 0 %}
+            Sin calificación
+          {% else %}
+            {{ "%.1f"|format(v.calificacion) }} ★
+          {% endif %}
+        </div>
+      </div>
+      <div style="color:var(--gris); font-size:0.82rem; margin-top:0.25rem;">{{ v.productos|length }} producto(s) en menú</div>
+    </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}
