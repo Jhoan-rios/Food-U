@@ -18,3 +18,19 @@
     </div>
     {% endfor %}
   </div>
+
+
+
+     <div style="margin-top:2rem;">
+    <a href="{{ url_for('crear_pedido') }}" class="btn btn-primary" style="display:inline-block; width:auto;">Hacer pedido →</a>
+  </div>
+
+  {% else %}
+  <div class="card" style="text-align:center; padding:3rem;">
+    <div style="font-size:3rem; margin-bottom:1rem;">😕</div>
+    <h2>No hay productos disponibles</h2>
+    <p class="texto-gris">Los vendedores aún no han agregado productos o están cerrados.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
