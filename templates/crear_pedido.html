@@ -6,7 +6,32 @@
   <p class="subtitulo">Selecciona los productos que deseas pedir</p>
 
   {% if productos %}
-    <!-- El formulario se añadirá en el siguiente commit -->
+  <form method="POST" id="form-pedido">
+    <div class="card-grid" style="margin-bottom:1.5rem;">
+      {% for producto in productos %}
+      <label style="cursor:pointer; display:block; text-transform:none; letter-spacing:0; font-weight:normal;">
+        <div class="card" id="card-{{ producto.id }}" style="border:2px solid var(--borde); transition:all 0.15s; position:relative;">
+          <input type="checkbox" name="productos" value="{{ producto.id }}"
+                 style="position:absolute; top:1rem; right:1rem; width:20px; height:20px;"
+                 onchange="toggleCard({{ producto.id }})">
+          <div style="font-weight:600; font-size:1rem; padding-right:2rem; margin-bottom:0.3rem;">{{ producto.nombre }}</div>
+          <div style="color:var(--naranja); font-size:1.2rem; font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
+          <div style="color:var(--gris); font-size:0.82rem; margin-top:0.3rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="card" style="position:sticky; bottom:1rem;">
+      <div class="fila">
+        <div>
+          <div style="font-size:0.8rem; color:var(--gris);">Resumen</div>
+          <div id="resumen" style="font-weight:600; font-family:'Syne',sans-serif;">0 productos seleccionados</div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:auto;">Confirmar pedido →</button>
+      </div>
+    </div>
+  </form>
   {% else %}
   <div class="card" style="text-align:center; padding:3rem;">
     <div style="font-size:3rem; margin-bottom:1rem;">😕</div>
