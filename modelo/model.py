@@ -1,4 +1,4 @@
-from error import *
+
 
 class Producto:
     def __init__(self, producto_id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool):
