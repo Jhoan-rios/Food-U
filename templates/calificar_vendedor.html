@@ -49,5 +49,15 @@
     </div>
     {% endfor %}
   </div>
+
+  <script>
+    function seleccionarEstrellas(n) {
+      for (let i = 1; i <= 5; i++) {
+        const star = document.getElementById('star-' + i);
+        star.textContent = i <= n ? '★' : '☆';
+      }
+      document.querySelectorAll('input[name="puntuacion"]')[n-1].checked = true;
+    }
+  </script>
 </div>
 {% endblock %}
