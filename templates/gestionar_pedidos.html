@@ -52,6 +52,12 @@
       </form>
     </div>
     {% endfor %}
+  {% else %}
+    <div class="card" style="text-align:center; padding:3rem;">
+      <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
+      <h2>Sin pedidos activos</h2>
+      <p class="texto-gris">Cuando los clientes hagan pedidos de tus productos, aparecerán aquí.</p>
+    </div>
   {% endif %}
 </div>
 {% endblock %}
