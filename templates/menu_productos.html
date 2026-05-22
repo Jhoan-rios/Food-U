@@ -1,27 +1,4 @@
-{% extends "base.html" %}
-{% block titulo %}Menú{% endblock %}
-{% block contenido %}
-<div class="contenedor">
-  <h1>Menú del campus</h1>
-  <p class="subtitulo">Todos los productos disponibles ahora mismo</p>
-
-
-    {% if productos %}
-  <div class="card-grid">
-    {% for producto, vendedor_nombre in productos %}
-    <div class="card" style="position:relative;">
-      <span class="badge badge-verde" style="position:absolute; top:1rem; right:1rem;">Disponible</span>
-      <div style="font-weight:600; font-size:1rem; margin-bottom:0.25rem; padding-right:5rem;">{{ producto.nombre }}</div>
-      <div style="color:var(--naranja); font-size:1.3rem; font-weight:700; font-family:'Syne',sans-serif; margin-bottom:0.5rem;">${{ "%.2f"|format(producto.precio) }}</div>
-      <div style="color:var(--gris); font-size:0.82rem;">⏱ {{ producto.tiempo_preparacion }} min de preparación</div>
-      <div style="color:var(--gris); font-size:0.82rem; margin-top:0.2rem;">🏪 {{ vendedor_nombre }}</div>
-    </div>
-    {% endfor %}
-  </div>
-
-
-
-     <div style="margin-top:2rem;">
+<div style="margin-top:2rem;">
     <a href="{{ url_for('crear_pedido') }}" class="btn btn-primary" style="display:inline-block; width:auto;">Hacer pedido →</a>
   </div>
 
