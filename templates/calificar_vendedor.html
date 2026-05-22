@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}Calificar vendedor{% endblock %}
+{% block contenido %}
+<div class="contenedor-sm">
+  <h1>Calificar vendedor</h1>
+  <p class="subtitulo">Tu opinión ayuda a otros estudiantes</p>
+
+  <div class="card">
+    <form method="POST">
+      <div class="campo">
+        <label>Vendedor</label>
+        <select name="vendedor" required>
+          <option value="" disabled selected>Selecciona un vendedor</option>
+          {% for v in vendedores %}
+          <option value="{{ v.nombre }}">{{ v.nombre }} (⭐ {{ "%.1f"|format(v.calificacion) }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Enviar calificación</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
