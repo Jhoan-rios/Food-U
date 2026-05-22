@@ -2,6 +2,7 @@
 {% block titulo %}Registro vendedor{% endblock %}
 {% block contenido %}
 <div class="contenedor-sm">
+    <div style="margin-top:2rem;">
   <h1>Registrar local</h1>
     <p class="subtitulo">Empieza a vender en el campus</p>
 
@@ -21,6 +22,12 @@
 
 
         </form>
-</div>
-</div>
+    </div>
+    <p class="texto-centro texto-gris" style="margin-top:1rem; font-size:0.9rem;">
+        ¿Ya tienes cuenta?
+        <a href="{{ url_for('login_vendedor') }}" class="texto-naranja" style="text-decoration:none; font-weight:500;">Inicia sesión</a>
+    </p>
+    </div>
+    </div>
+
 {% endblock %}
