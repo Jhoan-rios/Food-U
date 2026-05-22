@@ -23,6 +23,28 @@
           <span class="badge badge-gris">{{ pedido.estado }}</span>
         {% endif %}
       </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th style="text-align:right;">Precio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in pedido.productos %}
+          <tr>
+            <td>{{ p.nombre }}</td>
+            <td style="text-align:right; font-weight:500;">${{ "%.2f"|format(p.precio) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--borde); display:flex; justify-content:space-between; align-items:center;">
+        <div style="color:var(--gris); font-size:0.85rem;">⏱ Tiempo estimado: {{ pedido.tiempo_estimado }} min</div>
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; color:var(--naranja);">Total: ${{ "%.2f"|format(pedido.total) }}</div>
+      </div>
     </div>
     {% endfor %}
   {% endif %}
