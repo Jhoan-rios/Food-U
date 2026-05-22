@@ -23,7 +23,7 @@ def get_usuario_actual():
         return sistema.buscar_usuario(nombre)
     return None
 
-def get_venvedor_actual():
+def get_vendedor_actual():
     nombre=session.get("vendedor")
     if nombre:
         return sistema.buscar_vendedor(nombre)
