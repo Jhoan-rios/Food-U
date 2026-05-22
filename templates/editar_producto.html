@@ -15,6 +15,15 @@
         <label>Precio ($)</label>
         <input type="number" name="precio" value="{{ producto.precio }}" step="0.01" min="0" required>
       </div>
+      <div class="campo">
+        <label>Tiempo de preparación (minutos)</label>
+        <input type="number" name="tiempo" value="{{ producto.tiempo_preparacion }}" min="1" required>
+      </div>
+      <label class="check-label">
+        <input type="checkbox" name="disponible" {% if producto.disponible %}checked{% endif %}>
+        Disponible para pedir ahora
+      </label>
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
     </form>
   </div>
 
