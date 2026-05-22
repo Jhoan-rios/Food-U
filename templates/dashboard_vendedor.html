@@ -33,5 +33,49 @@
       </div>
     </a>
   </div>
+
+  <div class="card">
+    <h2>Mi menú</h2>
+    {% if vendedor.productos %}
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Precio</th>
+          <th>Tiempo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in vendedor.productos %}
+        <tr>
+          <td style="font-weight:500;">{{ p.nombre }}</td>
+          <td style="color:var(--naranja); font-weight:600;">${{ "%.2f"|format(p.precio) }}</td>
+          <td style="color:var(--gris);">{{ p.tiempo_preparacion }} min</td>
+          <td>
+            {% if p.disponible %}
+              <span class="badge badge-verde">Disponible</span>
+            {% else %}
+              <span class="badge badge-rojo">No disponible</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display:flex; gap:0.5rem;">
+              <a href="{{ url_for('editar_producto', producto_id=p.id) }}" class="btn btn-outline btn-sm">Editar</a>
+              <a href="{{ url_for('eliminar_producto', producto_id=p.id) }}" class="btn btn-danger"
+                 onclick="return confirm('¿Eliminar {{ p.nombre }}?')">Eliminar</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div style="text-align:center; padding:2rem; color:var(--gris);">
+      <p>Aún no tienes productos. ¡Agrega tu primer plato!</p>
+    </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
