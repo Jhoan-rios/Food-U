@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block titulo %}Agregar producto{% endblock %}
+{% block contenido %}
+<div class="contenedor-sm">
+  <h1>Nuevo producto</h1>
+  <p class="subtitulo">Agrega un plato a tu menú</p>
+
+  <div style="margin-top:1rem; text-align:center;">
+    <a href="{{ url_for('dashboard_vendedor') }}" class="texto-gris" style="font-size:0.9rem; text-decoration:none;">← Volver a mi tienda</a>
+  </div>
+</div>
+{% endblock %}
