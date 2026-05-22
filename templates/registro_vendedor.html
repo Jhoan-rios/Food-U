@@ -2,9 +2,15 @@
 {% block titulo %}Registro vendedor{% endblock %}
 {% block contenido %}
 <div class="contenedor-sm">
-  <h1>Registrar local</h1><p class="subtitulo">Empieza a vender en el campus</p>
-<div class="card">
-  <form method="POST">
+  <h1>Registrar local</h1>
+    <p class="subtitulo">Empieza a vender en el campus</p>
+
+    <div class="card">
+        <form method="POST">
+            <div class="campo">
+                <label>Nombre del local</label>
+                <input type="text" name="nombre" placeholder="Ej: Fritanga de Juan" required>
+            </div>
   </form>
 </div>
 </div>
