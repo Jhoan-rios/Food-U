@@ -32,6 +32,37 @@
       </div>
     </div>
   </form>
+
+  <script>
+    const precios = { {% for p in productos %} {{ p.id }}: {{ p.precio }}, {% endfor %} };
+    const nombres = { {% for p in productos %} {{ p.id }}: "{{ p.nombre }}", {% endfor %} };
+
+    function toggleCard(id) {
+      const card = document.getElementById('card-' + id);
+      const cb = card.querySelector('input[type="checkbox"]');
+      if (cb.checked) {
+        card.style.borderColor = 'var(--naranja)';
+        card.style.background = '#fff8f2';
+      } else {
+        card.style.borderColor = 'var(--borde)';
+        card.style.background = 'white';
+      }
+      actualizarResumen();
+    }
+
+    function actualizarResumen() {
+      const checks = document.querySelectorAll('input[name="productos"]:checked');
+      let total = 0;
+      checks.forEach(c => total += precios[c.value]);
+      const resumen = document.getElementById('resumen');
+      if (checks.length === 0) {
+        resumen.textContent = '0 productos seleccionados';
+      } else {
+        resumen.textContent = checks.length + ' producto(s) — Total: $' + total.toFixed(2);
+      }
+    }
+  </script>
+
   {% else %}
   <div class="card" style="text-align:center; padding:3rem;">
     <div style="font-size:3rem; margin-bottom:1rem;">😕</div>
