@@ -27,6 +27,17 @@
       </div>
 
       <div style="color:var(--gris); font-size:0.85rem; margin-bottom:0.75rem;">👤 {{ pedido.usuario.nombre }}</div>
+
+      <div style="margin-bottom:0.75rem;">
+        {% for p in pedido.productos %}
+        <span style="display:inline-block; background:var(--crema); border-radius:6px; padding:0.25rem 0.6rem; font-size:0.82rem; margin:0.15rem;">{{ p.nombre }}</span>
+        {% endfor %}
+      </div>
+
+      <div class="fila" style="margin-bottom:1rem;">
+        <span style="color:var(--gris); font-size:0.85rem;">⏱ {{ pedido.tiempo_estimado }} min</span>
+        <span style="font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">${{ "%.2f"|format(pedido.total) }}</span>
+      </div>
     </div>
     {% endfor %}
   {% endif %}
