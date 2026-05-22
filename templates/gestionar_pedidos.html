@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block titulo %}Gestionar pedidos{% endblock %}
+{% block contenido %}
+<div class="contenedor">
+  <div class="fila" style="margin-bottom:1.5rem; align-items:flex-start;">
+    <div>
+      <h1>Pedidos activos</h1>
+      <p class="subtitulo">Congestión actual: <strong>{{ (congestion * 100)|int }}%</strong></p>
+    </div>
+    <a href="{{ url_for('dashboard_vendedor') }}" class="btn btn-outline" style="width:auto;">← Mi tienda</a>
+  </div>
+</div>
+{% endblock %}
