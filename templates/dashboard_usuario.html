@@ -7,7 +7,7 @@
     <p class="subtitulo">{{ usuario.correo }}</p>
   </div>
 
-  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem;">
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:1rem;">
     <div class="card" style="text-align:center; padding:1.25rem;">
       <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">{{ usuario.historial_pedidos|length }}</div>
       <div style="font-size:0.8rem; color:var(--gris); margin-top:0.25rem;">Pedidos realizados</div>
@@ -30,46 +30,69 @@
         <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem;">Calificar</div>
       </div>
     </a>
-      <a href="{{ url_for('ver_horario') }}" class="btn">
-  📅     Mi Horario
-        </a>
+    <a href="{{ url_for('ver_horario') }}" class="btn">
+      📅 Mi Horario
+    </a>
   </div>
 
-    {% if usuario %}
-<div id="banner-horario" style="display:none; padding:12px; border-radius:8px; margin-bottom:16px;"></div>
-<script>
-fetch("/api/horario/sugerencia")
-  .then(r => r.json())
-  .then(data => {
-    if (data.tiene_espacio) {
-      const b = document.getElementById("banner-horario");
-      b.style.display = "block";
-      b.style.background = data.urgente ? "#fff3cd" : "#d1e7dd";
-      b.textContent = data.mensaje;
-    }
-  });
-</script>
-{% endif %}
+  <!-- BANNER SUGERENCIA DE HORARIO -->
+  <div id="banner-horario" style="padding:14px 18px; border-radius:10px; margin-bottom:1.5rem;
+       font-size:0.9rem; display:flex; align-items:center; justify-content:space-between; gap:12px;
+       background:#e9ecef; border:1px solid #dee2e6; color:#6c757d;">
+    <span id="texto-banner-horario">📅 Cargando tu horario...</span>
+    <a href="{{ url_for('crear_pedido') }}" id="btn-preorden"
+       style="display:none; background:#28a745; color:white; padding:8px 14px;
+              border-radius:8px; text-decoration:none; font-weight:bold; white-space:nowrap;">
+      ¡Pre-ordenar ahora!
+    </a>
+  </div>
+  <style>
+    @keyframes pulso { 0%,100%{opacity:1} 50%{opacity:0.7} }
+  </style>
+  <script>
+    fetch("/api/horario/sugerencia")
+      .then(r => r.json())
+      .then(data => {
+        const banner = document.getElementById("banner-horario");
+        const texto  = document.getElementById("texto-banner-horario");
+        const btn    = document.getElementById("btn-preorden");
 
+        if (data.tiene_espacio) {
+          banner.style.background = data.urgente ? "#fff3cd" : "#d1e7dd";
+          banner.style.border     = data.urgente ? "1px solid #ffc107" : "1px solid #28a745";
+          banner.style.color      = data.urgente ? "#856404" : "#155724";
+          if (data.urgente) banner.style.animation = "pulso 1.5s infinite";
+          btn.style.display = "inline-block";
+        } else {
+          banner.style.background = "#e9ecef";
+          banner.style.border     = "1px solid #dee2e6";
+          banner.style.color      = "#6c757d";
+        }
 
+        texto.textContent = data.mensaje;
+      })
+      .catch(() => {
+        document.getElementById("texto-banner-horario").textContent = "📅 No se pudo cargar la sugerencia.";
+      });
+  </script>
 
   {% if recomendados %}
-   <div class="card">
-     <h2>✨ Recomendados para ti</h2>
-     <div class="card-grid">
-         {% for producto in recomendados %}
-          <div style="background:var(--crema); border-radius:12px; padding:1rem;">
+  <div class="card">
+    <h2>✨ Recomendados para ti</h2>
+    <div class="card-grid">
+      {% for producto in recomendados %}
+      <div style="background:var(--crema); border-radius:12px; padding:1rem;">
         <div style="font-weight:600; margin-bottom:0.25rem;">{{ producto.nombre }}</div>
         <div style="color:var(--naranja); font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
         <div style="color:var(--gris); font-size:0.8rem; margin-top:0.25rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
       </div>
       {% endfor %}
-     </div>
-       <div style="margin-top:1rem;">
+    </div>
+    <div style="margin-top:1rem;">
       <a href="{{ url_for('crear_pedido') }}" class="btn btn-warning" style="display:inline-block; width:auto;">Hacer pedido →</a>
-
+    </div>
   </div>
-   </div>
-   {% endif %}
- </div>
- {% endblock %}
+  {% endif %}
+
+</div>
+{% endblock %}
