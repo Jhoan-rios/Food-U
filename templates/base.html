@@ -89,6 +89,7 @@
         <a href="{{ url_for('menu_productos') }}">Menú</a>
         <a href="{{ url_for('crear_pedido') }}">Pedir</a>
         <a href="{{ url_for('historial_usuario') }}">Historial</a>
+       <a href="{{ url_for('chatbot') }}">🤖 Asistente</a>
         <a href="{{ url_for('logout_usuario') }}" class="btn-nav">Salir</a>
       {% elif session.get('vendedor') %}
         <a href="{{ url_for('dashboard_vendedor') }}">Mi tienda</a>
