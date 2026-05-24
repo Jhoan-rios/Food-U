@@ -9,7 +9,6 @@
   <form method="POST" id="form-pedido">
 
     {% for vendedor, productos in restaurantes %}
-    <!-- Sección por restaurante -->
     <div style="margin-bottom: 2rem;">
       <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem;
                   padding-bottom:0.5rem; border-bottom:2px solid var(--borde);">
@@ -33,7 +32,6 @@
         {% for producto in productos %}
         <div class="prod-card-pedido" id="card-{{ producto.id }}" onclick="toggleCard({{ producto.id }})">
 
-          <!-- Checkmark visual -->
           <div class="checkmark" id="check-{{ producto.id }}">✓</div>
 
           {% if producto.imagen %}
@@ -64,7 +62,6 @@
     </div>
     {% endfor %}
 
-    <!-- Resumen sticky -->
     <div id="barra-resumen" class="card" style="position:sticky; bottom:1rem; transition: all 0.2s;">
       <div class="fila" style="align-items:center;">
         <div>
@@ -152,8 +149,8 @@
 </style>
 
 <script>
-  const precios  = { {% for v, prods in restaurantes %}{% for p in prods %}{{ p.id }}: {{ p.precio }}, {% endfor %}{% endfor %} };
-  const tiempos  = { {% for v, prods in restaurantes %}{% for p in prods %}{{ p.id }}: {{ p.tiempo_preparacion }}, {% endfor %}{% endfor %} };
+  const precios = {{ precios_json | safe }};
+  const tiempos = {{ tiempos_json | safe }};
 
   function toggleCard(id) {
     const card = document.getElementById('card-' + id);
@@ -165,9 +162,9 @@
 
   function actualizarResumen() {
     const checks = document.querySelectorAll('input[name="productos"]:checked');
-    const btnConfirmar = document.getElementById('btn-confirmar');
-    const btnLimpiar   = document.getElementById('btn-limpiar');
-    const textoResumen = document.getElementById('resumen-texto');
+    const btnConfirmar  = document.getElementById('btn-confirmar');
+    const btnLimpiar    = document.getElementById('btn-limpiar');
+    const textoResumen  = document.getElementById('resumen-texto');
     const tiempoResumen = document.getElementById('resumen-tiempo');
 
     let total = 0;
@@ -178,4 +175,45 @@
     });
 
     if (checks.length === 0) {
-      textoResumen.textContent = '0 productos selecc
+      textoResumen.textContent = '0 productos seleccionados';
+      tiempoResumen.style.display = 'none';
+      btnConfirmar.disabled = true;
+      btnConfirmar.style.background = '#ccc';
+      btnConfirmar.style.cursor = 'not-allowed';
+      btnLimpiar.style.display = 'none';
+    } else {
+      textoResumen.textContent = checks.length + ' producto(s) — $' + total.toFixed(2);
+      tiempoResumen.textContent = '⏱ Listo en aprox. ' + maxTiempo + ' min';
+      tiempoResumen.style.display = 'block';
+      btnConfirmar.disabled = false;
+      btnConfirmar.style.background = '#FF5C00';
+      btnConfirmar.style.cursor = 'pointer';
+      btnLimpiar.style.display = 'inline-block';
+    }
+  }
+
+  function limpiarSeleccion() {
+    document.querySelectorAll('input[name="productos"]:checked').forEach(cb => {
+      cb.checked = false;
+      document.getElementById('card-' + cb.value).classList.remove('seleccionado');
+    });
+    actualizarResumen();
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const preselect = params.get('preselect');
+  if (preselect) {
+    const cb = document.getElementById('cb-' + preselect);
+    if (cb) {
+      cb.checked = true;
+      document.getElementById('card-' + preselect).classList.add('seleccionado');
+      actualizarResumen();
+      setTimeout(() => {
+        document.getElementById('card-' + preselect)
+          .scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 150);
+    }
+  }
+</script>
+
+{% endblock %}
