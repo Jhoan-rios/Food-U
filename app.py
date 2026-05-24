@@ -148,8 +148,23 @@ def dashboard_usuario():
     usuario = get_usuario_actual()
     if not usuario:
         return redirect(url_for("login_usuario"))
-    recomendados = sistema.recomendar_menu(usuario)
+
+    # Recomendados como tuplas (producto, vendedor_nombre)
+    todos = []
+    for v in sistema.vendedores:
+        for p in v.productos:
+            todos.append(p)
+    recomendados_raw = sistema.recomendador.recomendar(usuario, todos)
+
+    mapa_vendedor = {}
+    for v in sistema.vendedores:
+        for p in v.productos:
+            mapa_vendedor[p.id] = v.nombre
+
+    recomendados = [(p, mapa_vendedor.get(p.id, "")) for p in recomendados_raw]
+
     return render_template("dashboard_usuario.html", usuario=usuario, recomendados=recomendados)
+
 
 
 @app.route("/usuario/menu")
@@ -166,22 +181,26 @@ def menu_productos():
 
 
 @app.route("/usuario/pedido", methods=["GET", "POST"])
+@app.route("/usuario/pedido", methods=["GET", "POST"])
 def crear_pedido():
     global id_producto
     usuario = get_usuario_actual()
     if not usuario:
         return redirect(url_for("login_usuario"))
+
+    # Ahora es lista de tuplas (producto, vendedor_nombre)
     todos_disponibles = []
     for v in sistema.vendedores:
         for p in v.productos:
             if p.disponible:
-                todos_disponibles.append(p)
+                todos_disponibles.append((p, v.nombre))
+
     if request.method == "POST":
         ids_seleccionados = request.form.getlist("productos")
         seleccionados = []
         for id_str in ids_seleccionados:
             id_num = int(id_str)
-            for p in todos_disponibles:
+            for p, _ in todos_disponibles:
                 if p.id == id_num:
                     seleccionados.append(p)
         if not seleccionados:
@@ -192,15 +211,23 @@ def crear_pedido():
         guardar_datos(sistema, id_usuario, id_producto)
         flash(f"¡Pedido #{pedido.id} creado! Tu turno es el #{turno}. Total: ${pedido.total:.2f}", "success")
         return redirect(url_for("historial_usuario"))
-    return render_template("crear_pedido.html", usuario=usuario, productos=todos_disponibles)
 
+    return render_template("crear_pedido.html", usuario=usuario, productos=todos_disponibles)
 
 @app.route("/usuario/historial")
 def historial_usuario():
     usuario = get_usuario_actual()
     if not usuario:
         return redirect(url_for("login_usuario"))
-    return render_template("historial_usuario.html", usuario=usuario)
+
+    # Mapa producto_id -> vendedor_nombre para el historial
+    mapa_vendedor = {}
+    for v in sistema.vendedores:
+        for p in v.productos:
+            mapa_vendedor[p.id] = v.nombre
+
+    return render_template("historial_usuario.html", usuario=usuario, mapa_vendedor=mapa_vendedor)
+
 
 
 @app.route("/usuario/calificar", methods=["GET", "POST"])
