@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from flask import Flask
 import re
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modelo.model import Usuario, Vendedor, Producto, SistemaFoodU
 from modelo.persistencia import guardar_datos, cargar_datos
-from modelo.horario import Horario, Clase
+from modelo.horario1 import Horario, Clase
 import json as _json_persist
 import os
 import json
@@ -421,3 +423,166 @@ Si quiere algo económico, recomienda lo más barato."""
 
     except Exception as e:
         return json.dumps({"respuesta": "Lo siento, no puedo responder ahora. Intenta más tarde."}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+def get_horario_usuario(nombre: str) -> Horario:
+    """Obtiene o crea el horario de un usuario."""
+    if nombre not in horarios:
+        horarios[nombre] = Horario(nombre)
+    return horarios[nombre]
+
+
+@app.route("/usuario/horario")
+def ver_horario():
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+
+    horario = get_horario_usuario(usuario.nombre)
+    resumen = horario.resumen_semanal()
+
+    # Sugerencia en tiempo real
+    ahora = datetime.now()
+    dia_actual = ["lunes", "martes", "miércoles", "jueves", "viernes",
+                  "sábado", "domingo"][ahora.weekday()]
+    hora_actual = ahora.strftime("%H:%M")
+
+    sugerencia = None
+    if dia_actual in ["lunes", "martes", "miércoles", "jueves", "viernes"]:
+        sugerencia = horario.sugerencia_pedido_ahora(hora_actual, dia_actual)
+
+    return render_template(
+        "horario.html",
+        usuario=usuario,
+        horario=horario,
+        resumen=resumen,
+        sugerencia=sugerencia,
+        dias=["lunes", "martes", "miércoles", "jueves", "viernes"],
+    )
+
+
+# ─────────────────────────────────────────
+# AGREGAR CLASE AL HORARIO
+# ─────────────────────────────────────────
+
+@app.route("/usuario/horario/agregar", methods=["GET", "POST"])
+def agregar_clase():
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+
+    horario = get_horario_usuario(usuario.nombre)
+
+    if request.method == "POST":
+        nombre   = request.form["nombre"].strip()
+        dia      = request.form["dia"].strip().lower()
+        h_inicio = request.form["hora_inicio"].strip()
+        h_fin    = request.form["hora_fin"].strip()
+        salon    = request.form.get("salon", "").strip()
+
+        try:
+            clase = Clase(nombre, dia, h_inicio, h_fin, salon)
+            resultado = horario.agregar_clase(clase)
+            if "agregada" in resultado:
+                flash(resultado, "success")
+                # Persistir (integrar con guardar_datos si se desea)
+                guardar_horarios(horarios)
+            else:
+                flash(resultado, "error")
+        except Exception as e:
+            flash(f"Error: {str(e)}", "error")
+
+        return redirect(url_for("ver_horario"))
+
+    dias = ["lunes", "martes", "miércoles", "jueves", "viernes"]
+    return render_template("agregar_clase.html", usuario=usuario, dias=dias)
+
+
+# ─────────────────────────────────────────
+# ELIMINAR CLASE DEL HORARIO
+# ─────────────────────────────────────────
+
+@app.route("/usuario/horario/eliminar", methods=["POST"])
+def eliminar_clase():
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+
+    horario = get_horario_usuario(usuario.nombre)
+    nombre = request.form["nombre"].strip()
+    dia    = request.form["dia"].strip()
+
+    resultado = horario.eliminar_clase(nombre, dia)
+    flash(resultado, "success" if "eliminada" in resultado else "error")
+    guardar_horarios(horarios)
+    return redirect(url_for("ver_horario"))
+
+
+# ─────────────────────────────────────────
+# API: SUGERENCIA EN TIEMPO REAL (JSON)
+# ─────────────────────────────────────────
+
+@app.route("/api/horario/sugerencia")
+def api_sugerencia():
+    """Endpoint que el frontend puede consultar cada minuto via JS."""
+    import json as _json
+    usuario = get_usuario_actual()
+    if not usuario:
+        return _json.dumps({"error": "no autenticado"}), 401
+
+    horario = get_horario_usuario(usuario.nombre)
+    ahora = datetime.now()
+    dia_actual = ["lunes", "martes", "miércoles", "jueves", "viernes",
+                  "sábado", "domingo"][ahora.weekday()]
+    hora_actual = ahora.strftime("%H:%M")
+
+    if dia_actual not in ["lunes", "martes", "miércoles", "jueves", "viernes"]:
+        return _json.dumps({"tiene_espacio": False, "mensaje": "Hoy no hay clases 🎉"})
+
+    sug = horario.sugerencia_pedido_ahora(hora_actual, dia_actual)
+
+    respuesta = {
+        "tiene_espacio": sug["tiene_espacio"],
+        "mensaje": sug["mensaje"],
+        "urgente": sug["urgente"],
+        "minutos_faltan": sug["minutos_faltan"],
+    }
+    if sug["espacio"]:
+        esp = sug["espacio"]
+        respuesta["espacio"] = {
+            "inicio": esp.inicio.strftime("%H:%M"),
+            "fin": esp.fin.strftime("%H:%M"),
+            "duracion": esp.duracion,
+            "modo": esp.modo,
+            "punto_venta": esp.punto_venta_sugerido,
+        }
+
+    return _json.dumps(respuesta, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+
+# ─────────────────────────────────────────
+# CARGA / GUARDADO DE HORARIOS (persistencia)
+# ─────────────────────────────────────────
+
+import json as _json_persist
+import os
+
+HORARIOS_FILE = "horarios.json"
+
+
+def cargar_horarios() -> dict[str, Horario]:
+    """Carga los horarios desde horarios.json al iniciar la app."""
+    if not os.path.exists(HORARIOS_FILE):
+        return {}
+    try:
+        with open(HORARIOS_FILE, "r", encoding="utf-8") as f:
+            data = _json_persist.load(f)
+        return {nombre: Horario.from_dict(d) for nombre, d in data.items()}
+    except Exception:
+        return {}
+
+
+def guardar_horarios(horarios_dict: dict[str, Horario]):
+    """Guarda todos los horarios en horarios.json."""
+    data = {nombre: h.to_dict() for nombre, h in horarios_dict.items()}
+    with open(HORARIOS_FILE, "w", encoding="utf-8") as f:
+        _json_persist.dump(data, f, ensure_ascii=False, indent=2)
