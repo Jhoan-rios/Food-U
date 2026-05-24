@@ -1,8 +1,10 @@
 {% extends "base.html" %}
-{% block content %}
+{% block titulo %}Mi Horario{% endblock %}
+{% block contenido %}
 
 <div class="horario-container">
 
+  <!-- BANNER DE SUGERENCIA EN TIEMPO REAL -->
   <div id="banner-sugerencia" class="banner {% if sugerencia and sugerencia.tiene_espacio %}
     {% if sugerencia.urgente %}banner-urgente{% else %}banner-activo{% endif %}
   {% else %}banner-inactivo{% endif %}">
@@ -25,16 +27,19 @@
     {% endif %}
   </div>
 
+  <!-- ENCABEZADO -->
   <div class="horario-header">
     <h2>📚 Mi Horario — {{ usuario.nombre }}</h2>
     <a href="{{ url_for('agregar_clase') }}" class="btn-agregar">+ Agregar clase</a>
   </div>
 
+  <!-- GRILLA SEMANAL -->
   <div class="grilla-semanal">
     {% for dia in dias %}
     <div class="columna-dia">
       <h3 class="dia-titulo">{{ dia | capitalize }}</h3>
 
+      <!-- Clases del día -->
       {% set clases_dia = horario.clases_del_dia(dia) %}
       {% if clases_dia %}
         {% for clase in clases_dia %}
@@ -55,6 +60,7 @@
         <p class="sin-clases">Sin clases</p>
       {% endif %}
 
+      <!-- Espacios libres del día -->
       {% set espacios = horario.espacios_libres_dia(dia) %}
       {% for espacio in espacios %}
         {% if espacio.alcanza_para_recoger %}
@@ -76,6 +82,7 @@
     {% endfor %}
   </div>
 
+  <!-- RESUMEN SEMANAL -->
   <div class="resumen-semanal">
     <h3>📊 Resumen de la semana</h3>
     <div class="resumen-grid">
@@ -96,6 +103,7 @@
 
 </div>
 
+<!-- CSS inline para esta vista (o pásalo a static/css/horario.css) -->
 <style>
 .horario-container { max-width: 1100px; margin: 0 auto; padding: 20px; font-family: sans-serif; }
 
@@ -163,6 +171,7 @@
 }
 </style>
 
+<!-- Script: actualizar sugerencia cada 60 segundos -->
 <script>
 function actualizarSugerencia() {
   fetch("/api/horario/sugerencia")
