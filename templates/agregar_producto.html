@@ -17,7 +17,6 @@
     max-width: 520px;
   }
 
-  /* Encabezado */
   .prod-header {
     margin-bottom: 2rem;
   }
@@ -44,7 +43,6 @@
     font-size: 0.9rem;
   }
 
-  /* Card del formulario */
   .prod-card {
     background: white;
     border: 1px solid var(--borde);
@@ -53,7 +51,6 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.05);
   }
 
-  /* Fila de dos columnas */
   .campo-fila {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -73,7 +70,6 @@
     letter-spacing: 0.02em;
   }
 
-  /* Wrapper para inputs con icono/prefijo */
   .input-wrap {
     position: relative;
     display: flex;
@@ -116,11 +112,31 @@
   }
   .campo-grupo input::placeholder { color: #c5bdb8; }
 
-  /* Con prefijo */
   .has-prefix input { padding-left: 2rem; }
   .has-suffix input { padding-right: 3.5rem; }
 
-  /* Toggle disponible */
+  .campo-grupo input[type="file"] {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: white;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .preview-imagen {
+    display: none;
+    width: 100%;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    border: 1px solid var(--borde);
+  }
+
   .toggle-grupo {
     display: flex;
     align-items: center;
@@ -143,7 +159,6 @@
     color: var(--gris);
   }
 
-  /* Switch CSS */
   .switch {
     position: relative;
     width: 44px;
@@ -172,7 +187,6 @@
   .switch input:checked + .switch-slider { background: var(--naranja); }
   .switch input:checked + .switch-slider::before { transform: translateX(20px); }
 
-  /* Botón */
   .btn-prod {
     width: 100%;
     padding: 0.95rem;
@@ -203,24 +217,20 @@
 <div class="prod-page">
   <div class="prod-box">
 
-    <!-- Encabezado -->
     <div class="prod-header">
       <a href="{{ url_for('dashboard_vendedor') }}" class="prod-back">← Volver a mi tienda</a>
       <h1>Nuevo producto</h1>
       <p>Agrega un plato a tu menú</p>
     </div>
 
-    <!-- Formulario -->
     <div class="prod-card">
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
 
-        <!-- Nombre (fila completa) -->
         <div class="campo-grupo">
           <label for="nombre">Nombre del producto</label>
           <input type="text" id="nombre" name="nombre" placeholder="Ej: Bandeja paisa" required autofocus>
         </div>
 
-        <!-- Precio y Tiempo (fila partida) -->
         <div class="campo-fila">
           <div class="campo-grupo">
             <label for="precio">Precio</label>
@@ -239,7 +249,14 @@
           </div>
         </div>
 
-        <!-- Toggle disponible -->
+        <div class="campo-grupo">
+          <label for="imagen">Imagen del producto <span style="font-weight:normal; color:#aaa;">(opcional)</span></label>
+          <input type="file" id="imagen" name="imagen" accept="image/*"
+                 onchange="previewImg(this)">
+          <img id="preview" class="preview-imagen" alt="Vista previa">
+          <small style="color:#aaa;">Formatos: JPG, PNG, WEBP</small>
+        </div>
+
         <label class="toggle-grupo">
           <div class="toggle-info">
             <span class="toggle-label">Disponible para pedir ahora</span>
@@ -258,4 +275,18 @@
 
   </div>
 </div>
+
+<script>
+function previewImg(input) {
+  const preview = document.getElementById("preview");
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
 {% endblock %}
