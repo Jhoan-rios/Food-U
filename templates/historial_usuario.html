@@ -34,7 +34,24 @@
         <tbody>
           {% for p in pedido.productos %}
           <tr>
-            <td>{{ p.nombre }}</td>
+            <td>
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                {% if p.imagen %}
+                  <img src="{{ url_for('static', filename='uploads/' + p.imagen) }}"
+                       alt="{{ p.nombre }}"
+                       style="width:40px; height:40px; object-fit:cover; border-radius:6px; flex-shrink:0;"
+                       onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                  <div style="display:none; width:40px; height:40px; border-radius:6px;
+                              background:var(--borde); align-items:center; justify-content:center;
+                              font-size:1rem; flex-shrink:0;">🍽️</div>
+                {% else %}
+                  <div style="display:flex; width:40px; height:40px; border-radius:6px;
+                              background:var(--borde); align-items:center; justify-content:center;
+                              font-size:1rem; flex-shrink:0;">🍽️</div>
+                {% endif %}
+                {{ p.nombre }}
+              </div>
+            </td>
             <td style="text-align:right; font-weight:500;">${{ "%.2f"|format(p.precio) }}</td>
           </tr>
           {% endfor %}
@@ -52,7 +69,7 @@
       <div style="font-size:3rem; margin-bottom:1rem;">🍽️</div>
       <h2>Aún no tienes pedidos</h2>
       <p class="texto-gris">Haz tu primer pedido ahora mismo.</p>
-      <a href="{{ url_for('crear_pedido') }}" class="btn" style="margin-top:1rem; display:inline-block; width:auto; background: #FF5C00; color:#fff"">Hacer pedido →</a>
+      <a href="{{ url_for('crear_pedido') }}" class="btn" style="margin-top:1rem; display:inline-block; width:auto; background:#FF5C00; color:#fff;">Hacer pedido →</a>
     </div>
   {% endif %}
 </div>
