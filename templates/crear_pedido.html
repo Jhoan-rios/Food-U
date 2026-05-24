@@ -10,13 +10,33 @@
     <div class="card-grid" style="margin-bottom:1.5rem;">
       {% for producto in productos %}
       <label style="cursor:pointer; display:block; text-transform:none; letter-spacing:0; font-weight:normal;">
-        <div class="card" id="card-{{ producto.id }}" style="border:2px solid var(--borde); transition:all 0.15s; position:relative;">
+        <div class="card" id="card-{{ producto.id }}" style="border:2px solid var(--borde); transition:all 0.15s; position:relative; padding:0; overflow:hidden;">
+
+          <!-- IMAGEN -->
+          {% if producto.imagen %}
+            <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
+                 alt="{{ producto.nombre }}"
+                 style="width:100%; height:140px; object-fit:cover; display:block;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="display:none; width:100%; height:140px; background:var(--borde);
+                        align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
+          {% else %}
+            <div style="display:flex; width:100%; height:140px; background:var(--borde);
+                        align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
+          {% endif %}
+
+          <!-- CHECKBOX -->
           <input type="checkbox" name="productos" value="{{ producto.id }}"
-                 style="position:absolute; top:1rem; right:1rem; width:20px; height:20px;"
+                 style="position:absolute; top:0.75rem; right:0.75rem; width:20px; height:20px;"
                  onchange="toggleCard({{ producto.id }})">
-          <div style="font-weight:600; font-size:1rem; padding-right:2rem; margin-bottom:0.3rem;">{{ producto.nombre }}</div>
-          <div style="color:var(--naranja); font-size:1.2rem; font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
-          <div style="color:var(--gris); font-size:0.82rem; margin-top:0.3rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
+
+          <!-- INFO -->
+          <div style="padding:0.9rem 1rem;">
+            <div style="font-weight:600; font-size:1rem; padding-right:1.5rem; margin-bottom:0.3rem;">{{ producto.nombre }}</div>
+            <div style="color:var(--naranja); font-size:1.2rem; font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
+            <div style="color:var(--gris); font-size:0.82rem; margin-top:0.3rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
+          </div>
+
         </div>
       </label>
       {% endfor %}
@@ -28,14 +48,13 @@
           <div style="font-size:0.8rem; color:var(--gris);">Resumen</div>
           <div id="resumen" style="font-weight:600; font-family:'Syne',sans-serif;">0 productos seleccionados</div>
         </div>
-        <button type="submit" class="btn" style="width:auto; background: #FF5C00; color:#fff">Confirmar pedido →</button>
+        <button type="submit" class="btn" style="width:auto; background:#FF5C00; color:#fff;">Confirmar pedido →</button>
       </div>
     </div>
   </form>
 
   <script>
     const precios = { {% for p in productos %} {{ p.id }}: {{ p.precio }}, {% endfor %} };
-    const nombres = { {% for p in productos %} {{ p.id }}: "{{ p.nombre }}", {% endfor %} };
 
     function toggleCard(id) {
       const card = document.getElementById('card-' + id);
