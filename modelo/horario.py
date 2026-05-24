@@ -60,3 +60,60 @@ class Clase:
             salon=data.get("salon", ""),
         )
 
+class EspacioLibre:
+
+    def __init__(self, dia: str, inicio: time, fin: time, clase_siguiente: "Clase | None" = None):
+        self.dia = dia
+        self.inicio = inicio
+        self.fin = fin
+        self.clase_siguiente = clase_siguiente
+        self.duracion = self._calcular_duracion()
+
+    def _calcular_duracion(self) -> int:
+        i = datetime.combine(datetime.today(), self.inicio)
+        f = datetime.combine(datetime.today(), self.fin)
+        return int((f - i).total_seconds() / 60)
+
+    @property
+    def alcanza_para_comer(self) -> bool:
+        return self.duracion >= 15
+
+    @property
+    def alcanza_para_recoger(self) -> bool:
+        return self.duracion >= 5
+
+    @property
+    def hora_preorden(self) -> time:
+        dt = datetime.combine(datetime.today(), self.inicio) - timedelta(minutes=20)
+        return dt.time()
+
+    @property
+    def punto_venta_sugerido(self) -> str:
+        if self.clase_siguiente and self.clase_siguiente.salon:
+            salon = self.clase_siguiente.salon
+            for key, cafeteria in EDIFICIOS.items():
+                if key in salon:
+                    return cafeteria
+        return EDIFICIOS["default"]
+
+    @property
+    def modo(self) -> str:
+        if self.duracion >= 30:
+            return "comer_tranquilo"
+        elif self.duracion >= 15:
+            return "comer_rapido"
+        elif self.duracion >= 5:
+            return "solo_recoger"
+        else:
+            return "sin_tiempo"
+
+    def descripcion_modo(self) -> str:
+        descripciones = {
+            "comer_tranquilo": "🍽️ Tienes tiempo suficiente para comer tranquilo.",
+            "comer_rapido":    "⚡ Tiempo justo — mejor pre-ordena para que esté listo.",
+            "solo_recoger":    "🏃 Solo alcanzas a recoger. Pre-ordena ya.",
+            "sin_tiempo":      "❌ No hay tiempo suficiente para pedir.",
+        }
+        return descripciones[self.modo]
+
+
