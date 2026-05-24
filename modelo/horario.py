@@ -187,3 +187,63 @@ class Horario:
         if not espacios:
             return None
         return max(espacios, key=lambda e: e.duracion)
+
+    def sugerencia_pedido_ahora(self, hora_actual: str, dia_actual: str) -> dict:
+        hora_dt = datetime.strptime(hora_actual, "%H:%M").time()
+        espacios = self.espacios_libres_dia(dia_actual)
+
+        for espacio in espacios:
+            inicio_dt = datetime.combine(datetime.today(), espacio.inicio)
+            ahora_dt = datetime.combine(datetime.today(), hora_dt)
+            minutos_hasta_inicio = int((inicio_dt - ahora_dt).total_seconds() / 60)
+
+            if 0 <= minutos_hasta_inicio <= 30 and espacio.alcanza_para_recoger and espacio.duracion < 180:
+                return {
+                    "tiene_espacio": True,
+                    "espacio": espacio,
+                    "minutos_faltan": minutos_hasta_inicio,
+                    "urgente": minutos_hasta_inicio <= 10,
+                    "mensaje": (
+                        f"⏰ En {minutos_hasta_inicio} min tienes {espacio.duracion} min libres. "
+                        f"{espacio.descripcion_modo()} "
+                        f"Punto sugerido: {espacio.punto_venta_sugerido.title()}."
+                    )
+                }
+
+        return {
+            "tiene_espacio": False,
+            "espacio": None,
+            "minutos_faltan": None,
+            "urgente": False,
+            "mensaje": "No hay espacios libres próximos en tu horario.",
+        }
+
+    def resumen_semanal(self) -> dict:
+        resumen = {}
+        for dia in DIAS:
+            espacios = self.espacios_libres_dia(dia)
+            utiles = [e for e in espacios if e.alcanza_para_recoger]
+            resumen[dia] = {
+                "total_espacios": len(utiles),
+                "mejor_espacio": self.mejor_espacio_para_pedir(dia),
+                "clases": len(self._clases[dia]),
+            }
+        return resumen
+
+    def to_dict(self) -> dict:
+        return {
+            "usuario_nombre": self.usuario_nombre,
+            "clases": {
+                dia: [c.to_dict() for c in clases]
+                for dia, clases in self._clases.items()
+            }
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Horario":
+        h = cls(data["usuario_nombre"])
+        for dia, lista in data.get("clases", {}).items():
+            for c_data in lista:
+                h._clases[dia].append(Clase.from_dict(c_data))
+            h._clases[dia].sort(key=lambda c: c.hora_inicio)
+        return h
