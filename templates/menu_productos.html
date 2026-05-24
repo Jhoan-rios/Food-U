@@ -8,18 +8,38 @@
   {% if productos %}
   <div class="card-grid">
     {% for producto, vendedor_nombre in productos %}
-    <div class="card" style="position:relative;">
-      <span class="badge badge-verde" style="position:absolute; top:1rem; right:1rem;">Disponible</span>
-      <div style="font-weight:600; font-size:1rem; margin-bottom:0.25rem; padding-right:5rem;">{{ producto.nombre }}</div>
-      <div style="color:var(--naranja); font-size:1.3rem; font-weight:700; font-family:'Syne',sans-serif; margin-bottom:0.5rem;">${{ "%.2f"|format(producto.precio) }}</div>
-      <div style="color:var(--gris); font-size:0.82rem;">⏱ {{ producto.tiempo_preparacion }} min de preparación</div>
-      <div style="color:var(--gris); font-size:0.82rem; margin-top:0.2rem;">🏪 {{ vendedor_nombre }}</div>
+    <div class="card" style="position:relative; padding:0; overflow:hidden;">
+
+      <!-- IMAGEN -->
+      {% if producto.imagen %}
+        <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
+             alt="{{ producto.nombre }}"
+             style="width:100%; height:140px; object-fit:cover; display:block;"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div style="display:none; width:100%; height:140px; background:var(--borde);
+                    align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
+      {% else %}
+        <div style="display:flex; width:100%; height:140px; background:var(--borde);
+                    align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
+      {% endif %}
+
+      <!-- BADGE -->
+      <span class="badge badge-verde" style="position:absolute; top:0.75rem; right:0.75rem;">Disponible</span>
+
+      <!-- INFO -->
+      <div style="padding:0.9rem 1rem;">
+        <div style="font-weight:600; font-size:1rem; margin-bottom:0.25rem;">{{ producto.nombre }}</div>
+        <div style="color:var(--naranja); font-size:1.3rem; font-weight:700; font-family:'Syne',sans-serif; margin-bottom:0.5rem;">${{ "%.2f"|format(producto.precio) }}</div>
+        <div style="color:var(--gris); font-size:0.82rem;">⏱ {{ producto.tiempo_preparacion }} min de preparación</div>
+        <div style="color:var(--gris); font-size:0.82rem; margin-top:0.2rem;">🏪 {{ vendedor_nombre }}</div>
+      </div>
+
     </div>
     {% endfor %}
   </div>
 
   <div style="margin-top:2rem;">
-    <a href="{{ url_for('crear_pedido') }}" class="btn " style="display:inline-block; width:auto; background: #FF5C00; color:#fff">Hacer pedido →</a>
+    <a href="{{ url_for('crear_pedido') }}" class="btn" style="display:inline-block; width:auto; background:#FF5C00; color:#fff;">Hacer pedido →</a>
   </div>
 
   {% else %}
@@ -31,4 +51,3 @@
   {% endif %}
 </div>
 {% endblock %}
-
