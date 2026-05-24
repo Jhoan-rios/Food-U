@@ -1,34 +1,201 @@
 {% extends "base.html" %}
 {% block titulo %}Editar producto{% endblock %}
+
+{% block estilos %}
+<style>
+  .prod-page {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    background: var(--crema);
+  }
+  .prod-box { width: 100%; max-width: 520px; }
+  .prod-header { margin-bottom: 2rem; }
+  .prod-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--gris);
+    font-size: 0.82rem;
+    text-decoration: none;
+    margin-bottom: 1.25rem;
+    transition: color 0.15s;
+  }
+  .prod-back:hover { color: var(--oscuro); }
+  .prod-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--oscuro);
+    margin-bottom: 0.25rem;
+  }
+  .prod-header p { color: var(--gris); font-size: 0.9rem; }
+
+  .prod-card {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  }
+  .campo-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.1rem;
+  }
+  .campo-grupo label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--oscuro);
+    letter-spacing: 0.02em;
+  }
+  .input-wrap { position: relative; display: flex; align-items: center; }
+  .input-prefix {
+    position: absolute; left: 0.9rem;
+    color: var(--gris); font-size: 0.9rem; font-weight: 500;
+    pointer-events: none;
+  }
+  .input-suffix {
+    position: absolute; right: 0.9rem;
+    color: var(--gris); font-size: 0.8rem;
+    pointer-events: none;
+  }
+  .campo-grupo input[type="text"],
+  .campo-grupo input[type="number"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--oscuro);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .campo-grupo input:focus {
+    border-color: var(--naranja);
+    box-shadow: 0 0 0 3px rgba(255,92,0,0.1);
+  }
+  .has-prefix input { padding-left: 2rem; }
+  .has-suffix input { padding-right: 3.5rem; }
+
+  .toggle-grupo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9f5f2;
+    border: 1.5px solid var(--borde);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+  }
+  .toggle-info { display: flex; flex-direction: column; gap: 0.15rem; }
+  .toggle-label { font-size: 0.9rem; font-weight: 600; color: var(--oscuro); }
+  .toggle-sub { font-size: 0.75rem; color: var(--gris); }
+  .switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch-slider {
+    position: absolute; inset: 0;
+    background: #ddd; border-radius: 999px;
+    transition: background 0.25s; cursor: pointer;
+  }
+  .switch-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    left: 3px; top: 3px;
+    background: white; border-radius: 50%;
+    transition: transform 0.25s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .switch input:checked + .switch-slider { background: var(--naranja); }
+  .switch input:checked + .switch-slider::before { transform: translateX(20px); }
+
+  .btn-prod {
+    width: 100%;
+    padding: 0.95rem;
+    background: var(--oscuro);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(26,16,8,0.2);
+  }
+  .btn-prod:hover { background: #2e2010; transform: translateY(-1px); }
+
+  @media (max-width: 500px) {
+    .campo-fila { grid-template-columns: 1fr; }
+    .prod-card { padding: 1.5rem; }
+  }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<div class="contenedor-sm">
-  <h1>Editar producto</h1>
-  <p class="subtitulo">Modifica los datos de {{ producto.nombre }}</p>
+<div class="prod-page">
+  <div class="prod-box">
 
-  <div class="card">
-    <form method="POST">
-      <div class="campo">
-        <label>Nombre del producto</label>
-        <input type="text" name="nombre" value="{{ producto.nombre }}" required>
-      </div>
-      <div class="campo">
-        <label>Precio ($)</label>
-        <input type="number" name="precio" value="{{ producto.precio }}" step="0.01" min="0" required>
-      </div>
-      <div class="campo">
-        <label>Tiempo de preparación (minutos)</label>
-        <input type="number" name="tiempo" value="{{ producto.tiempo_preparacion }}" min="1" required>
-      </div>
-      <label class="check-label">
-        <input type="checkbox" name="disponible" {% if producto.disponible %}checked{% endif %}>
-        Disponible para pedir ahora
-      </label>
-      <button type="submit" class="btn btn-primary">Guardar cambios</button>
-    </form>
-  </div>
+    <div class="prod-header">
+      <a href="{{ url_for('dashboard_vendedor') }}" class="prod-back">← Volver sin guardar</a>
+      <h1>Editar producto</h1>
+      <p>Modifica los datos de <strong>{{ producto.nombre }}</strong></p>
+    </div>
 
-  <div style="margin-top:1rem; text-align:center;">
-    <a href="{{ url_for('dashboard_vendedor') }}" class="texto-gris" style="font-size:0.9rem; text-decoration:none;">← Volver sin guardar</a>
+    <div class="prod-card">
+      <form method="POST">
+
+        <div class="campo-grupo">
+          <label for="nombre">Nombre del producto</label>
+          <input type="text" id="nombre" name="nombre" value="{{ producto.nombre }}" required autofocus>
+        </div>
+
+        <div class="campo-fila">
+          <div class="campo-grupo">
+            <label for="precio">Precio</label>
+            <div class="input-wrap has-prefix has-suffix">
+              <span class="input-prefix">$</span>
+              <input type="number" id="precio" name="precio" value="{{ producto.precio }}" step="0.01" min="0" required>
+              <span class="input-suffix">COP</span>
+            </div>
+          </div>
+          <div class="campo-grupo">
+            <label for="tiempo">Tiempo de preparación</label>
+            <div class="input-wrap has-suffix">
+              <input type="number" id="tiempo" name="tiempo" value="{{ producto.tiempo_preparacion }}" min="1" required>
+              <span class="input-suffix">min</span>
+            </div>
+          </div>
+        </div>
+
+        <label class="toggle-grupo">
+          <div class="toggle-info">
+            <span class="toggle-label">Disponible para pedir ahora</span>
+            <span class="toggle-sub">Los clientes podrán ver y ordenar este producto</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" name="disponible" {% if producto.disponible %}checked{% endif %}>
+            <span class="switch-slider"></span>
+          </label>
+        </label>
+
+        <button type="submit" class="btn-prod">Guardar cambios →</button>
+
+      </form>
+    </div>
+
   </div>
 </div>
 {% endblock %}
