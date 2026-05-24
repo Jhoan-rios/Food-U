@@ -82,12 +82,46 @@
       });
   </script>
 
+  <!-- RESTAURANTE CERCANO SEGÚN HORARIO -->
+  {% if restaurante_cercano %}
+  <div class="card" style="margin-bottom:1.5rem; border-color:var(--naranja);">
+    <div style="font-size:0.75rem; font-weight:600; color:var(--naranja); letter-spacing:0.05em; margin-bottom:0.75rem;">📍 CERCA DE TU PRÓXIMA CLASE</div>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      {% if restaurante_cercano.logo %}
+        <img src="{{ url_for('static', filename='uploads/' + restaurante_cercano.logo) }}"
+             alt="{{ restaurante_cercano.nombre }}"
+             style="width:60px; height:60px; border-radius:12px; object-fit:cover; border:1px solid var(--borde);"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div style="display:none; width:60px; height:60px; border-radius:12px; background:var(--borde);
+                    align-items:center; justify-content:center; font-size:1.5rem;">🏪</div>
+      {% else %}
+        <div style="display:flex; width:60px; height:60px; border-radius:12px; background:var(--borde);
+                    align-items:center; justify-content:center; font-size:1.5rem;">🏪</div>
+      {% endif %}
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem;">{{ restaurante_cercano.nombre }}</div>
+        {% if restaurante_cercano.ubicacion %}
+        <div style="color:var(--gris); font-size:0.8rem; margin-top:0.15rem;">📍 {{ restaurante_cercano.ubicacion }}</div>
+        {% endif %}
+        {% if restaurante_cercano.calificacion > 0 %}
+        <div style="color:var(--gris); font-size:0.8rem;">⭐ {{ "%.1f"|format(restaurante_cercano.calificacion) }}</div>
+        {% endif %}
+      </div>
+      <a href="{{ url_for('crear_pedido') }}"
+         style="margin-left:auto; background:var(--naranja); color:white; padding:8px 14px;
+                border-radius:8px; text-decoration:none; font-weight:bold; font-size:0.85rem; white-space:nowrap;">
+        Pedir aquí →
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
   <!-- RECOMENDADOS -->
   {% if recomendados %}
   <div class="card">
     <h2>✨ Recomendados para ti</h2>
     <div class="card-grid">
-      {% for producto, vendedor_nombre in recomendados %}
+      {% for producto, vendedor in recomendados %}
       <div class="prod-card-rec">
         {% if producto.imagen %}
           <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
@@ -99,7 +133,9 @@
         {% endif %}
         <div class="prod-info">
           <div style="font-weight:600; margin-bottom:0.2rem;">{{ producto.nombre }}</div>
-          <div style="color:var(--gris); font-size:0.78rem; margin-bottom:0.25rem;">🏪 {{ vendedor_nombre }}</div>
+          {% if vendedor %}
+          <div style="color:var(--gris); font-size:0.78rem; margin-bottom:0.25rem;">🏪 {{ vendedor.nombre }}</div>
+          {% endif %}
           <div style="color:var(--naranja); font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
           <div style="color:var(--gris); font-size:0.8rem; margin-top:0.25rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
         </div>
