@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width: 480px; margin: 40px auto; padding: 24px;
+            background: #f8f9fa; border-radius: 12px; font-family: sans-serif;">
+
+  <h2 style="margin: 0 0 20px 0;">📖 Agregar clase al horario</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div style="padding: 10px; border-radius: 6px; margin-bottom: 12px;
+                  background: {% if category == 'success' %}#d1e7dd{% else %}#f8d7da{% endif %};
+                  color: {% if category == 'success' %}#0f5132{% else %}#842029{% endif %};">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST">
+
+    <div style="margin-bottom: 14px;">
+      <label style="display:block; font-weight:bold; margin-bottom:4px;">Nombre de la materia</label>
+      <input type="text" name="nombre" placeholder="Ej: Cálculo II" required
+             style="width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="display:block; font-weight:bold; margin-bottom:4px;">Día</label>
+      <select name="dia" required
+              style="width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px;">
+        {% for dia in dias %}
+          <option value="{{ dia }}">{{ dia | capitalize }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+      <div>
+        <label style="display:block; font-weight:bold; margin-bottom:4px;">Hora inicio</label>
+        <input type="time" name="hora_inicio" required
+               style="width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="display:block; font-weight:bold; margin-bottom:4px;">Hora fin</label>
+        <input type="time" name="hora_fin" required
+               style="width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label style="display:block; font-weight:bold; margin-bottom:4px;">
+        Salón / Edificio <span style="font-weight:normal; color:#888;">(opcional)</span>
+      </label>
+      <input type="text" name="salon" placeholder="Ej: Bloque 3"
+             style="width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+      <small style="color:#888;">Se usa para sugerir la cafetería más cercana.</small>
+    </div>
+
+    <div style="display:flex; gap:10px;">
+      <button type="submit"
+              style="flex:1; background:#007bff; color:white; border:none;
+                     padding:10px; border-radius:8px; font-size:15px; cursor:pointer; font-weight:bold;">
+        Agregar clase
+      </button>
+      <a href="{{ url_for('ver_horario') }}"
+         style="flex:1; background:#6c757d; color:white; border:none; text-decoration:none;
+                padding:10px; border-radius:8px; font-size:15px; text-align:center; font-weight:bold;">
+        Cancelar
+      </a>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}
