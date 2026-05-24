@@ -31,10 +31,10 @@
         <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem;">Calificar</div>
       </div>
     </a>
-    <a href="{{ url_for('ver_horario') }}" style="text-decoration:none;">
-      <div class="card" style="text-align:center; padding:1.25rem; cursor:pointer;">
+    <a href="{{ url_for('ver_horario') }}" style="text-decoration:none; max-width:110px;">
+      <div class="card" style="text-align:center; padding:1.25rem 0.6rem; cursor:pointer; height:100%;">
         <div style="font-size:1.8rem;">📅</div>
-        <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem;">Mi horario</div>
+        <div style="font-size:0.8rem; font-weight:500; margin-top:0.25rem;">Mi horario</div>
       </div>
     </a>
   </div>
@@ -52,31 +52,10 @@
   </div>
   <style>
     @keyframes pulso { 0%,100%{opacity:1} 50%{opacity:0.7} }
-
-    .prod-card-rec {
-      background: var(--crema);
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .prod-card-rec img {
-      width: 100%;
-      height: 130px;
-      object-fit: cover;
-    }
-    .prod-card-rec .prod-placeholder {
-      width: 100%;
-      height: 130px;
-      background: var(--borde);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-    }
-    .prod-card-rec .prod-info {
-      padding: 0.75rem 1rem;
-    }
+    .prod-card-rec { background:var(--crema); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+    .prod-card-rec img { width:100%; height:130px; object-fit:cover; }
+    .prod-card-rec .prod-placeholder { width:100%; height:130px; background:var(--borde); display:flex; align-items:center; justify-content:center; font-size:2.5rem; }
+    .prod-card-rec .prod-info { padding:0.75rem 1rem; }
   </style>
   <script>
     fetch("/api/horario/sugerencia")
@@ -85,7 +64,6 @@
         const banner = document.getElementById("banner-horario");
         const texto  = document.getElementById("texto-banner-horario");
         const btn    = document.getElementById("btn-preorden");
-
         if (data.tiene_espacio) {
           banner.style.background = data.urgente ? "#fff3cd" : "#d1e7dd";
           banner.style.border     = data.urgente ? "1px solid #ffc107" : "1px solid #28a745";
@@ -109,7 +87,7 @@
   <div class="card">
     <h2>✨ Recomendados para ti</h2>
     <div class="card-grid">
-      {% for producto in recomendados %}
+      {% for producto, vendedor_nombre in recomendados %}
       <div class="prod-card-rec">
         {% if producto.imagen %}
           <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
@@ -120,7 +98,8 @@
           <div class="prod-placeholder">🍽️</div>
         {% endif %}
         <div class="prod-info">
-          <div style="font-weight:600; margin-bottom:0.25rem;">{{ producto.nombre }}</div>
+          <div style="font-weight:600; margin-bottom:0.2rem;">{{ producto.nombre }}</div>
+          <div style="color:var(--gris); font-size:0.78rem; margin-bottom:0.25rem;">🏪 {{ vendedor_nombre }}</div>
           <div style="color:var(--naranja); font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
           <div style="color:var(--gris); font-size:0.8rem; margin-top:0.25rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
         </div>
