@@ -3,42 +3,146 @@
 {% block contenido %}
 <div class="contenedor">
   <h1>Menú del campus</h1>
-  <p class="subtitulo">Todos los productos disponibles ahora mismo</p>
+  <p class="subtitulo">Todos los restaurantes disponibles ahora mismo</p>
 
-  {% if productos %}
-  <div class="card-grid">
-    {% for producto, vendedor_nombre in productos %}
-    <div class="card" style="position:relative; padding:0; overflow:hidden;">
+  {% if restaurantes %}
 
-      <!-- IMAGEN -->
-      {% if producto.imagen %}
-        <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
-             alt="{{ producto.nombre }}"
-             style="width:100%; height:140px; object-fit:cover; display:block;"
+  <style>
+    .restaurante-card {
+      background: white;
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .restaurante-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .restaurante-header:hover { background: #fafafa; }
+    .restaurante-logo {
+      width: 52px; height: 52px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--borde);
+    }
+    .restaurante-logo-placeholder {
+      width: 52px; height: 52px;
+      border-radius: 10px;
+      background: var(--borde);
+      display: flex; align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .restaurante-info { flex: 1; }
+    .restaurante-nombre {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 1rem;
+      color: var(--oscuro);
+    }
+    .restaurante-ubicacion {
+      font-size: 0.78rem;
+      color: var(--gris);
+      margin-top: 0.15rem;
+    }
+    .restaurante-meta {
+      display: flex; gap: 0.5rem;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--gris);
+      margin-top: 0.25rem;
+    }
+    .chevron {
+      font-size: 0.8rem;
+      color: var(--gris);
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .chevron.abierto { transform: rotate(180deg); }
+    .productos-grid {
+      display: none;
+      padding: 0 1.25rem 1.25rem;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    .productos-grid.abierto { display: grid; }
+    .prod-item {
+      background: var(--crema);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .prod-item img {
+      width: 100%; height: 110px;
+      object-fit: cover; display: block;
+    }
+    .prod-item-placeholder {
+      width: 100%; height: 110px;
+      background: var(--borde);
+      display: flex; align-items: center;
+      justify-content: center; font-size: 2rem;
+    }
+    .prod-item-info { padding: 0.65rem 0.75rem; }
+  </style>
+
+  {% for vendedor, productos in restaurantes %}
+  <div class="restaurante-card">
+    <div class="restaurante-header" onclick="toggleRestaurante('r{{ loop.index }}')">
+
+      {% if vendedor.logo %}
+        <img src="{{ url_for('static', filename='uploads/' + vendedor.logo) }}"
+             alt="{{ vendedor.nombre }}" class="restaurante-logo"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <div style="display:none; width:100%; height:140px; background:var(--borde);
-                    align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
+        <div class="restaurante-logo-placeholder" style="display:none;">🏪</div>
       {% else %}
-        <div style="display:flex; width:100%; height:140px; background:var(--borde);
-                    align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
+        <div class="restaurante-logo-placeholder">🏪</div>
       {% endif %}
 
-      <!-- BADGE -->
-      <span class="badge badge-verde" style="position:absolute; top:0.75rem; right:0.75rem;">Disponible</span>
-
-      <!-- INFO -->
-      <div style="padding:0.9rem 1rem;">
-        <div style="font-weight:600; font-size:1rem; margin-bottom:0.25rem;">{{ producto.nombre }}</div>
-        <div style="color:var(--naranja); font-size:1.3rem; font-weight:700; font-family:'Syne',sans-serif; margin-bottom:0.5rem;">${{ "%.2f"|format(producto.precio) }}</div>
-        <div style="color:var(--gris); font-size:0.82rem;">⏱ {{ producto.tiempo_preparacion }} min de preparación</div>
-        <div style="color:var(--gris); font-size:0.82rem; margin-top:0.2rem;">🏪 {{ vendedor_nombre }}</div>
+      <div class="restaurante-info">
+        <div class="restaurante-nombre">{{ vendedor.nombre }}</div>
+        {% if vendedor.ubicacion %}
+        <div class="restaurante-ubicacion">📍 {{ vendedor.ubicacion }}</div>
+        {% endif %}
+        <div class="restaurante-meta">
+          <span>{{ productos|length }} producto{{ 's' if productos|length != 1 }}</span>
+          {% if vendedor.calificacion > 0 %}
+          <span>· ⭐ {{ "%.1f"|format(vendedor.calificacion) }}</span>
+          {% endif %}
+        </div>
       </div>
 
+      <span class="chevron" id="chevron-r{{ loop.index }}">▼</span>
     </div>
-    {% endfor %}
-  </div>
 
-  <div style="margin-top:2rem;">
+    <div class="productos-grid" id="r{{ loop.index }}">
+      {% for producto in productos %}
+      <div class="prod-item">
+        {% if producto.imagen %}
+          <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
+               alt="{{ producto.nombre }}"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="prod-item-placeholder" style="display:none;">🍽️</div>
+        {% else %}
+          <div class="prod-item-placeholder">🍽️</div>
+        {% endif %}
+        <div class="prod-item-info">
+          <div style="font-weight:600; font-size:0.9rem; margin-bottom:0.2rem;">{{ producto.nombre }}</div>
+          <div style="color:var(--naranja); font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
+          <div style="color:var(--gris); font-size:0.78rem; margin-top:0.15rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <div style="margin-top:1.5rem;">
     <a href="{{ url_for('crear_pedido') }}" class="btn" style="display:inline-block; width:auto; background:#FF5C00; color:#fff;">Hacer pedido →</a>
   </div>
 
@@ -50,4 +154,13 @@
   </div>
   {% endif %}
 </div>
+
+<script>
+function toggleRestaurante(id) {
+  const grid = document.getElementById(id);
+  const chevron = document.getElementById('chevron-' + id);
+  grid.classList.toggle('abierto');
+  chevron.classList.toggle('abierto');
+}
+</script>
 {% endblock %}
