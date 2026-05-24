@@ -174,3 +174,50 @@ class Pedido:
         texto += f"  Tiempo estimado: {self.tiempo_estimado} min\n"
         texto += f"  Total: ${self.total}"
         return texto
+
+
+# ─────────────────────────────────────────
+# USUARIO — hereda de Persona
+# ─────────────────────────────────────────
+class Usuario(Persona):
+    def __init__(self, usuario_id: int, nombre: str, correo: str, tiempo_disponible: int, contrasena: str):
+        super().__init__(nombre, contrasena)
+        self.id: int = usuario_id
+        self.__correo: str = correo
+        self.tiempo_disponible: int = tiempo_disponible
+        self.historial_pedidos: list[Pedido] = []
+
+    @property
+    def correo(self):
+        return self.__correo
+
+    @correo.setter
+    def correo(self, valor):
+        if "@" not in valor:
+            raise ValueError("El correo no es valido")
+        self.__correo = valor
+
+    def realizar_pedido(self, productos: list):
+        if not productos:
+            raise PedidoVacioError()
+        id_nuevo = len(self.historial_pedidos) + 1
+        pedido = Pedido(id_nuevo, self)
+        pedido.productos = productos
+        pedido.calcular_tiempo()
+        pedido.calcular_total()
+        self.historial_pedidos.append(pedido)
+        return pedido
+
+    def ver_historial(self):
+        return self.historial_pedidos
+
+    def calificar_vendedor(self, vendedor: "Vendedor", puntuacion: int):
+        if not (1 <= puntuacion <= 5):
+            raise PuntuacionInvalidaError(puntuacion)
+        if vendedor.calificacion == 0:
+            vendedor.calificacion = puntuacion
+        else:
+            vendedor.calificacion = (vendedor.calificacion + puntuacion) / 2
+
+    def __str__(self):
+        return f"Usuario: {self.nombre} | Correo: {self.__correo}"
