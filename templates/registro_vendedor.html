@@ -1,33 +1,254 @@
 {% extends "base.html" %}
 {% block titulo %}Registro vendedor{% endblock %}
+
+{% block estilos %}
+<style>
+  .vend-page {
+    min-height: calc(100vh - 64px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* ── Panel decorativo (derecha, oscuro) ── */
+  .vend-panel-der {
+    background: var(--oscuro);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4rem 3.5rem;
+    position: relative;
+    overflow: hidden;
+    order: 2;
+  }
+  .vend-panel-der::before {
+    content: '';
+    position: absolute;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(255,92,0,0.08);
+    bottom: -80px; right: -80px;
+  }
+  .vend-panel-der::after {
+    content: '';
+    position: absolute;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,92,0,0.06);
+    top: 60px; left: -50px;
+  }
+  .vend-deco-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,92,0,0.15);
+    border: 1px solid rgba(255,92,0,0.3);
+    color: var(--naranja);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+  }
+  .vend-deco-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+  .vend-deco-title span { color: var(--naranja); }
+  .vend-deco-sub {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.92rem;
+    line-height: 1.65;
+    max-width: 290px;
+    margin-bottom: 2.5rem;
+  }
+  .vend-deco-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .vend-deco-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255,255,255,0.65);
+    font-size: 0.88rem;
+  }
+  .vend-deco-item .ico {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(255,92,0,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* ── Panel izquierdo (formulario) ── */
+  .vend-panel-izq {
+    background: var(--crema);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 2.5rem;
+    order: 1;
+  }
+  .vend-form-box {
+    width: 100%;
+    max-width: 400px;
+  }
+  .vend-form-box h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--oscuro);
+    margin-bottom: 0.35rem;
+  }
+  .vend-form-box .sub {
+    color: var(--gris);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.1rem;
+  }
+  .campo-grupo label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--oscuro);
+    letter-spacing: 0.02em;
+  }
+  .campo-grupo input {
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--oscuro);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .campo-grupo input:focus {
+    border-color: var(--naranja);
+    box-shadow: 0 0 0 3px rgba(255,92,0,0.12);
+  }
+  .campo-grupo input::placeholder { color: #bbb; }
+  .campo-hint {
+    font-size: 0.75rem;
+    color: var(--gris);
+  }
+
+  .btn-vend {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--oscuro);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(26,16,8,0.25);
+  }
+  .btn-vend:hover {
+    background: #2e2010;
+    transform: translateY(-1px);
+  }
+
+  .vend-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--gris);
+  }
+  .vend-footer a {
+    color: var(--naranja);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .vend-footer a:hover { text-decoration: underline; }
+
+  .vend-divider {
+    border: none;
+    border-top: 1px solid var(--borde);
+    margin: 1.75rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .vend-page { grid-template-columns: 1fr; }
+    .vend-panel-der { display: none; }
+    .vend-panel-izq { padding: 2.5rem 1.5rem; order: 1; }
+  }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<div class="contenedor-sm">
-    <div style="margin-top:2rem;">
-  <h1>Registrar local</h1>
-    <p class="subtitulo">Empieza a vender en el campus</p>
+<div class="vend-page">
 
-    <div class="card">
-        <form method="POST">
-            <div class="campo">
-                <label>Nombre del local</label>
-                <input type="text" name="nombre" placeholder="Ej: Fritanga de Juan" required>
-            </div>
-            <div class="campo">
-                <label>Contraseña (mínimo 4 caracteres)</label>
-                <input type="password" name="contrasena" placeholder="••••••••" required minlength="4">
-            </div>
+  <!-- Formulario (izquierda) -->
+  <div class="vend-panel-izq">
+    <div class="vend-form-box">
 
-            <button type="submit" class="btn btn-primary">Crear local</button>
+      <h1>Registrar local</h1>
+      <p class="sub">Empieza a vender en el campus</p>
 
+      <form method="POST">
+        <div class="campo-grupo">
+          <label for="nombre">Nombre del local</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Ej: Fritanga de Juan" required autofocus>
+        </div>
+        <div class="campo-grupo">
+          <label for="contrasena">Contraseña</label>
+          <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required minlength="4">
+          <span class="campo-hint">Mínimo 4 caracteres</span>
+        </div>
+        <button type="submit" class="btn-vend">Crear local →</button>
+      </form>
 
+      <hr class="vend-divider">
 
-        </form>
-    </div>
-    <p class="texto-centro texto-gris" style="margin-top:1rem; font-size:0.9rem;">
+      <p class="vend-footer">
         ¿Ya tienes cuenta?
-        <a href="{{ url_for('login_vendedor') }}" class="texto-naranja" style="text-decoration:none; font-weight:500;">Inicia sesión</a>
-    </p>
-    </div>
-    </div>
+        <a href="{{ url_for('login_vendedor') }}">Inicia sesión</a>
+      </p>
 
+    </div>
+  </div>
+
+  <!-- Panel decorativo (derecha) -->
+  <div class="vend-panel-der">
+    <span class="vend-deco-badge">🍽️ Para vendedores</span>
+    <h2 class="vend-deco-title">Abre tu<br><span>puesto hoy.</span></h2>
+    <p class="vend-deco-sub">Registra tu local y empieza a recibir pedidos de estudiantes en minutos.</p>
+    <div class="vend-deco-items">
+      <div class="vend-deco-item">
+        <span class="ico">⚡</span>
+        <span>Configura tu menú en menos de 5 minutos</span>
+      </div>
+      <div class="vend-deco-item">
+        <span class="ico">📲</span>
+        <span>Recibe pedidos directamente en tu panel</span>
+      </div>
+      <div class="vend-deco-item">
+        <span class="ico">📈</span>
+        <span>Aumenta tus ventas sin intermediarios</span>
+      </div>
+    </div>
+  </div>
+
+</div>
 {% endblock %}
