@@ -1,63 +1,289 @@
 {% extends "base.html" %}
 {% block titulo %}Calificar vendedor{% endblock %}
-{% block contenido %}
-<div class="contenedor-sm">
-  <h1>Calificar vendedor</h1>
-  <p class="subtitulo">Tu opinión ayuda a otros estudiantes</p>
 
-  <div class="card">
+{% block estilos %}
+<style>
+  .cal-page {
+    max-width: 580px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .cal-card {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+  }
+
+  .campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+  .campo-grupo label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--oscuro);
+    letter-spacing: 0.02em;
+  }
+  .campo-grupo select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--oscuro);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .campo-grupo select:focus {
+    border-color: var(--naranja);
+    box-shadow: 0 0 0 3px rgba(255,92,0,0.1);
+  }
+
+  /* Estrellas */
+  .estrellas-wrap {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .star-btn {
+    font-size: 2.2rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+    line-height: 1;
+    user-select: none;
+  }
+  .star-btn:hover { transform: scale(1.2); }
+  .star-btn.activa { filter: drop-shadow(0 0 4px rgba(255,160,0,0.5)); }
+
+  .puntuacion-label {
+    font-size: 0.82rem;
+    color: var(--gris);
+    margin-top: 0.4rem;
+    min-height: 1.2em;
+  }
+
+  .btn-cal {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--oscuro);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(26,16,8,0.2);
+  }
+  .btn-cal:hover {
+    background: #2e2010;
+    transform: translateY(-1px);
+  }
+
+  /* Cards vendedores */
+  .vend-card {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: box-shadow 0.15s;
+  }
+  .vend-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  }
+  .vend-avatar {
+    width: 46px; height: 46px;
+    border-radius: 10px;
+    background: var(--crema);
+    border: 1px solid var(--borde);
+    display: flex; align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .vend-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .vend-info { flex: 1; }
+  .vend-nombre {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--oscuro);
+  }
+  .vend-sub {
+    font-size: 0.78rem;
+    color: var(--gris);
+    margin-top: 0.1rem;
+  }
+  .vend-cal {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--oscuro);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .vend-cal .sin-cal {
+    font-size: 0.78rem;
+    color: var(--gris);
+    font-weight: 400;
+  }
+
+  .estrellas-mini {
+    font-size: 0.85rem;
+    color: #f59e0b;
+    letter-spacing: 1px;
+  }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="cal-page">
+
+  <div style="margin-bottom:1.75rem;">
+    <h1>Calificar restaurante</h1>
+    <p class="subtitulo" style="margin-bottom:0;">Tu opinión ayuda a otros estudiantes 🎓</p>
+  </div>
+
+  <!-- Formulario -->
+  <div class="cal-card">
     <form method="POST">
-      <div class="campo">
-        <label>Vendedor</label>
-        <select name="vendedor" required>
-          <option value="" disabled selected>Selecciona un vendedor</option>
+
+      <div class="campo-grupo">
+        <label>Restaurante</label>
+        <select name="vendedor" required id="select-vendedor" onchange="actualizarVendedor()">
+          <option value="" disabled selected>Selecciona un restaurante</option>
           {% for v in vendedores %}
-          <option value="{{ v.nombre }}">{{ v.nombre }} (⭐ {{ "%.1f"|format(v.calificacion) }})</option>
+          <option value="{{ v.nombre }}"
+                  data-cal="{{ v.calificacion }}"
+                  data-productos="{{ v.productos|length }}">
+            {{ v.nombre }}
+          </option>
           {% endfor %}
         </select>
-      </div>
-      <div class="campo">
-        <label>Puntuación (1 al 5)</label>
-        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-          {% for i in range(1, 6) %}
-          <label style="text-transform:none; letter-spacing:0; font-size:1.5rem; cursor:pointer; margin:0;" title="{{ i }} estrella(s)">
-            <input type="radio" name="puntuacion" value="{{ i }}" style="display:none;" required>
-            <span class="estrella" id="star-{{ i }}" onclick="seleccionarEstrellas({{ i }})">☆</span>
-          </label>
-          {% endfor %}
+
+        <!-- Preview del vendedor seleccionado -->
+        <div id="vendedor-preview" style="display:none; margin-top:0.75rem; padding:0.75rem 1rem;
+             background:var(--crema); border-radius:10px; border:1px solid var(--borde);
+             font-size:0.85rem; color:var(--oscuro);">
         </div>
       </div>
-      <button type="submit" class="btn btn-warning">Enviar calificación</button>
+
+      <div class="campo-grupo">
+        <label>Tu puntuación</label>
+        <div class="estrellas-wrap" id="estrellas">
+          {% for i in range(1, 6) %}
+          <span class="star-btn" id="star-{{ i }}"
+                onclick="seleccionarEstrellas({{ i }})"
+                onmouseover="hoverEstrellas({{ i }})"
+                onmouseout="resetHover()">☆</span>
+          {% endfor %}
+          <input type="hidden" name="puntuacion" id="input-puntuacion" required>
+        </div>
+        <div class="puntuacion-label" id="label-puntuacion">Toca una estrella para calificar</div>
+      </div>
+
+      <button type="submit" class="btn-cal">Enviar calificación ✓</button>
     </form>
   </div>
 
-  <div style="margin-top:1.5rem;">
-    <h2>Vendedores registrados</h2>
-    {% for v in vendedores %}
-    <div class="card" style="margin-bottom:0.75rem;">
-      <div class="fila">
-        <div style="font-weight:600;">{{ v.nombre }}</div>
-        <div style="font-size:1rem;" class="estrella">
-          {% if v.calificacion == 0 %}
-            Sin calificación
-          {% else %}
-            {{ "%.1f"|format(v.calificacion) }} ★
-          {% endif %}
-        </div>
-      </div>
-      <div style="color:var(--gris); font-size:0.82rem; margin-top:0.25rem;">{{ v.productos|length }} producto(s) en menú</div>
+  <!-- Lista de vendedores -->
+  <h2 style="margin-bottom:1rem;">Restaurantes registrados</h2>
+  {% for v in vendedores %}
+  <div class="vend-card">
+    <div class="vend-avatar">
+      {% if v.logo %}
+        <img src="{{ url_for('static', filename='uploads/' + v.logo) }}"
+             onerror="this.style.display='none'; this.parentElement.textContent='🏪'">
+      {% else %}
+        🏪
+      {% endif %}
     </div>
-    {% endfor %}
+    <div class="vend-info">
+      <div class="vend-nombre">{{ v.nombre }}</div>
+      <div class="vend-sub">{{ v.productos|length }} producto{{ 's' if v.productos|length != 1 }}</div>
+    </div>
+    <div class="vend-cal">
+      {% if v.calificacion > 0 %}
+        <div class="estrellas-mini">
+          {% for i in range(1, 6) %}{{ '★' if i <= v.calificacion|round else '☆' }}{% endfor %}
+        </div>
+        <div style="font-size:0.82rem; margin-top:0.1rem;">{{ "%.1f"|format(v.calificacion) }} / 5</div>
+      {% else %}
+        <span class="sin-cal">Sin calificación</span>
+      {% endif %}
+    </div>
   </div>
+  {% endfor %}
 
-  <script>
-    function seleccionarEstrellas(n) {
-      for (let i = 1; i <= 5; i++) {
-        const star = document.getElementById('star-' + i);
-        star.textContent = i <= n ? '★' : '☆';
-      }
-      document.querySelectorAll('input[name="puntuacion"]')[n-1].checked = true;
-    }
-  </script>
 </div>
+
+<script>
+  const descripciones = ["", "Muy malo 😞", "Malo 😕", "Regular 😐", "Bueno 😊", "Excelente 🤩"];
+  let seleccionada = 0;
+
+  function seleccionarEstrellas(n) {
+    seleccionada = n;
+    document.getElementById('input-puntuacion').value = n;
+    document.getElementById('label-puntuacion').textContent = descripciones[n];
+    pintarEstrellas(n);
+  }
+
+  function hoverEstrellas(n) {
+    pintarEstrellas(n);
+    document.getElementById('label-puntuacion').textContent = descripciones[n];
+  }
+
+  function resetHover() {
+    pintarEstrellas(seleccionada);
+    document.getElementById('label-puntuacion').textContent =
+      seleccionada ? descripciones[seleccionada] : 'Toca una estrella para calificar';
+  }
+
+  function pintarEstrellas(n) {
+    for (let i = 1; i <= 5; i++) {
+      const s = document.getElementById('star-' + i);
+      if (i <= n) {
+        s.textContent = '★';
+        s.style.color = '#f59e0b';
+        s.classList.add('activa');
+      } else {
+        s.textContent = '☆';
+        s.style.color = '#ccc';
+        s.classList.remove('activa');
+      }
+    }
+  }
+
+  function actualizarVendedor() {
+    const sel = document.getElementById('select-vendedor');
+    const opt = sel.options[sel.selectedIndex];
+    const preview = document.getElementById('vendedor-preview');
+    const cal = parseFloat(opt.dataset.cal);
+    const prods = opt.dataset.productos;
+    const nombre = opt.value;
+
+    let calTexto = cal > 0
+      ? `⭐ Calificación actual: <strong>${cal.toFixed(1)}</strong> / 5`
+      : '⭐ Sin calificaciones aún';
+
+    preview.innerHTML = `<strong>${nombre}</strong> · ${prods} producto(s) · ${calTexto}`;
+    preview.style.display = 'block';
+  }
+</script>
 {% endblock %}
