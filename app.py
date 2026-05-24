@@ -173,18 +173,54 @@ def dashboard_usuario():
     if not usuario:
         return redirect(url_for("login_usuario"))
 
-    # Mapa producto_id -> vendedor (objeto completo)
     mapa_vendedor = {}
     for v in sistema.vendedores:
         for p in v.productos:
             mapa_vendedor[p.id] = v
 
-    # Recomendados como tuplas (producto, vendedor)
-    todos = [p for v in sistema.vendedores for p in v.productos]
-    recomendados_raw = sistema.recomendador.recomendar(usuario, todos)
-    recomendados = [(p, mapa_vendedor.get(p.id)) for p in recomendados_raw]
+    todos = [p for v in sistema.vendedores for p in v.productos if p.disponible]
+    modo = request.args.get("modo", "recomendados")
 
-    # Restaurante cercano según horario
+    if modo == "rapido":
+        todos_ordenados = sorted(todos, key=lambda p: p.tiempo_preparacion)[:3]
+        recomendados = [(p, mapa_vendedor.get(p.id)) for p in todos_ordenados]
+
+    elif modo == "cercano":
+        ahora = datetime.now()
+        dia_actual = ["lunes", "martes", "miércoles", "jueves", "viernes",
+                      "sábado", "domingo"][ahora.weekday()]
+        hora_actual = ahora.strftime("%H:%M")
+        vendedor_cercano = None
+
+        if dia_actual in ["lunes", "martes", "miércoles", "jueves", "viernes"]:
+            horario = get_horario_usuario(usuario.nombre)
+            salon = _salon_referencia(horario, hora_actual, dia_actual)
+            if salon:
+                cafeteria_target = None
+                for key, cafeteria in EDIFICIOS.items():
+                    if key in salon.lower():
+                        cafeteria_target = cafeteria
+                        break
+                if cafeteria_target:
+                    for v in sistema.vendedores:
+                        if cafeteria_target.lower() in v.nombre.lower() or \
+                           cafeteria_target.lower() in v.ubicacion.lower():
+                            vendedor_cercano = v
+                            break
+
+        if vendedor_cercano:
+            prods_cercanos = [p for p in vendedor_cercano.productos if p.disponible][:3]
+            recomendados = [(p, vendedor_cercano) for p in prods_cercanos]
+        else:
+            # fallback: más rápidos si no hay cercano
+            todos_ordenados = sorted(todos, key=lambda p: p.tiempo_preparacion)[:3]
+            recomendados = [(p, mapa_vendedor.get(p.id)) for p in todos_ordenados]
+
+    else:
+        recomendados_raw = sistema.recomendador.recomendar(usuario, todos)
+        recomendados = [(p, mapa_vendedor.get(p.id)) for p in recomendados_raw]
+
+    # Restaurante cercano para el banner
     restaurante_cercano = None
     ahora = datetime.now()
     dia_actual = ["lunes", "martes", "miércoles", "jueves", "viernes",
@@ -212,6 +248,7 @@ def dashboard_usuario():
         usuario=usuario,
         recomendados=recomendados,
         restaurante_cercano=restaurante_cercano,
+        modo=modo,
     )
 
 
