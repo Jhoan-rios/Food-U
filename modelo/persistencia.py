@@ -27,8 +27,8 @@ def guardar_datos(sistema, id_usuario, id_producto):
             "nombre": v.nombre,
             "calificacion": v.calificacion,
             "contrasena": v.contrasena,
-            "logo": v.logo,             # ← NUEVO
-            "ubicacion": v.ubicacion,   # ← NUEVO
+            "logo": v.logo,
+            "ubicacion": v.ubicacion,
             "productos": []
         }
         for p in v.productos:
@@ -69,8 +69,11 @@ def cargar_datos(sistema):
 
     for u_dict in datos["usuarios"]:
         usuario = Usuario(
-            u_dict["id"], u_dict["nombre"], u_dict["correo"],
-            u_dict["tiempo_disponible"], u_dict["contrasena"]
+            u_dict["id"],
+            u_dict["nombre"],
+            u_dict["correo"],
+            u_dict["tiempo_disponible"],
+            u_dict["contrasena"]
         )
         sistema.usuarios.append(usuario)
 
@@ -78,14 +81,17 @@ def cargar_datos(sistema):
         vendedor = Vendedor(
             v_dict["nombre"],
             v_dict["contrasena"],
-            logo=v_dict.get("logo", ""),           # ← NUEVO (get para compatibilidad)
-            ubicacion=v_dict.get("ubicacion", "")  # ← NUEVO
+            v_dict.get("logo", ""),
+            v_dict.get("ubicacion", "")
         )
         vendedor.calificacion = v_dict["calificacion"]
         for p_dict in v_dict["productos"]:
             producto = Producto(
-                p_dict["id"], p_dict["nombre"], p_dict["precio"],
-                p_dict["tiempo_preparacion"], p_dict["disponible"],
+                p_dict["id"],
+                p_dict["nombre"],
+                p_dict["precio"],
+                p_dict["tiempo_preparacion"],
+                p_dict["disponible"],
                 p_dict.get("imagen", "")
             )
             vendedor.productos.append(producto)
@@ -95,7 +101,8 @@ def cargar_datos(sistema):
 
     for p_dict in datos.get("pedidos", []):
         usuario = sistema.buscar_usuario(p_dict["usuario_nombre"])
-        if not usuario: continue
+        if usuario is None:
+            continue
         pedido = Pedido(p_dict["id"], usuario)
         pedido.estado = p_dict["estado"]
         pedido.tiempo_estimado = p_dict["tiempo_estimado"]
