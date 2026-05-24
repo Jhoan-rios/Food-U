@@ -229,7 +229,6 @@ def menu_productos():
 
     return render_template("menu_productos.html", usuario=usuario, restaurantes=restaurantes)
 
-
 @app.route("/usuario/pedido", methods=["GET", "POST"])
 def crear_pedido():
     global id_producto
@@ -237,7 +236,6 @@ def crear_pedido():
     if not usuario:
         return redirect(url_for("login_usuario"))
 
-    # Agrupar por restaurante
     restaurantes = []
     todos_planos = []
     for v in sistema.vendedores:
@@ -264,8 +262,11 @@ def crear_pedido():
         flash(f"¡Pedido #{pedido.id} creado! Tu turno es el #{turno}. Total: ${pedido.total:.2f}", "success")
         return redirect(url_for("historial_usuario"))
 
-    return render_template("crear_pedido.html", usuario=usuario, restaurantes=restaurantes)
+    precios_json = json.dumps({p.id: p.precio for v, prods in restaurantes for p in prods})
+    tiempos_json = json.dumps({p.id: p.tiempo_preparacion for v, prods in restaurantes for p in prods})
 
+    return render_template("crear_pedido.html", usuario=usuario, restaurantes=restaurantes,
+                           precios_json=precios_json, tiempos_json=tiempos_json)
 
 @app.route("/usuario/historial")
 def historial_usuario():
