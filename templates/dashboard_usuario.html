@@ -30,7 +30,27 @@
         <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem;">Calificar</div>
       </div>
     </a>
+      <a href="{{ url_for('ver_horario') }}" class="btn">
+  📅     Mi Horario
+        </a>
   </div>
+
+    {% if usuario %}
+<div id="banner-horario" style="display:none; padding:12px; border-radius:8px; margin-bottom:16px;"></div>
+<script>
+fetch("/api/horario/sugerencia")
+  .then(r => r.json())
+  .then(data => {
+    if (data.tiene_espacio) {
+      const b = document.getElementById("banner-horario");
+      b.style.display = "block";
+      b.style.background = data.urgente ? "#fff3cd" : "#d1e7dd";
+      b.textContent = data.mensaje;
+    }
+  });
+</script>
+{% endif %}
+
 
 
   {% if recomendados %}
