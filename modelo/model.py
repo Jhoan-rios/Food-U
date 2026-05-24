@@ -221,3 +221,46 @@ class Usuario(Persona):
 
     def __str__(self):
         return f"Usuario: {self.nombre} | Correo: {self.__correo}"
+
+
+
+
+
+# ─────────────────────────────────────────
+# VENDEDOR — hereda de Persona
+# ─────────────────────────────────────────
+class Vendedor(Persona):
+    def __init__(self, nombre: str, contrasena: str):
+        super().__init__(nombre, contrasena)
+        self.productos: list[Producto] = []
+        self.pedidos_activos: list = []
+        self.calificacion: float = 0.0
+
+    def agregar_producto(self, producto: Producto):
+        if not isinstance(producto, Producto):
+            raise TypeError("Solo se pueden agregar objetos de tipo Producto")
+        self.productos.append(producto)
+
+    def editar_producto(self, producto_id: int, nuevo_nombre: str, nuevo_precio: float,
+                        nuevo_tiempo: int, nueva_disponibilidad: bool):
+        for p in self.productos:
+            if p.id == producto_id:
+                p.nombre = nuevo_nombre
+                p.precio = nuevo_precio
+                p.tiempo_preparacion = nuevo_tiempo
+                p.disponible = nueva_disponibilidad
+                return
+        raise ProductoNoEncontradoError(producto_id)
+
+    def eliminar_producto(self, producto_id: int):
+        for p in self.productos:
+            if p.id == producto_id:
+                self.productos.remove(p)
+                return
+        raise ProductoNoEncontradoError(producto_id)
+
+    def gestionar_pedidos(self):
+        return self.pedidos_activos
+
+    def __str__(self):
+        return f"Vendedor: {self.nombre} | Calificacion: {self.calificacion}"
