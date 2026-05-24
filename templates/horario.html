@@ -39,44 +39,42 @@
     <div class="columna-dia">
       <h3 class="dia-titulo">{{ dia | capitalize }}</h3>
 
-      <!-- Clases del día -->
-      {% set clases_dia = horario.clases_del_dia(dia) %}
-      {% if clases_dia %}
-        {% for clase in clases_dia %}
-        <div class="bloque-clase">
-          <span class="clase-nombre">{{ clase.nombre }}</span>
-          <span class="clase-horario">{{ clase.hora_inicio.strftime('%H:%M') }} - {{ clase.hora_fin.strftime('%H:%M') }}</span>
-          {% if clase.salon %}
-          <span class="clase-salon">📍 {{ clase.salon | title }}</span>
-          {% endif %}
-          <form method="POST" action="{{ url_for('eliminar_clase') }}" class="form-eliminar">
-            <input type="hidden" name="nombre" value="{{ clase.nombre }}">
-            <input type="hidden" name="dia" value="{{ dia }}">
-            <button type="submit" class="btn-eliminar" title="Eliminar">✕</button>
-          </form>
-        </div>
-        {% endfor %}
-      {% else %}
-        <p class="sin-clases">Sin clases</p>
-      {% endif %}
+      {% set bloques = bloques_por_dia[dia] %}
 
-      <!-- Espacios libres del día -->
-      {% set espacios = horario.espacios_libres_dia(dia) %}
-      {% for espacio in espacios %}
-        {% if espacio.alcanza_para_recoger %}
-        <div class="bloque-espacio bloque-{{ espacio.modo }}">
-          <span class="espacio-icono">
-            {% if espacio.modo == 'comer_tranquilo' %}🍽️
-            {% elif espacio.modo == 'comer_rapido' %}⚡
-            {% else %}🏃{% endif %}
-          </span>
-          <span class="espacio-tiempo">{{ espacio.inicio.strftime('%H:%M') }} - {{ espacio.fin.strftime('%H:%M') }}</span>
-          <span class="espacio-duracion">{{ espacio.duracion }} min libres</span>
-          <span class="espacio-punto">{{ espacio.punto_venta_sugerido | title }}</span>
-          <span class="espacio-preorden">Pre-ordenar a las {{ espacio.hora_preorden.strftime('%H:%M') }}</span>
-        </div>
-        {% endif %}
-      {% endfor %}
+      {% if not bloques %}
+        <p class="sin-clases">Sin clases</p>
+      {% else %}
+        {% for bloque in bloques %}
+          {% if bloque.tipo == "clase" %}
+            {% set clase = bloque.obj %}
+            <div class="bloque-clase">
+              <span class="clase-nombre">{{ clase.nombre }}</span>
+              <span class="clase-horario">{{ clase.hora_inicio.strftime('%H:%M') }} - {{ clase.hora_fin.strftime('%H:%M') }}</span>
+              {% if clase.salon %}
+              <span class="clase-salon">📍 {{ clase.salon | title }}</span>
+              {% endif %}
+              <form method="POST" action="{{ url_for('eliminar_clase') }}" class="form-eliminar">
+                <input type="hidden" name="nombre" value="{{ clase.nombre }}">
+                <input type="hidden" name="dia" value="{{ dia }}">
+                <button type="submit" class="btn-eliminar" title="Eliminar">✕</button>
+              </form>
+            </div>
+          {% else %}
+            {% set espacio = bloque.obj %}
+            <div class="bloque-espacio bloque-{{ espacio.modo }}">
+              <span class="espacio-icono">
+                {% if espacio.modo == "comer_tranquilo" %}🍽️
+                {% elif espacio.modo == "comer_rapido" %}⚡
+                {% else %}🏃{% endif %}
+              </span>
+              <span class="espacio-tiempo">{{ espacio.inicio.strftime('%H:%M') }} - {{ espacio.fin.strftime('%H:%M') }}</span>
+              <span class="espacio-duracion">{{ espacio.duracion }} min libres</span>
+              <span class="espacio-punto">{{ espacio.punto_venta_sugerido | title }}</span>
+              <span class="espacio-preorden">Pre-ordenar a las {{ espacio.hora_preorden.strftime('%H:%M') }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
 
     </div>
     {% endfor %}
@@ -103,11 +101,9 @@
 
 </div>
 
-<!-- CSS inline para esta vista (o pásalo a static/css/horario.css) -->
 <style>
 .horario-container { max-width: 1100px; margin: 0 auto; padding: 20px; font-family: sans-serif; }
 
-/* Banner */
 .banner { display: flex; align-items: center; gap: 12px; padding: 14px 20px;
           border-radius: 12px; margin-bottom: 24px; font-size: 15px; }
 .banner-activo  { background: #d4edda; border: 1px solid #28a745; color: #155724; }
@@ -119,21 +115,18 @@
                     font-weight: bold; white-space: nowrap; }
 .btn-pedido-ahora:hover { background: #218838; }
 
-/* Header */
 .horario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .horario-header h2 { margin: 0; font-size: 22px; }
 .btn-agregar { background: #007bff; color: white; padding: 8px 16px;
                border-radius: 8px; text-decoration: none; font-weight: bold; }
 .btn-agregar:hover { background: #0056b3; }
 
-/* Grilla */
 .grilla-semanal { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 32px; }
 .columna-dia { background: #f8f9fa; border-radius: 10px; padding: 12px; min-height: 200px; }
 .dia-titulo { font-size: 14px; font-weight: bold; text-align: center;
               background: #343a40; color: white; border-radius: 6px;
               padding: 4px 0; margin: 0 0 10px 0; }
 
-/* Bloques de clase */
 .bloque-clase { background: #cfe2ff; border-left: 4px solid #0d6efd;
                 border-radius: 6px; padding: 8px; margin-bottom: 6px;
                 font-size: 12px; position: relative; }
@@ -144,7 +137,6 @@
                  border: none; cursor: pointer; color: #dc3545; font-size: 13px; }
 .form-eliminar { display: inline; }
 
-/* Bloques de espacio libre */
 .bloque-espacio { border-radius: 6px; padding: 7px; margin-bottom: 6px; font-size: 11px; }
 .bloque-comer_tranquilo { background: #d1e7dd; border-left: 3px solid #198754; }
 .bloque-comer_rapido    { background: #fff3cd; border-left: 3px solid #ffc107; }
@@ -157,7 +149,6 @@
 
 .sin-clases { color: #aaa; font-size: 12px; text-align: center; margin-top: 20px; }
 
-/* Resumen */
 .resumen-semanal h3 { font-size: 18px; margin-bottom: 12px; }
 .resumen-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
 .resumen-card { background: #f1f3f5; border-radius: 8px; padding: 12px; text-align: center; font-size: 13px; }
@@ -171,7 +162,6 @@
 }
 </style>
 
-<!-- Script: actualizar sugerencia cada 60 segundos -->
 <script>
 function actualizarSugerencia() {
   fetch("/api/horario/sugerencia")
