@@ -1,34 +1,249 @@
 {% extends "base.html" %}
-{% block titulo %}Registro{% endblock %}
+{% block titulo %}Crear cuenta{% endblock %}
+
+{% block estilos %}
+<style>
+  .login-page {
+    min-height: calc(100vh - 64px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* ── Panel izquierdo (decorativo) ── */
+  .login-panel-izq {
+    background: var(--rojo);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4rem 3.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .login-panel-izq::before {
+    content: '';
+    position: absolute;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    top: -80px; right: -80px;
+  }
+  .login-panel-izq::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    bottom: 40px; left: -60px;
+  }
+  .login-deco-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+  }
+  .login-deco-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+  .login-deco-title span { color: #FECD4C; }
+  .login-deco-sub {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 300px;
+    margin-bottom: 2.5rem;
+  }
+  .login-deco-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .login-deco-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+  }
+
+  /* ── Panel derecho (formulario) ── */
+  .login-panel-der {
+    background: var(--crema);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 2.5rem;
+  }
+  .login-form-box {
+    width: 100%;
+    max-width: 400px;
+  }
+  .login-form-box h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--oscuro);
+    margin-bottom: 0.35rem;
+  }
+  .login-form-box .sub {
+    color: var(--gris);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.1rem;
+  }
+  .campo-grupo label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--oscuro);
+    letter-spacing: 0.02em;
+  }
+  .campo-grupo input,
+  .campo-grupo select {
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--oscuro);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .campo-grupo input:focus,
+  .campo-grupo select:focus {
+    border-color: var(--naranja);
+    box-shadow: 0 0 0 3px rgba(255,92,0,0.12);
+  }
+  .campo-grupo input::placeholder { color: #bbb; }
+
+  /* Hint bajo el campo */
+  .campo-hint {
+    font-size: 0.75rem;
+    color: var(--gris);
+    margin-top: -0.2rem;
+  }
+
+  .btn-login {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--rojo);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(193,18,31,0.3);
+  }
+  .btn-login:hover {
+    background: #a50e19;
+    transform: translateY(-1px);
+  }
+
+  .login-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--gris);
+  }
+  .login-footer a {
+    color: var(--naranja);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .login-footer a:hover { text-decoration: underline; }
+
+  .login-divider {
+    border: none;
+    border-top: 1px solid var(--borde);
+    margin: 1.75rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .login-page { grid-template-columns: 1fr; }
+    .login-panel-izq { display: none; }
+    .login-panel-der { padding: 2.5rem 1.5rem; }
+  }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<div class="contenedor-sm">
-  <h1>Crea tu cuenta</h1>
-    <p class="subtitulo">Regístrate para pedir comida en el campus</p>
-    <div class="card">
-    <form method="POST">
-        <div class="campo">
-            <label>Nombre de usuario</label>
-            <input type="text" name="nombre" placeholder="Tu nombre" required>
+<div class="login-page">
+
+  <!-- Panel izquierdo decorativo -->
+  <div class="login-panel-izq">
+    <span class="login-deco-badge">🎓 Universidad de Medellín</span>
+    <h2 class="login-deco-title">Únete a<br><span>FoodU.</span></h2>
+    <p class="login-deco-sub">Crea tu cuenta y empieza a pedir los mejores platos del campus en segundos.</p>
+    <div class="login-deco-items">
+      <div class="login-deco-item"><span>🆓</span><span>Registro gratuito y rápido</span></div>
+      <div class="login-deco-item"><span>📦</span><span>Historial de todos tus pedidos</span></div>
+      <div class="login-deco-item"><span>⭐</span><span>Califica y descubre nuevos puestos</span></div>
+    </div>
+  </div>
+
+  <!-- Panel derecho con formulario -->
+  <div class="login-panel-der">
+    <div class="login-form-box">
+
+      <h1>Crear cuenta</h1>
+      <p class="sub">Completa los datos para registrarte</p>
+
+      <form method="POST">
+        <div class="campo-grupo">
+          <label for="nombre">Nombre de usuario</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required autofocus>
         </div>
-        <div class="campo">
-            <label>Correo electrónico</label>
-            <input type="email" name="correo" placeholder="usuario@udem.edu.co" required>
+        <div class="campo-grupo">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" name="correo" placeholder="tu@correo.com" required>
         </div>
-        <div class="campo">
-            <label>Tiempo disponible (minutos)</label>
-            <input type="number" name="tiempo" placeholder="Ej: 30" min="1" required>
+        <div class="campo-grupo">
+          <label for="tiempo">Tiempo estimado al puesto (minutos)</label>
+          <input type="number" id="tiempo" name="tiempo" placeholder="Ej: 5" min="1" max="30" required>
+          <span class="campo-hint">¿Cuántos minutos tardas en llegar desde tu ubicación habitual?</span>
         </div>
-        <div class="campo">
-            <label>Contraseña (mínimo 4 caracteres)</label>
-            <input type="password" name="contrasena" placeholder="••••••••" required minlength="4">
+        <div class="campo-grupo">
+          <label for="contrasena">Contraseña</label>
+          <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn btn-primary">Crear cuenta</button>
-    </form>
+
+        <button type="submit" class="btn-login">Crear cuenta →</button>
+      </form>
+
+      <hr class="login-divider">
+
+      <p class="login-footer">
+        ¿Ya tienes cuenta?
+        <a href="{{ url_for('login_usuario') }}">Inicia sesión</a>
+      </p>
 
     </div>
-    <p class="texto-centro texto-gris" style="margin-top:1rem; font-size:0.9rem;">
-  ¿Ya tienes cuenta?
-  <a href="{{ url_for('login_usuario') }}" class="texto-naranja" style="text-decoration:none; font-weight:500;">Inicia sesión</a>
-</p>
+  </div>
+
 </div>
 {% endblock %}
