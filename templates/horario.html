@@ -29,8 +29,8 @@
 
   <!-- ENCABEZADO -->
   <div class="horario-header">
-    <h2>📚 Mi Horario — {{ usuario.nombre }}</h2>
-    <a href="{{ url_for('agregar_clase') }}" class="btn-agregar">+ Agregar clase</a>
+    <h2> Mi Horario — {{ usuario.nombre }}</h2>
+    <a href="{{ url_for('agregar_clase') }}" class="btn" style="background: #FF5C00; color:#fff">+ Agregar clase</a>
   </div>
 
   <!-- GRILLA SEMANAL -->
@@ -82,7 +82,7 @@
 
   <!-- RESUMEN SEMANAL -->
   <div class="resumen-semanal">
-    <h3>📊 Resumen de la semana</h3>
+    <h3> Resumen de la semana</h3>
     <div class="resumen-grid">
       {% for dia, info in resumen.items() %}
       <div class="resumen-card">
@@ -151,8 +151,7 @@
 
 .resumen-semanal h3 { font-size: 18px; margin-bottom: 12px; }
 .resumen-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-.resumen-card { background: #f1f3f5; border-radius: 8px; padding: 12px; text-align: center; font-size: 13px; }
-.resumen-card h4 { margin: 0 0 6px 0; font-size: 14px; }
+.resumen-card { background: #cfe2ff; border-left: 4px solid #0d6efd; border-radius: 8px; padding: 12px; text-align: center; font-size: 13px; }.resumen-card h4 { margin: 0 0 6px 0; font-size: 14px; }
 .resumen-card p { margin: 2px 0; }
 .mejor { color: #198754; font-weight: bold; }
 .sin-espacio { color: #dc3545; }
