@@ -1,39 +1,434 @@
 {% extends "base.html" %}
 {% block titulo %}Inicio{% endblock %}
+{% block body_class %}page-index{% endblock %}
+
+{% block estilos %}
+<style>
+  /* ── HERO SECTION ─────────────────────────────── */
+  .hero {
+    min-height: calc(100vh - 64px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    gap: 3rem;
+  }
+
+  /* Columna izquierda */
+  .hero-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    color: #FECD4C;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    width: fit-content;
+  }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .hero-title span {
+    color: #FECD4C;
+  }
+  .hero-sub {
+    color: rgba(255,255,255,0.75);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    max-width: 380px;
+  }
+  .hero-botones {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .btn-primario {
+    background: var(--naranja);
+    color: white;
+    padding: 0.85rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 20px rgba(255,92,0,0.4);
+  }
+  .btn-primario:hover { background: var(--naranja-claro); transform: translateY(-1px); }
+  .btn-secundario {
+    background: white;
+    color: var(--oscuro);
+    padding: 0.85rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-secundario:hover { background: #f5f5f5; transform: translateY(-1px); }
+
+  /* Stats rápidas */
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.5rem;
+  }
+  .stat { display: flex; flex-direction: column; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── CARRUSEL ─────────────────────────────────── */
+  .hero-carrusel {
+    position: relative;
+    height: 520px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  }
+  .carrusel-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .carrusel-slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .slide-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 6s ease;
+  }
+  .carrusel-slide:hover .slide-bg { transform: scale(1.04); }
+
+  /* Slides con gradientes y emojis grandes (sin imágenes externas) */
+  .slide-1 .slide-bg { background: linear-gradient(135deg, #7b2d00 0%, #c1121f 50%, #ff5c00 100%); }
+  .slide-2 .slide-bg { background: linear-gradient(135deg, #1a3a00 0%, #2d6a4f 50%, #52b788 100%); }
+  .slide-3 .slide-bg { background: linear-gradient(135deg, #1a0040 0%, #3d0070 50%, #7b2fff 100%); }
+
+  /* Icono decorativo flotante */
+  .slide-emoji {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    font-size: 8rem;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));
+    animation: flotar 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes flotar {
+    0%, 100% { transform: translate(-50%, -60%); }
+    50%       { transform: translate(-50%, -65%); }
+  }
+
+  .slide-info {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem 1.75rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+  }
+  .slide-tag {
+    display: inline-block;
+    background: var(--naranja);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+  .slide-titulo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.25rem;
+  }
+  .slide-desc {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.85rem;
+  }
+
+  /* Controles del carrusel */
+  .carrusel-dots {
+    position: absolute;
+    bottom: 1rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 0.4rem;
+    z-index: 10;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.25s;
+    border: none;
+    padding: 0;
+  }
+  .dot.activo { background: white; width: 22px; border-radius: 4px; }
+
+  .carrusel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+    transition: background 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .carrusel-btn:hover { background: rgba(255,255,255,0.3); }
+  .carrusel-btn.prev { left: 0.75rem; }
+  .carrusel-btn.next { right: 0.75rem; }
+
+  /* ── FEATURES ─────────────────────────────────── */
+  .features {
+    background: var(--crema);
+    padding: 4rem 2rem;
+  }
+  .features-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .features-titulo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--oscuro);
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .feature-card {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 20px;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+  .feature-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+  .feature-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--oscuro);
+    margin-bottom: 0.4rem;
+  }
+  .feature-card p {
+    color: var(--gris);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* ── RESPONSIVE ───────────────────────────────── */
+  @media (max-width: 768px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 2rem 1.25rem;
+      min-height: auto;
+      gap: 2rem;
+    }
+    .hero-carrusel { height: 320px; order: -1; }
+    .hero-stats { gap: 1.25rem; }
+    .hero-title { font-size: 2.4rem; }
+  }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<div  style="text-align:center; padding: 5rem 1.5rem 4rem;">
-   <p style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--naranja); font-weight:600; margin-bottom:1rem;">Universidad de Medellín</p>
-  <h1 style="font-family:'Syne',sans-serif; font-size:3.5rem; font-weight:800; line-height:1.1; margin-bottom:1rem;">
-    Come rico,<br>pide fácil.
-  </h1>
 
+<!-- ── HERO ──────────────────────────────────────── -->
+<section class="hero">
 
+  <!-- Texto izquierda -->
+  <div class="hero-texto">
+    <span class="hero-badge">🎓 Universidad de Medellín</span>
 
-    <p style="color:var(--gris); font-size:1.1rem; max-width:400px; margin:0 auto 2.5rem;">FoodU conecta estudiantes con los mejores puestos de comida del campus.</p>
-    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
-    <a href="{{ url_for('login_usuario') }}" style="background:var(--naranja); color:white; padding:0.85rem 2rem; border-radius:12px; text-decoration:none; font-weight:500; font-size:1rem;">Soy estudiante →</a>
-    <a href="{{ url_for('login_vendedor') }}" style="background:white; color:var(--oscuro); padding:0.85rem 2rem; border-radius:12px; text-decoration:none; font-weight:500; font-size:1rem; border:1.5px solid var(--borde);">Soy vendedor</a>
+    <h1 class="hero-title">
+      Come rico,<br><span>pide fácil.</span>
+    </h1>
+
+    <p class="hero-sub">
+      FoodU conecta estudiantes con los mejores puestos de comida del campus. Pide, espera menos, disfruta más.
+    </p>
+
+    <div class="hero-botones">
+      <a href="{{ url_for('login_usuario') }}" class="btn-primario">Soy estudiante →</a>
+      <a href="{{ url_for('login_vendedor') }}" class="btn-secundario">Soy vendedor</a>
     </div>
-</div>
 
-
-<div style="max-width:900px; margin:0 auto; padding:0 1.5rem 4rem;">
-  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem;">
-    <div class="card" style="text-align:center;">
-      <div style="font-size:2rem; margin-bottom:0.5rem;">🍟</div>
-      <h2 style="font-size:1rem; margin-bottom:0.3rem;">Pide en segundos</h2>
-      <p style="color:var(--gris); font-size:0.875rem;">Elige tus productos favoritos y haz tu pedido con un clic.</p>
-    </div>
-    <div class="card" style="text-align:center;">
-      <div style="font-size:2rem; margin-bottom:0.5rem;">⏱️</div>
-      <h2 style="font-size:1rem; margin-bottom:0.3rem;">Tiempo estimado</h2>
-      <p style="color:var(--gris); font-size:0.875rem;">Sabe cuánto esperar antes de ir a recoger tu pedido.</p>
-    </div>
-    <div class="card" style="text-align:center;">
-      <div style="font-size:2rem; margin-bottom:0.5rem;">⭐</div>
-      <h2 style="font-size:1rem; margin-bottom:0.3rem;">Califica y recomienda</h2>
-      <p style="color:var(--gris); font-size:0.875rem;">Ayuda a otros estudiantes calificando a los vendedores.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">3+</span>
+        <span class="stat-label">Puestos activos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">⚡</span>
+        <span class="stat-label">Pedidos en segundos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">0 filas</span>
+        <span class="stat-label">Recoge cuando esté listo</span>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- Carrusel derecha -->
+  <div class="hero-carrusel">
+    <div class="carrusel-track" id="track">
+
+      <div class="carrusel-slide slide-1">
+        <div class="slide-bg"></div>
+        <div class="slide-emoji">🍟</div>
+        <div class="slide-info">
+          <span class="slide-tag">🔥 Más pedido</span>
+          <div class="slide-titulo">Papas fritas al instante</div>
+          <div class="slide-desc">Pide desde clase, recoge en 8 minutos.</div>
+        </div>
+      </div>
+
+      <div class="carrusel-slide slide-2">
+        <div class="slide-bg"></div>
+        <div class="slide-emoji">🥗</div>
+        <div class="slide-info">
+          <span class="slide-tag">🌿 Saludable</span>
+          <div class="slide-titulo">Ensaladas frescas</div>
+          <div class="slide-desc">Opciones nutritivas preparadas al momento.</div>
+        </div>
+      </div>
+
+      <div class="carrusel-slide slide-3">
+        <div class="slide-bg"></div>
+        <div class="slide-emoji">🍔</div>
+        <div class="slide-info">
+          <span class="slide-tag">⭐ Top vendedor</span>
+          <div class="slide-titulo">Hamburguesas de Tavo</div>
+          <div class="slide-desc">Calificación 4.9 · Listo en 12 min.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Botones prev/next -->
+    <button class="carrusel-btn prev" onclick="moverCarrusel(-1)">‹</button>
+    <button class="carrusel-btn next" onclick="moverCarrusel(1)">›</button>
+
+    <!-- Dots -->
+    <div class="carrusel-dots" id="dots"></div>
+  </div>
+
+</section>
+
+<!-- ── FEATURES ──────────────────────────────────── -->
+<section class="features">
+  <div class="features-inner">
+    <h2 class="features-titulo">¿Por qué FoodU?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🍟</span>
+        <h3>Pide en segundos</h3>
+        <p>Elige tus productos favoritos y haz tu pedido con un clic desde donde estés.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⏱️</span>
+        <h3>Tiempo estimado</h3>
+        <p>Sabe exactamente cuánto esperar antes de ir a recoger tu pedido al puesto.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔢</span>
+        <h3>Turno virtual</h3>
+        <p>Sin filas. El sistema te asigna un turno y te avisa cuando tu pedido está listo.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⭐</span>
+        <h3>Califica y recomienda</h3>
+        <p>Ayuda a otros estudiantes calificando a los vendedores después de tu pedido.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  let actual = 0;
+  const slides = document.querySelectorAll('.carrusel-slide');
+  const track  = document.getElementById('track');
+  const dotsEl = document.getElementById('dots');
+
+  // Crear dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' activo' : '');
+    d.onclick = () => irA(i);
+    dotsEl.appendChild(d);
+  });
+
+  function irA(idx) {
+    actual = (idx + slides.length) % slides.length;
+    track.style.transform = `translateX(-${actual * 100}%)`;
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('activo', i === actual);
+    });
+  }
+
+  function moverCarrusel(dir) { irA(actual + dir); }
+
+  // Auto-avance cada 4 s
+  setInterval(() => moverCarrusel(1), 4000);
+</script>
+
 {% endblock %}
