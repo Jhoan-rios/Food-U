@@ -69,7 +69,7 @@ class Persona(ABC):
 # PRODUCTO
 # ─────────────────────────────────────────
 class Producto:
-    def __init__(self, producto_id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool):
+    def __init__(self, producto_id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool, imagen: str = ""):
         if precio < 0:
             raise ValueError("El precio no puede ser negativo")
         if tiempo_preparacion <= 0:
@@ -79,6 +79,7 @@ class Producto:
         self.__precio: float = precio
         self.__tiempo_preparacion: int = tiempo_preparacion
         self.disponible: bool = disponible
+        self.imagen: str = imagen
 
     @property
     def nombre(self):
