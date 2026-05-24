@@ -1,0 +1,57 @@
+{
+  "Jhoan Gay": {
+    "usuario_nombre": "Jhoan Gay",
+    "clases": {
+      "lunes": [
+        {
+          "nombre": "Algebra",
+          "dia": "lunes",
+          "hora_inicio": "08:00",
+          "hora_fin": "09:30",
+          "salon": "bloque 5"
+        },
+        {
+          "nombre": "Calculo",
+          "dia": "lunes",
+          "hora_inicio": "10:00",
+          "hora_fin": "11:30",
+          "salon": "bloque 5"
+        }
+      ],
+      "martes": [
+        {
+          "nombre": "POO",
+          "dia": "martes",
+          "hora_inicio": "08:00",
+          "hora_fin": "09:30",
+          "salon": "bloque 10"
+        },
+        {
+          "nombre": "Expresion",
+          "dia": "martes",
+          "hora_inicio": "10:00",
+          "hora_fin": "11:30",
+          "salon": "bloque 10"
+        }
+      ],
+      "miércoles": [
+        {
+          "nombre": "Algebra",
+          "dia": "miércoles",
+          "hora_inicio": "08:00",
+          "hora_fin": "09:30",
+          "salon": "bloque 10"
+        },
+        {
+          "nombre": "POO",
+          "dia": "miércoles",
+          "hora_inicio": "10:00",
+          "hora_fin": "11:30",
+          "salon": "bloque 12"
+        }
+      ],
+      "jueves": [],
+      "viernes": []
+    }
+  }
+}
