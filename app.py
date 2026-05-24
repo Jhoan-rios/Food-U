@@ -28,7 +28,7 @@ def get_vendedor_actual():
     if nombre:
         return sistema.buscar_vendedor(nombre)
     return None
-#RUTAS PRINCIPALES
+
 @app.route("/")
 def index():
     return render_template("index.html")

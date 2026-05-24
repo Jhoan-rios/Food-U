@@ -1,3 +1,4 @@
+
 class FoodUException(Exception):
     pass
 
