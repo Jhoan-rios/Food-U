@@ -1,28 +1,28 @@
 from datetime import datetime
-
-from flask import Flask
-import re
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modelo.model import Usuario, Vendedor, Producto, SistemaFoodU
 from modelo.persistencia import guardar_datos, cargar_datos
 from modelo.horario1 import Horario, Clase
 import json as _json_persist
-import os
 import json
+import os
+import re
 import requests
 import bcrypt
 
 app = Flask(__name__)
 app.secret_key = "foodu-udem-2024"
+os.makedirs("static/uploads", exist_ok=True)
 
-
-#ESTADO GLOBAL DEL SISTEMA
-
-
-sistema=SistemaFoodU()
+# ─────────────────────────────────────────
+# ESTADO GLOBAL
+# ─────────────────────────────────────────
+sistema = SistemaFoodU()
 id_usuario, id_producto = cargar_datos(sistema)
+
 HORARIOS_FILE = "horarios.json"
 horarios: dict = {}
+
 
 def cargar_horarios():
     if not os.path.exists(HORARIOS_FILE):
@@ -34,19 +34,24 @@ def cargar_horarios():
     except Exception:
         return {}
 
+
 def guardar_horarios(horarios_dict):
     data = {nombre: h.to_dict() for nombre, h in horarios_dict.items()}
     with open(HORARIOS_FILE, "w", encoding="utf-8") as f:
         _json_persist.dump(data, f, ensure_ascii=False, indent=2)
 
-def get_horario_usuario(nombre):
+
+def get_horario_usuario(nombre: str) -> Horario:
     if nombre not in horarios:
         horarios[nombre] = Horario(nombre)
     return horarios[nombre]
 
+
 horarios = cargar_horarios()
 
-#HELPERS
+# ─────────────────────────────────────────
+# HELPERS
+# ─────────────────────────────────────────
 
 def get_usuario_actual():
     nombre = session.get("usuario")
@@ -54,18 +59,27 @@ def get_usuario_actual():
         return sistema.buscar_usuario(nombre)
     return None
 
+
 def get_vendedor_actual():
-    nombre=session.get("vendedor")
+    nombre = session.get("vendedor")
     if nombre:
         return sistema.buscar_vendedor(nombre)
     return None
+
+
+# ─────────────────────────────────────────
+# INDEX
+# ─────────────────────────────────────────
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-#USUARIO - LIGIN Y REGISTRO
+# ─────────────────────────────────────────
+# USUARIO - LOGIN Y REGISTRO
+# ─────────────────────────────────────────
+
 @app.route("/usuario/login", methods=["GET", "POST"])
 def login_usuario():
     if request.method == "POST":
@@ -125,7 +139,9 @@ def logout_usuario():
     return redirect(url_for("index"))
 
 
-#USUARIO - DASHBOARD
+# ─────────────────────────────────────────
+# USUARIO - DASHBOARD Y FUNCIONES
+# ─────────────────────────────────────────
 
 @app.route("/usuario/dashboard")
 def dashboard_usuario():
@@ -178,6 +194,7 @@ def crear_pedido():
         return redirect(url_for("historial_usuario"))
     return render_template("crear_pedido.html", usuario=usuario, productos=todos_disponibles)
 
+
 @app.route("/usuario/historial")
 def historial_usuario():
     usuario = get_usuario_actual()
@@ -207,6 +224,9 @@ def calificar_vendedor():
     return render_template("calificar_vendedor.html", usuario=usuario, vendedores=sistema.vendedores)
 
 
+# ─────────────────────────────────────────
+# VENDEDOR - LOGIN Y REGISTRO
+# ─────────────────────────────────────────
 
 @app.route("/vendedor/login", methods=["GET", "POST"])
 def login_vendedor():
@@ -256,6 +276,10 @@ def logout_vendedor():
     return redirect(url_for("index"))
 
 
+# ─────────────────────────────────────────
+# VENDEDOR - DASHBOARD Y PRODUCTOS
+# ─────────────────────────────────────────
+
 @app.route("/vendedor/dashboard")
 def dashboard_vendedor():
     vendedor = get_vendedor_actual()
@@ -276,20 +300,27 @@ def agregar_producto():
         precio = request.form["precio"].strip()
         tiempo = request.form["tiempo"].strip()
         disponible = request.form.get("disponible") == "on"
+
+        imagen = ""
+        if "imagen" in request.files:
+            file = request.files["imagen"]
+            if file and file.filename != "":
+                ext = file.filename.rsplit(".", 1)[-1].lower()
+                if ext in ["jpg", "jpeg", "png", "webp"]:
+                    nombre_archivo = f"producto_{id_producto}.{ext}"
+                    file.save(os.path.join("static/uploads", nombre_archivo))
+                    imagen = nombre_archivo
+
         try:
-            producto = Producto(id_producto, nombre, float(precio), int(tiempo), disponible)
+            producto = Producto(id_producto, nombre, float(precio), int(tiempo), disponible, imagen)
             vendedor.agregar_producto(producto)
             id_producto += 1
             guardar_datos(sistema, id_usuario, id_producto)
             flash(f"Producto '{nombre}' agregado correctamente.", "success")
-        except:
+        except Exception:
             flash("Error al agregar el producto. Verifica los datos.", "error")
         return redirect(url_for("dashboard_vendedor"))
     return render_template("agregar_producto.html", vendedor=vendedor)
-
-
-
-
 
 
 @app.route("/vendedor/productos/editar/<int:producto_id>", methods=["GET", "POST"])
@@ -328,7 +359,6 @@ def eliminar_producto(producto_id):
     return redirect(url_for("dashboard_vendedor"))
 
 
-
 @app.route("/vendedor/pedidos", methods=["GET", "POST"])
 def gestionar_pedidos():
     vendedor = get_vendedor_actual()
@@ -346,25 +376,25 @@ def gestionar_pedidos():
     congestion = sistema.calcular_congestion(vendedor)
     return render_template("gestionar_pedidos.html", vendedor=vendedor, congestion=congestion)
 
+
 # ─────────────────────────────────────────
-# PANTALLA PUBLICA DE TURNOS
+# TURNOS PÚBLICOS
 # ─────────────────────────────────────────
+
 @app.route("/turnos")
 def pantalla_turnos():
     return render_template("turnos.html", pedidos=sistema.pedidos, vendedores=sistema.vendedores)
 
 
-
-
 # ─────────────────────────────────────────
 # CHATBOT IA
 # ─────────────────────────────────────────
+
 @app.route("/chatbot")
 def chatbot():
     usuario = get_usuario_actual()
     if not usuario:
         return redirect(url_for("login_usuario"))
-
     menu = []
     for v in sistema.vendedores:
         for p in v.productos:
@@ -375,7 +405,6 @@ def chatbot():
                     "tiempo": p.tiempo_preparacion,
                     "vendedor": v.nombre
                 })
-
     menu_json = json.dumps(menu, ensure_ascii=False)
     return render_template("chatbot.html", usuario=usuario, menu_json=menu_json)
 
@@ -412,24 +441,19 @@ Si quiere algo económico, recomienda lo más barato."""
                 "model": "claude-sonnet-4-20250514",
                 "max_tokens": 500,
                 "system": sistema_prompt,
-                "messages": [
-                    {"role": "user", "content": mensaje_usuario}
-                ]
+                "messages": [{"role": "user", "content": mensaje_usuario}]
             }
         )
         data_respuesta = respuesta.json()
         texto = data_respuesta["content"][0]["text"]
         return json.dumps({"respuesta": texto}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
-
-    except Exception as e:
+    except Exception:
         return json.dumps({"respuesta": "Lo siento, no puedo responder ahora. Intenta más tarde."}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
-def get_horario_usuario(nombre: str) -> Horario:
-    """Obtiene o crea el horario de un usuario."""
-    if nombre not in horarios:
-        horarios[nombre] = Horario(nombre)
-    return horarios[nombre]
 
+# ─────────────────────────────────────────
+# HORARIO SINCRONIZADO
+# ─────────────────────────────────────────
 
 @app.route("/usuario/horario")
 def ver_horario():
@@ -449,7 +473,6 @@ def ver_horario():
     if dia_actual in ["lunes", "martes", "miércoles", "jueves", "viernes"]:
         sugerencia = horario.sugerencia_pedido_ahora(hora_actual, dia_actual)
 
-    # Construir bloques ordenados por día
     dias = ["lunes", "martes", "miércoles", "jueves", "viernes"]
     bloques_por_dia = {}
     for dia in dias:
@@ -473,10 +496,6 @@ def ver_horario():
     )
 
 
-# ─────────────────────────────────────────
-# AGREGAR CLASE AL HORARIO
-# ─────────────────────────────────────────
-
 @app.route("/usuario/horario/agregar", methods=["GET", "POST"])
 def agregar_clase():
     usuario = get_usuario_actual()
@@ -486,18 +505,17 @@ def agregar_clase():
     horario = get_horario_usuario(usuario.nombre)
 
     if request.method == "POST":
-        nombre   = request.form["nombre"].strip()
-        dia      = request.form["dia"].strip().lower()
+        nombre  = request.form["nombre"].strip()
+        dia     = request.form["dia"].strip().lower()
         h_inicio = request.form["hora_inicio"].strip()
-        h_fin    = request.form["hora_fin"].strip()
-        salon    = request.form.get("salon", "").strip()
+        h_fin   = request.form["hora_fin"].strip()
+        salon   = request.form.get("salon", "").strip()
 
         try:
             clase = Clase(nombre, dia, h_inicio, h_fin, salon)
             resultado = horario.agregar_clase(clase)
             if "agregada" in resultado:
                 flash(resultado, "success")
-                # Persistir (integrar con guardar_datos si se desea)
                 guardar_horarios(horarios)
             else:
                 flash(resultado, "error")
@@ -509,10 +527,6 @@ def agregar_clase():
     dias = ["lunes", "martes", "miércoles", "jueves", "viernes"]
     return render_template("agregar_clase.html", usuario=usuario, dias=dias)
 
-
-# ─────────────────────────────────────────
-# ELIMINAR CLASE DEL HORARIO
-# ─────────────────────────────────────────
 
 @app.route("/usuario/horario/eliminar", methods=["POST"])
 def eliminar_clase():
@@ -530,17 +544,11 @@ def eliminar_clase():
     return redirect(url_for("ver_horario"))
 
 
-# ─────────────────────────────────────────
-# API: SUGERENCIA EN TIEMPO REAL (JSON)
-# ─────────────────────────────────────────
-
 @app.route("/api/horario/sugerencia")
 def api_sugerencia():
-    """Endpoint que el frontend puede consultar cada minuto via JS."""
-    import json as _json
     usuario = get_usuario_actual()
     if not usuario:
-        return _json.dumps({"error": "no autenticado"}), 401
+        return json.dumps({"error": "no autenticado"}), 401
 
     horario = get_horario_usuario(usuario.nombre)
     ahora = datetime.now()
@@ -549,10 +557,9 @@ def api_sugerencia():
     hora_actual = ahora.strftime("%H:%M")
 
     if dia_actual not in ["lunes", "martes", "miércoles", "jueves", "viernes"]:
-        return _json.dumps({"tiene_espacio": False, "mensaje": "Hoy no hay clases 🎉"})
+        return json.dumps({"tiene_espacio": False, "mensaje": "Hoy no hay clases 🎉"})
 
     sug = horario.sugerencia_pedido_ahora(hora_actual, dia_actual)
-
     respuesta = {
         "tiene_espacio": sug["tiene_espacio"],
         "mensaje": sug["mensaje"],
@@ -568,34 +575,12 @@ def api_sugerencia():
             "modo": esp.modo,
             "punto_venta": esp.punto_venta_sugerido,
         }
-
-    return _json.dumps(respuesta, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+    return json.dumps(respuesta, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
 
 # ─────────────────────────────────────────
-# CARGA / GUARDADO DE HORARIOS (persistencia)
+# ARRANQUE
 # ─────────────────────────────────────────
 
-import json as _json_persist
-import os
-
-HORARIOS_FILE = "horarios.json"
-
-
-def cargar_horarios() -> dict[str, Horario]:
-    """Carga los horarios desde horarios.json al iniciar la app."""
-    if not os.path.exists(HORARIOS_FILE):
-        return {}
-    try:
-        with open(HORARIOS_FILE, "r", encoding="utf-8") as f:
-            data = _json_persist.load(f)
-        return {nombre: Horario.from_dict(d) for nombre, d in data.items()}
-    except Exception:
-        return {}
-
-
-def guardar_horarios(horarios_dict: dict[str, Horario]):
-    """Guarda todos los horarios en horarios.json."""
-    data = {nombre: h.to_dict() for nombre, h in horarios_dict.items()}
-    with open(HORARIOS_FILE, "w", encoding="utf-8") as f:
-        _json_persist.dump(data, f, ensure_ascii=False, indent=2)
+if __name__ == "__main__":
+    app.run(debug=True)
