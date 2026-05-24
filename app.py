@@ -237,18 +237,22 @@ def crear_pedido():
     if not usuario:
         return redirect(url_for("login_usuario"))
 
-    todos_disponibles = []
+    # Agrupar por restaurante
+    restaurantes = []
+    todos_planos = []
     for v in sistema.vendedores:
-        for p in v.productos:
-            if p.disponible:
-                todos_disponibles.append((p, v.nombre))
+        disponibles = [p for p in v.productos if p.disponible]
+        if disponibles:
+            restaurantes.append((v, disponibles))
+            for p in disponibles:
+                todos_planos.append(p)
 
     if request.method == "POST":
         ids_seleccionados = request.form.getlist("productos")
         seleccionados = []
         for id_str in ids_seleccionados:
             id_num = int(id_str)
-            for p, _ in todos_disponibles:
+            for p in todos_planos:
                 if p.id == id_num:
                     seleccionados.append(p)
         if not seleccionados:
@@ -260,7 +264,7 @@ def crear_pedido():
         flash(f"¡Pedido #{pedido.id} creado! Tu turno es el #{turno}. Total: ${pedido.total:.2f}", "success")
         return redirect(url_for("historial_usuario"))
 
-    return render_template("crear_pedido.html", usuario=usuario, productos=todos_disponibles)
+    return render_template("crear_pedido.html", usuario=usuario, restaurantes=restaurantes)
 
 
 @app.route("/usuario/historial")
