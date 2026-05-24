@@ -50,7 +50,15 @@
           "salon": "bloque 12"
         }
       ],
-      "jueves": [],
+      "jueves": [
+        {
+          "nombre": "Estructura",
+          "dia": "jueves",
+          "hora_inicio": "08:00",
+          "hora_fin": "09:30",
+          "salon": "bloque 10"
+        }
+      ],
       "viernes": []
     }
   }
