@@ -28,6 +28,7 @@
         <thead>
           <tr>
             <th>Producto</th>
+            <th>Restaurante</th>
             <th style="text-align:right;">Precio</th>
           </tr>
         </thead>
@@ -51,6 +52,9 @@
                 {% endif %}
                 {{ p.nombre }}
               </div>
+            </td>
+            <td style="color:var(--gris); font-size:0.85rem;">
+              🏪 {{ mapa_vendedor.get(p.id, '—') }}
             </td>
             <td style="text-align:right; font-weight:500;">${{ "%.2f"|format(p.precio) }}</td>
           </tr>
