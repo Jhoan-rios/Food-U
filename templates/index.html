@@ -106,125 +106,127 @@
   }
 
   /* ── CARRUSEL ─────────────────────────────────── */
-  .hero-carrusel {
-    position: relative;
-    height: 520px;
-    border-radius: 24px;
+  .hero-carrusel{
+    width: 100%;
+    max-width: 600px;
+    height: 420px;
     overflow: hidden;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-  }
-  .carrusel-track {
+    border-radius: 32px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+
+.carrusel-track{
     display: flex;
+    width: 100%;
     height: 100%;
-    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-  }
-  .carrusel-slide {
+    transition: transform .6s ease;
+}
+
+.carrusel-slide{
     min-width: 100%;
     height: 100%;
     position: relative;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-  .slide-bg {
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.slide-bg{
     position: absolute;
     inset: 0;
     background-size: cover;
-    background-position: center;
+    background-position: center top;
     transition: transform 6s ease;
-  }
-  .carrusel-slide:hover .slide-bg { transform: scale(1.04); }
+}
 
-  /* Slides con gradientes y emojis grandes (sin imágenes externas) */
-  .slide-1 .slide-bg { background: linear-gradient(135deg, #7b2d00 0%, #c1121f 50%, #ff5c00 100%); }
-  .slide-2 .slide-bg { background: linear-gradient(135deg, #1a3a00 0%, #2d6a4f 50%, #52b788 100%); }
-  .slide-3 .slide-bg { background: linear-gradient(135deg, #1a0040 0%, #3d0070 50%, #7b2fff 100%); }
+.carrusel-slide:hover .slide-bg{
+    transform: scale(1.06);
+}
 
-  /* Icono decorativo flotante */
-  .slide-emoji {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -60%);
-    font-size: 8rem;
-    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));
-    animation: flotar 3s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes flotar {
-    0%, 100% { transform: translate(-50%, -60%); }
-    50%       { transform: translate(-50%, -65%); }
-  }
-
-  .slide-info {
+.slide-info{
     position: relative;
     z-index: 2;
-    padding: 1.5rem 1.75rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
-  }
-  .slide-tag {
-    display: inline-block;
-    background: var(--naranja);
+    padding: 40px;
     color: white;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.65rem;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
-  }
-  .slide-titulo {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 0.25rem;
-  }
-  .slide-desc {
-    color: rgba(255,255,255,0.75);
-    font-size: 0.85rem;
-  }
+    width: 100%;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.1)
+    );
+}
 
-  /* Controles del carrusel */
-  .carrusel-dots {
-    position: absolute;
-    bottom: 1rem;
-    right: 1.25rem;
-    display: flex;
-    gap: 0.4rem;
-    z-index: 10;
-  }
-  .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.4);
-    cursor: pointer;
-    transition: all 0.25s;
-    border: none;
-    padding: 0;
-  }
-  .dot.activo { background: white; width: 22px; border-radius: 4px; }
+.slide-titulo{
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 15px;
+}
 
-  .carrusel-btn {
+.slide-desc{
+    font-size: 1.05rem;
+    opacity: .92;
+    line-height: 1.6;
+    max-width: 90%;
+}
+
+/* BOTONES */
+
+.carrusel-btn{
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 36px; height: 36px;
-    background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.3);
+    width: 52px;
+    height: 52px;
+    border: none;
     border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    backdrop-filter: blur(10px);
     color: white;
-    font-size: 1rem;
+    font-size: 30px;
     cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    z-index: 5;
+    transition: .3s;
+}
+
+.carrusel-btn:hover{
+    background: rgba(255,255,255,.35);
+}
+
+.prev{
+    left: 20px;
+}
+
+.next{
+    right: 20px;
+}
+
+  /* Controles del carrusel */
+  .carrusel-dots{
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
     z-index: 10;
-    transition: background 0.2s;
-    backdrop-filter: blur(4px);
-  }
-  .carrusel-btn:hover { background: rgba(255,255,255,0.3); }
-  .carrusel-btn.prev { left: 0.75rem; }
-  .carrusel-btn.next { right: 0.75rem; }
+}
+
+.dot{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.4);
+    cursor: pointer;
+    transition: .3s;
+}
+
+.dot.active{
+    width: 28px;
+    border-radius: 20px;
+    background: white;
+}
 
   /* ── FEATURES ─────────────────────────────────── */
   .features {
@@ -277,15 +279,48 @@
 
   /* ── RESPONSIVE ───────────────────────────────── */
   @media (max-width: 768px) {
-    .hero {
-      grid-template-columns: 1fr;
-      padding: 2rem 1.25rem;
-      min-height: auto;
-      gap: 2rem;
-    }
-    .hero-carrusel { height: 320px; order: -1; }
-    .hero-stats { gap: 1.25rem; }
-    .hero-title { font-size: 2.4rem; }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.25rem;
+    min-height: auto;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .hero-carrusel {
+    height: 420px;
+    order: -1;
+    border-radius: 24px;
+  }
+
+  .hero-stats {
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-title {
+    font-size: 2.7rem;
+  }
+
+  .slide-titulo{
+    font-size: 2rem;
+  }
+
+  .slide-desc{
+    font-size: .95rem;
+  }
+
+  .slide-info{
+    padding: 25px;
+  }
+
+  .carrusel-btn{
+    width: 42px;
+    height: 42px;
+    font-size: 24px;
+  }
+}
   }
 </style>
 {% endblock %}
@@ -330,105 +365,154 @@
 
   <!-- Carrusel derecha -->
   <div class="hero-carrusel">
-    <div class="carrusel-track" id="track">
 
-      <div class="carrusel-slide slide-1">
-        <div class="slide-bg"></div>
-        <div class="slide-emoji">🍟</div>
-        <div class="slide-info">
-          <span class="slide-tag">🔥 Más pedido</span>
-          <div class="slide-titulo">Papas fritas al instante</div>
-          <div class="slide-desc">Pide desde clase, recoge en 8 minutos.</div>
-        </div>
+  <div class="carrusel-track" id="track">
+
+    <!-- AGOGO -->
+    <div class="carrusel-slide slide-1">
+
+      <div class="slide-bg"
+        style="background-image:
+        linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.45)),
+        url('/static/img/agogo-banner.png');">
       </div>
 
-      <div class="carrusel-slide slide-2">
-        <div class="slide-bg"></div>
-        <div class="slide-emoji">🥗</div>
-        <div class="slide-info">
-          <span class="slide-tag">🌿 Saludable</span>
-          <div class="slide-titulo">Ensaladas frescas</div>
-          <div class="slide-desc">Opciones nutritivas preparadas al momento.</div>
-        </div>
-      </div>
+      <div class="slide-info">
 
-      <div class="carrusel-slide slide-3">
-        <div class="slide-bg"></div>
-        <div class="slide-emoji">🍔</div>
-        <div class="slide-info">
-          <span class="slide-tag">⭐ Top vendedor</span>
-          <div class="slide-titulo">Hamburguesas de Tavo</div>
-          <div class="slide-desc">Calificación 4.9 · Listo en 12 min.</div>
-        </div>
-      </div>
 
+
+        <div class="slide-titulo">
+          Lo más Agogo
+        </div>
+
+        <div class="slide-desc">
+          Hamburguesas, papas y comidas rápidas listas en minutos.
+        </div>
+
+      </div>
     </div>
 
-    <!-- Botones prev/next -->
-    <button class="carrusel-btn prev" onclick="moverCarrusel(-1)">‹</button>
-    <button class="carrusel-btn next" onclick="moverCarrusel(1)">›</button>
+    <!-- KIOSKO -->
+    <div class="carrusel-slide slide-2">
 
-    <!-- Dots -->
-    <div class="carrusel-dots" id="dots"></div>
-  </div>
+      <div class="slide-bg"
+        style="background-image:
+        linear-gradient(rgba(0,0,0,.30), rgba(0,0,0,.45)),
+        url('/static/img/kiosko-banner.png');">
+      </div>
 
-</section>
+      <div class="slide-info">
 
-<!-- ── FEATURES ──────────────────────────────────── -->
-<section class="features">
-  <div class="features-inner">
-    <h2 class="features-titulo">¿Por qué FoodU?</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <span class="feature-icon">🍟</span>
-        <h3>Pide en segundos</h3>
-        <p>Elige tus productos favoritos y haz tu pedido con un clic desde donde estés.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">⏱️</span>
-        <h3>Tiempo estimado</h3>
-        <p>Sabe exactamente cuánto esperar antes de ir a recoger tu pedido al puesto.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">🔢</span>
-        <h3>Turno virtual</h3>
-        <p>Sin filas. El sistema te asigna un turno y te avisa cuando tu pedido está listo.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">⭐</span>
-        <h3>Califica y recomienda</h3>
-        <p>Ayuda a otros estudiantes calificando a los vendedores después de tu pedido.</p>
+
+        <div class="slide-titulo">
+          El Kiosko
+        </div>
+
+        <div class="slide-desc">
+          Sabor que te atrapa, rapidez que encanta.
+        </div>
+
       </div>
     </div>
+
+    <!-- DONDE JUAN -->
+    <div class="carrusel-slide slide-3">
+
+      <div class="slide-bg"
+        style="background-image:
+        linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.50)),
+        url('/static/img/dondejuan-banner.png');">
+      </div>
+
+      <div class="slide-info">
+
+
+
+        <div class="slide-titulo">
+          Donde Juan
+        </div>
+
+        <div class="slide-desc">
+          Buffet universitario con variedad y sabor todos los días.
+        </div>
+
+      </div>
+    </div>
+
   </div>
-</section>
+
+  <!-- DOTS -->
+  <div class="carrusel-dots" id="dots"></div>
+
+</div>
 
 <script>
-  let actual = 0;
-  const slides = document.querySelectorAll('.carrusel-slide');
-  const track  = document.getElementById('track');
-  const dotsEl = document.getElementById('dots');
+  /* REEMPLAZA TODO TU SCRIPT POR ESTE */
 
-  // Crear dots
-  slides.forEach((_, i) => {
-    const d = document.createElement('button');
-    d.className = 'dot' + (i === 0 ? ' activo' : '');
-    d.onclick = () => irA(i);
-    dotsEl.appendChild(d);
-  });
+const track = document.getElementById("track");
+const slides = document.querySelectorAll(".carrusel-slide");
+const dotsContainer = document.getElementById("dots");
 
-  function irA(idx) {
-    actual = (idx + slides.length) % slides.length;
-    track.style.transform = `translateX(-${actual * 100}%)`;
-    document.querySelectorAll('.dot').forEach((d, i) => {
-      d.classList.toggle('activo', i === actual);
+let index = 0;
+
+/* CREAR DOTS */
+
+slides.forEach((_, i) => {
+
+    const dot = document.createElement("div");
+
+    dot.classList.add("dot");
+
+    if(i === 0){
+        dot.classList.add("active");
+    }
+
+    dot.addEventListener("click", () => {
+        index = i;
+        actualizarCarrusel();
     });
-  }
 
-  function moverCarrusel(dir) { irA(actual + dir); }
+    dotsContainer.appendChild(dot);
+});
 
-  // Auto-avance cada 4 s
-  setInterval(() => moverCarrusel(1), 4000);
+const dots = document.querySelectorAll(".dot");
+
+/* MOVER */
+
+function moverCarrusel(direction){
+
+    index += direction;
+
+    if(index >= slides.length){
+        index = 0;
+    }
+
+    if(index < 0){
+        index = slides.length - 1;
+    }
+
+    actualizarCarrusel();
+}
+
+/* UPDATE */
+
+function actualizarCarrusel(){
+
+    track.style.transform =
+        `translateX(-${index * 100}%)`;
+
+    dots.forEach(dot =>
+        dot.classList.remove("active")
+    );
+
+    dots[index].classList.add("active");
+}
+
+/* AUTO PLAY */
+
+setInterval(() => {
+    moverCarrusel(1);
+}, 5000);
 </script>
 
 {% endblock %}
