@@ -1,5 +1,5 @@
 {
-    "id_usuario": 3,
+    "id_usuario": 4,
     "id_producto": 2,
     "usuarios": [
         {
@@ -14,6 +14,13 @@
             "nombre": "Jhoan",
             "correo": "jhoanrios@gmail.com",
             "contrasena": "1111",
+            "tiempo_disponible": 0
+        },
+        {
+            "id": 3,
+            "nombre": "Jhoan Gay",
+            "correo": "soyjhoangay@udem.edu.co",
+            "contrasena": "$2b$12$3a7n2Lyi7HxVk/17KGFLtupUiXN04.Py5V/OaL3n6FSCw1tZccoaK",
             "tiempo_disponible": 0
         }
     ],
