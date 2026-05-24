@@ -63,3 +63,56 @@ class Persona(ABC):
     @abstractmethod
     def __str__(self):
         pass
+
+
+# ─────────────────────────────────────────
+# PRODUCTO
+# ─────────────────────────────────────────
+class Producto:
+    def __init__(self, producto_id: int, nombre: str, precio: float, tiempo_preparacion: int, disponible: bool):
+        if precio < 0:
+            raise ValueError("El precio no puede ser negativo")
+        if tiempo_preparacion <= 0:
+            raise ValueError("El tiempo de preparacion debe ser mayor a 0")
+        self.id: int = producto_id
+        self.__nombre: str = nombre
+        self.__precio: float = precio
+        self.__tiempo_preparacion: int = tiempo_preparacion
+        self.disponible: bool = disponible
+
+    @property
+    def nombre(self):
+        return self.__nombre
+
+    @property
+    def precio(self):
+        return self.__precio
+
+    @property
+    def tiempo_preparacion(self):
+        return self.__tiempo_preparacion
+
+    @nombre.setter
+    def nombre(self, valor):
+        if not valor:
+            raise ValueError("El nombre del producto no puede estar vacio")
+        self.__nombre = valor
+
+    @precio.setter
+    def precio(self, valor):
+        if valor < 0:
+            raise ValueError("El precio no puede ser negativo")
+        self.__precio = valor
+
+    @tiempo_preparacion.setter
+    def tiempo_preparacion(self, valor):
+        if valor <= 0:
+            raise ValueError("El tiempo de preparacion debe ser mayor a 0")
+        self.__tiempo_preparacion = valor
+
+    def actualizar_disponibilidad(self, estado: bool):
+        self.disponible = estado
+
+    def __str__(self):
+        estado = "Disponible" if self.disponible else "No disponible"
+        return f"[{self.id}] {self.__nombre} - ${self.__precio} | {self.__tiempo_preparacion} min | {estado}"
