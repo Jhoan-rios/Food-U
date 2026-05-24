@@ -23,3 +23,4 @@ EDIFICIOS = {
     "biblioteca": "cafetería central",
     "default": "cafetería central",
 }
+

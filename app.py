@@ -5,6 +5,7 @@ from modelo.model import Usuario, Vendedor, Producto, SistemaFoodU
 from modelo.persistencia import guardar_datos, cargar_datos
 import json
 import requests
+import bcrypt
 
 app = Flask(__name__)
 app.secret_key = "foodu-udem-2024"
@@ -43,7 +44,7 @@ def login_usuario():
         nombre = request.form["nombre"].strip()
         contrasena = request.form["contrasena"].strip()
         usuario = sistema.buscar_usuario(nombre)
-        if usuario is None or usuario.contrasena != contrasena:
+        if usuario is None or not bcrypt.checkpw(contrasena.encode("utf-8"), usuario.contrasena.encode("utf-8")):
             flash("Nombre o contraseña incorrectos.", "error")
             return redirect(url_for("login_usuario"))
         session["usuario"] = usuario.nombre
@@ -76,7 +77,8 @@ def registro_usuario():
                 flash(e, "error")
             return redirect(url_for("registro_usuario"))
 
-        usuario = Usuario(id_usuario, nombre, correo, int(tiempo), contrasena)
+        contrasena_hash = bcrypt.hashpw(contrasena.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        usuario = Usuario(id_usuario, nombre, correo, int(tiempo), contrasena_hash)
         resultado = sistema.registrar_usuario(usuario)
         if "correctamente" in resultado:
             id_usuario += 1
@@ -184,7 +186,7 @@ def login_vendedor():
         nombre = request.form["nombre"].strip()
         contrasena = request.form["contrasena"].strip()
         vendedor = sistema.buscar_vendedor(nombre)
-        if vendedor is None or vendedor.contrasena != contrasena:
+        if vendedor is None or not bcrypt.checkpw(contrasena.encode("utf-8"), vendedor.contrasena.encode("utf-8")):
             flash("Nombre o contraseña incorrectos.", "error")
             return redirect(url_for("login_vendedor"))
         session["vendedor"] = vendedor.nombre
@@ -207,7 +209,8 @@ def registro_vendedor():
             for e in errores:
                 flash(e, "error")
             return redirect(url_for("registro_vendedor"))
-        vendedor = Vendedor(nombre, contrasena)
+        contrasena_hash = bcrypt.hashpw(contrasena.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        vendedor = Vendedor(nombre, contrasena_hash)
         resultado = sistema.registrar_vendedor(vendedor)
         if "correctamente" in resultado:
             guardar_datos(sistema, id_usuario, id_producto)
