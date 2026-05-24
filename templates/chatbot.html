@@ -4,6 +4,126 @@
 <div class="contenedor-sm">
   <div style="margin-top:2rem;">
     <h1>🤖 Asistente FoodU</h1>
+    <p class="subtitulo">Pregúntame qué pedir según tu tiempo y gustos</p>
+
+    <div class="card" style="padding:0; overflow:hidden;">
+
+      <!-- MENSAJES -->
+      <div id="mensajes" style="height:420px; overflow-y:auto; padding:1.25rem; display:flex; flex-direction:column; gap:0.75rem;">
+        <div class="msg-bot">
+          <div class="burbuja-bot">
+            👋 ¡Hola! Soy tu asistente de FoodU. Puedo ayudarte a decidir qué pedir.<br><br>
+            Dime por ejemplo:<br>
+            • <em>"Tengo 10 minutos, qué me recomiendas"</em><br>
+            • <em>"Quiero algo económico"</em><br>
+            • <em>"¿Qué hay disponible ahora?"</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- INPUT -->
+      <div style="border-top:1px solid var(--borde); padding:1rem; display:flex; gap:0.75rem; background:white;">
+        <input type="text" id="input-mensaje" placeholder="Escribe tu pregunta..."
+               style="margin:0; flex:1;"
+               onkeypress="if(event.key==='Enter') enviarMensaje()">
+        <button onclick="enviarMensaje()" class="btn btn-primary" style="width:auto; padding:0.7rem 1.25rem;">
+          Enviar
+        </button>
+      </div>
+
+    </div>
+
+    <div style="margin-top:1rem; text-align:center;">
+      <a href="{{ url_for('dashboard_usuario') }}" class="texto-gris" style="font-size:0.9rem; text-decoration:none;">← Volver al dashboard</a>
+    </div>
   </div>
 </div>
+
+<style>
+  .msg-bot, .msg-usuario { display:flex; }
+  .msg-usuario { justify-content:flex-end; }
+  .burbuja-bot {
+    background: #f5f5f5;
+    color: #1A1008;
+    padding: 0.75rem 1rem;
+    border-radius: 16px 16px 16px 4px;
+    font-size: 0.9rem;
+    max-width: 85%;
+    line-height: 1.5;
+  }
+  .burbuja-usuario {
+    background: var(--naranja);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 16px 16px 4px 16px;
+    font-size: 0.9rem;
+    max-width: 85%;
+    line-height: 1.5;
+  }
+  .burbuja-cargando {
+    background: #f5f5f5;
+    color: #aaa;
+    padding: 0.75rem 1rem;
+    border-radius: 16px 16px 16px 4px;
+    font-size: 0.9rem;
+  }
+  #mensajes::-webkit-scrollbar { width: 4px; }
+  #mensajes::-webkit-scrollbar-thumb { background: var(--borde); border-radius: 4px; }
+</style>
+
+<script>
+  // Menú real del sistema pasado desde Flask
+  const menuReal = {{ menu_json | safe }};
+
+  async function enviarMensaje() {
+    const input = document.getElementById("input-mensaje");
+    const texto = input.value.trim();
+    if (!texto) return;
+
+    input.value = "";
+    agregarMensaje(texto, "usuario");
+
+    const cargando = agregarCargando();
+
+    try {
+      const respuesta = await fetch("/chatbot/responder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mensaje: texto, menu: menuReal })
+      });
+      const data = await respuesta.json();
+      cargando.remove();
+      agregarMensaje(data.respuesta, "bot");
+    } catch (e) {
+      cargando.remove();
+      agregarMensaje("Hubo un error al conectar con el asistente. Intenta de nuevo.", "bot");
+    }
+  }
+
+  function agregarMensaje(texto, tipo) {
+    const contenedor = document.getElementById("mensajes");
+    const div = document.createElement("div");
+    div.className = tipo === "bot" ? "msg-bot" : "msg-usuario";
+    const burbuja = document.createElement("div");
+    burbuja.className = tipo === "bot" ? "burbuja-bot" : "burbuja-usuario";
+    burbuja.innerHTML = texto.replace(/\n/g, "<br>");
+    div.appendChild(burbuja);
+    contenedor.appendChild(div);
+    contenedor.scrollTop = contenedor.scrollHeight;
+    return div;
+  }
+
+  function agregarCargando() {
+    const contenedor = document.getElementById("mensajes");
+    const div = document.createElement("div");
+    div.className = "msg-bot";
+    const burbuja = document.createElement("div");
+    burbuja.className = "burbuja-cargando";
+    burbuja.textContent = "Pensando...";
+    div.appendChild(burbuja);
+    contenedor.appendChild(div);
+    contenedor.scrollTop = contenedor.scrollHeight;
+    return div;
+  }
+</script>
 {% endblock %}
