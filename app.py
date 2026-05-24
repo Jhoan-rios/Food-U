@@ -3,6 +3,9 @@ import re
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modelo.model import Usuario, Vendedor, Producto, SistemaFoodU
 from modelo.persistencia import guardar_datos, cargar_datos
+from modelo.horario import Horario, Clase
+import json as _json_persist
+import os
 import json
 import requests
 import bcrypt
@@ -16,7 +19,30 @@ app.secret_key = "foodu-udem-2024"
 
 sistema=SistemaFoodU()
 id_usuario, id_producto = cargar_datos(sistema)
+HORARIOS_FILE = "horarios.json"
+horarios: dict = {}
 
+def cargar_horarios():
+    if not os.path.exists(HORARIOS_FILE):
+        return {}
+    try:
+        with open(HORARIOS_FILE, "r", encoding="utf-8") as f:
+            data = _json_persist.load(f)
+        return {nombre: Horario.from_dict(d) for nombre, d in data.items()}
+    except Exception:
+        return {}
+
+def guardar_horarios(horarios_dict):
+    data = {nombre: h.to_dict() for nombre, h in horarios_dict.items()}
+    with open(HORARIOS_FILE, "w", encoding="utf-8") as f:
+        _json_persist.dump(data, f, ensure_ascii=False, indent=2)
+
+def get_horario_usuario(nombre):
+    if nombre not in horarios:
+        horarios[nombre] = Horario(nombre)
+    return horarios[nombre]
+
+horarios = cargar_horarios()
 
 #HELPERS
 
