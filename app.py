@@ -440,7 +440,6 @@ def ver_horario():
     horario = get_horario_usuario(usuario.nombre)
     resumen = horario.resumen_semanal()
 
-    # Sugerencia en tiempo real
     ahora = datetime.now()
     dia_actual = ["lunes", "martes", "miércoles", "jueves", "viernes",
                   "sábado", "domingo"][ahora.weekday()]
@@ -450,13 +449,27 @@ def ver_horario():
     if dia_actual in ["lunes", "martes", "miércoles", "jueves", "viernes"]:
         sugerencia = horario.sugerencia_pedido_ahora(hora_actual, dia_actual)
 
+    # Construir bloques ordenados por día
+    dias = ["lunes", "martes", "miércoles", "jueves", "viernes"]
+    bloques_por_dia = {}
+    for dia in dias:
+        bloques = []
+        for clase in horario.clases_del_dia(dia):
+            bloques.append({"tipo": "clase", "inicio": clase.hora_inicio, "obj": clase})
+        for espacio in horario.espacios_libres_dia(dia):
+            if espacio.alcanza_para_recoger:
+                bloques.append({"tipo": "espacio", "inicio": espacio.inicio, "obj": espacio})
+        bloques.sort(key=lambda x: x["inicio"])
+        bloques_por_dia[dia] = bloques
+
     return render_template(
         "horario.html",
         usuario=usuario,
         horario=horario,
         resumen=resumen,
         sugerencia=sugerencia,
-        dias=["lunes", "martes", "miércoles", "jueves", "viernes"],
+        dias=dias,
+        bloques_por_dia=bloques_por_dia,
     )
 
 
