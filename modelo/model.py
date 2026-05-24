@@ -116,3 +116,61 @@ class Producto:
     def __str__(self):
         estado = "Disponible" if self.disponible else "No disponible"
         return f"[{self.id}] {self.__nombre} - ${self.__precio} | {self.__tiempo_preparacion} min | {estado}"
+
+
+
+# ─────────────────────────────────────────
+# PEDIDO
+# ─────────────────────────────────────────
+class Pedido:
+    ESTADOS_VALIDOS = ["pendiente", "en preparacion", "listo", "entregado", "cancelado"]
+
+    def __init__(self, pedido_id: int, usuario: "Usuario"):
+        self.id: int = pedido_id
+        self.usuario: Usuario = usuario
+        self.productos: list[Producto] = []
+        self.__estado: str = "pendiente"
+        self.tiempo_estimado: int = 0
+        self.total: float = 0.0
+
+    @property
+    def estado(self):
+        return self.__estado
+
+    @estado.setter
+    def estado(self, valor):
+        self.__estado = valor
+
+    def calcular_tiempo(self):
+        if not self.productos:
+            raise PedidoVacioError()
+        mayor = 0
+        for p in self.productos:
+            if p.tiempo_preparacion > mayor:
+                mayor = p.tiempo_preparacion
+        self.tiempo_estimado = mayor
+        return self.tiempo_estimado
+
+    def calcular_total(self):
+        if not self.productos:
+            raise PedidoVacioError()
+        suma = 0
+        for p in self.productos:
+            suma = suma + p.precio
+        self.total = suma
+        return self.total
+
+    def cambiar_estado(self, nuevo_estado: str):
+        if nuevo_estado not in self.ESTADOS_VALIDOS:
+            raise ValueError(f"Estado '{nuevo_estado}' no valido.")
+        self.__estado = nuevo_estado
+
+    def __str__(self):
+        texto = f"Pedido #{self.id} | Estado: {self.__estado}\n"
+        texto += f"  Usuario: {self.usuario.nombre}\n"
+        texto += f"  Productos:\n"
+        for p in self.productos:
+            texto += f"    - {p.nombre} ${p.precio}\n"
+        texto += f"  Tiempo estimado: {self.tiempo_estimado} min\n"
+        texto += f"  Total: ${self.total}"
+        return texto
