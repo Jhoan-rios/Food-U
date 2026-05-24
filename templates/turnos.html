@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodU — Turnos</title>
+  <meta http-equiv="refresh" content="5">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --naranja: #FF5C00;
+      --oscuro: #1A1008;
+      --crema: #FFF8F2;
+      --gris: #6B6560;
+      --verde: #2D6A4F;
+      --rojo: #C1121F;
+      --amarillo: #F59E0B;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--oscuro);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      background: #111;
+      padding: 1.2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--naranja);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--naranja);
+      letter-spacing: -1px;
+    }
+    .logo span { color: white; }
+    .hora {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 2px;
+    }
+    .subtitulo-header {
+      font-size: 0.85rem;
+      color: var(--gris);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* CONTENIDO */
+    .contenido {
+      padding: 2rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    /* COLUMNAS */
+    .columna-titulo {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .col-pendiente .columna-titulo { background: #2a2a2a; color: #aaa; }
+    .col-preparacion .columna-titulo { background: #2d1f00; color: var(--amarillo); border: 1px solid var(--amarillo); }
+    .col-listo .columna-titulo { background: #0d2b1a; color: #4ade80; border: 1px solid #4ade80; }
+
+    /* TARJETA DE TURNO */
+    .turno-card {
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .col-pendiente .turno-card {
+      background: #1e1e1e;
+      border: 1px solid #333;
+    }
+    .col-preparacion .turno-card {
+      background: #1f1400;
+      border: 1px solid var(--amarillo);
+      animation: pulso 2s infinite;
+    }
+    .col-listo .turno-card {
+      background: #0a2018;
+      border: 2px solid #4ade80;
+      animation: brillar 1.5s infinite;
+    }
+
+    @keyframes pulso {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+      50% { box-shadow: 0 0 20px 4px rgba(245, 158, 11, 0.2); }
+    }
+    @keyframes brillar {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+      50% { box-shadow: 0 0 25px 6px rgba(74, 222, 128, 0.25); }
+    }
+
+    .turno-numero {
+      font-family: 'Syne', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .col-pendiente .turno-numero { color: #555; }
+    .col-preparacion .turno-numero { color: var(--amarillo); }
+    .col-listo .turno-numero { color: #4ade80; }
+
+    .turno-usuario {
+      font-size: 1rem;
+      font-weight: 500;
+      color: white;
+      margin-bottom: 0.3rem;
+    }
+    .turno-productos {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 0.5rem;
+    }
+    .turno-tiempo {
+      font-size: 0.78rem;
+      color: #666;
+    }
+    .col-preparacion .turno-tiempo { color: var(--amarillo); opacity: 0.8; }
+    .col-listo .turno-tiempo { color: #4ade80; opacity: 0.8; }
+
+    .listo-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #4ade80;
+      color: #0a2018;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* VACIO */
+    .vacio {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #333;
+      font-size: 0.9rem;
+    }
+    .vacio-icono { font-size: 2rem; margin-bottom: 0.5rem; }
+
+    /* FOOTER */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #111;
+      border-top: 1px solid #222;
+      padding: 0.75rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-texto {
+      font-size: 0.8rem;
+      color: #444;
+    }
+    .footer-texto span { color: var(--naranja); }
+    .actualiza {
+      font-size: 0.75rem;
+      color: #333;
+    }
+
+    /* SIN PEDIDOS */
+    .sin-pedidos {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 6rem 2rem;
+    }
+    .sin-pedidos h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    .sin-pedidos p { color: #444; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Food<span>U</span></div>
+    <div class="subtitulo-header">Sistema de turnos</div>
+  </div>
+  <div class="hora" id="reloj">--:--:--</div>
+</header>
+
+<div class="contenido">
+
+  {% set pendientes = pedidos | selectattr('estado', 'equalto', 'pendiente') | list %}
+  {% set en_prep = pedidos | selectattr('estado', 'equalto', 'en preparacion') | list %}
+  {% set listos = pedidos | selectattr('estado', 'equalto', 'listo') | list %}
+
+  {% if pedidos | length == 0 %}
+  <div class="sin-pedidos">
+    <div style="font-size:4rem; margin-bottom:1rem;">🍽️</div>
+    <h2>Sin pedidos activos</h2>
+    <p>Los turnos aparecerán aquí cuando los estudiantes hagan pedidos.</p>
+  </div>
+
+  {% else %}
+
+  <!-- COLUMNA PENDIENTES -->
+  <div class="col-pendiente">
+    <div class="columna-titulo">⏳ Pendiente ({{ pendientes | length }})</div>
+    {% if pendientes %}
+      {% for pedido in pendientes %}
+      <div class="turno-card">
+        <div class="turno-numero">#{{ pedido.id }}</div>
+        <div class="turno-usuario">👤 {{ pedido.usuario.nombre }}</div>
+        <div class="turno-productos">
+          {% for p in pedido.productos %}{{ p.nombre }}{% if not loop.last %}, {% endif %}{% endfor %}
+        </div>
+        <div class="turno-tiempo">⏱ {{ pedido.tiempo_estimado }} min</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="vacio"><div class="vacio-icono">✓</div>Sin pendientes</div>
+    {% endif %}
+  </div>
+
+  <!-- COLUMNA EN PREPARACION -->
+  <div class="col-preparacion">
+    <div class="columna-titulo">🔥 En preparación ({{ en_prep | length }})</div>
+    {% if en_prep %}
+      {% for pedido in en_prep %}
+      <div class="turno-card">
+        <div class="turno-numero">#{{ pedido.id }}</div>
+        <div class="turno-usuario">👤 {{ pedido.usuario.nombre }}</div>
+        <div class="turno-productos">
+          {% for p in pedido.productos %}{{ p.nombre }}{% if not loop.last %}, {% endif %}{% endfor %}
+        </div>
+        <div class="turno-tiempo">⏱ {{ pedido.tiempo_estimado }} min</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="vacio"><div class="vacio-icono">🔥</div>Nada en preparación</div>
+    {% endif %}
+  </div>
+
+  <!-- COLUMNA LISTOS -->
+  <div class="col-listo">
+    <div class="columna-titulo">✅ Listo para recoger ({{ listos | length }})</div>
+    {% if listos %}
+      {% for pedido in listos %}
+      <div class="turno-card">
+        <div class="listo-badge">¡Listo!</div>
+        <div class="turno-numero">#{{ pedido.id }}</div>
+        <div class="turno-usuario">👤 {{ pedido.usuario.nombre }}</div>
+        <div class="turno-productos">
+          {% for p in pedido.productos %}{{ p.nombre }}{% if not loop.last %}, {% endif %}{% endfor %}
+        </div>
+        <div class="turno-tiempo">💰 ${{ "%.2f"|format(pedido.total) }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="vacio"><div class="vacio-icono">✅</div>Nada listo aún</div>
+    {% endif %}
+  </div>
+
+  {% endif %}
+
+</div>
+
+<footer>
+  <div class="footer-texto">Universidad de Medellín · <span>FoodU</span> · Sistema de pedidos</div>
+  <div class="actualiza">Se actualiza automáticamente cada 5 segundos</div>
+</footer>
+
+<script>
+  function actualizarReloj() {
+    const ahora = new Date();
+    const h = String(ahora.getHours()).padStart(2, '0');
+    const m = String(ahora.getMinutes()).padStart(2, '0');
+    const s = String(ahora.getSeconds()).padStart(2, '0');
+    document.getElementById('reloj').textContent = `${h}:${m}:${s}`;
+  }
+  actualizarReloj();
+  setInterval(actualizarReloj, 1000);
+</script>
+
+</body>
+</html>

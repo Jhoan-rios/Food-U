@@ -313,3 +313,9 @@ def gestionar_pedidos():
     congestion = sistema.calcular_congestion(vendedor)
     return render_template("gestionar_pedidos.html", vendedor=vendedor, congestion=congestion)
 
+# ─────────────────────────────────────────
+# PANTALLA PUBLICA DE TURNOS
+# ─────────────────────────────────────────
+@app.route("/turnos")
+def pantalla_turnos():
+    return render_template("turnos.html", pedidos=sistema.pedidos, vendedores=sistema.vendedores)
