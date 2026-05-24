@@ -116,4 +116,74 @@ class EspacioLibre:
         }
         return descripciones[self.modo]
 
+class Horario:
 
+    def __init__(self, usuario_nombre: str):
+        self.usuario_nombre = usuario_nombre
+        # dict: dia -> lista de Clase ordenadas por hora
+        self._clases: dict[str, list[Clase]] = {dia: [] for dia in DIAS}
+
+    def agregar_clase(self, clase: Clase) -> str:
+        if clase.dia not in DIAS:
+            return f"Día '{clase.dia}' no válido. Usa: {', '.join(DIAS)}"
+        if clase.hora_inicio >= clase.hora_fin:
+            return "La hora de inicio debe ser anterior a la hora de fin."
+        for c in self._clases[clase.dia]:
+            if not (clase.hora_fin <= c.hora_inicio or clase.hora_inicio >= c.hora_fin):
+                return f"Se solapa con '{c.nombre}' ({c.hora_inicio.strftime('%H:%M')} - {c.hora_fin.strftime('%H:%M')})."
+        self._clases[clase.dia].append(clase)
+        self._clases[clase.dia].sort(key=lambda c: c.hora_inicio)
+        return f"Clase '{clase.nombre}' agregada el {clase.dia}."
+
+    def eliminar_clase(self, nombre: str, dia: str) -> str:
+        dia = dia.lower()
+        for c in self._clases.get(dia, []):
+            if c.nombre.lower() == nombre.lower():
+                self._clases[dia].remove(c)
+                return f"Clase '{nombre}' eliminada."
+        return f"No se encontró '{nombre}' el {dia}."
+
+    def clases_del_dia(self, dia: str) -> list[Clase]:
+        return self._clases.get(dia.lower(), [])
+
+
+    def espacios_libres_dia(self, dia: str, hora_inicio_jornada: str = "07:00",
+                             hora_fin_jornada: str = "20:00") -> list[EspacioLibre]:
+        dia = dia.lower()
+        clases = self._clases.get(dia, [])
+        espacios = []
+
+        inicio_jornada = datetime.strptime(hora_inicio_jornada, "%H:%M").time()
+        fin_jornada = datetime.strptime(hora_fin_jornada, "%H:%M").time()
+
+        bloques = [(c.hora_inicio, c.hora_fin, c) for c in clases]
+
+        if bloques:
+            if inicio_jornada < bloques[0][0]:
+                esp = EspacioLibre(dia, inicio_jornada, bloques[0][0], bloques[0][2])
+                if esp.duracion >= 5:
+                    espacios.append(esp)
+
+            for i in range(len(bloques) - 1):
+                fin_actual = bloques[i][1]
+                inicio_sig = bloques[i + 1][0]
+                clase_sig = bloques[i + 1][2]
+                if fin_actual < inicio_sig:
+                    esp = EspacioLibre(dia, fin_actual, inicio_sig, clase_sig)
+                    if esp.duracion >= 5:
+                        espacios.append(esp)
+            if bloques[-1][1] < fin_jornada:
+                esp = EspacioLibre(dia, bloques[-1][1], fin_jornada, None)
+                if esp.duracion >= 5:
+                    espacios.append(esp)
+        else:
+            esp = EspacioLibre(dia, inicio_jornada, fin_jornada, None)
+            espacios.append(esp)
+
+        return espacios
+
+    def mejor_espacio_para_pedir(self, dia: str) -> "EspacioLibre | None":
+        espacios = [e for e in self.espacios_libres_dia(dia) if e.alcanza_para_recoger]
+        if not espacios:
+            return None
+        return max(espacios, key=lambda e: e.duracion)
