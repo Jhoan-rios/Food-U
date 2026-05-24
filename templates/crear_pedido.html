@@ -5,88 +5,177 @@
   <h1>Hacer pedido</h1>
   <p class="subtitulo">Selecciona los productos que deseas pedir</p>
 
-  {% if productos %}
+  {% if restaurantes %}
   <form method="POST" id="form-pedido">
-    <div class="card-grid" style="margin-bottom:1.5rem;">
-      {% for producto, vendedor_nombre in productos %}
-      <label style="cursor:pointer; display:block; text-transform:none; letter-spacing:0; font-weight:normal;">
-        <div class="card" id="card-{{ producto.id }}" style="border:2px solid var(--borde); transition:all 0.15s; position:relative; padding:0; overflow:hidden;">
+
+    {% for vendedor, productos in restaurantes %}
+    <!-- Sección por restaurante -->
+    <div style="margin-bottom: 2rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem;
+                  padding-bottom:0.5rem; border-bottom:2px solid var(--borde);">
+        {% if vendedor.logo %}
+          <img src="{{ url_for('static', filename='uploads/' + vendedor.logo) }}"
+               style="width:36px; height:36px; border-radius:8px; object-fit:cover;"
+               onerror="this.style.display='none'">
+        {% else %}
+          <div style="width:36px; height:36px; border-radius:8px; background:var(--borde);
+                      display:flex; align-items:center; justify-content:center; font-size:1.1rem;">🏪</div>
+        {% endif %}
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem;">{{ vendedor.nombre }}</div>
+          {% if vendedor.calificacion > 0 %}
+          <div style="font-size:0.75rem; color:var(--gris);">⭐ {{ "%.1f"|format(vendedor.calificacion) }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card-grid">
+        {% for producto in productos %}
+        <div class="prod-card-pedido" id="card-{{ producto.id }}" onclick="toggleCard({{ producto.id }})">
+
+          <!-- Checkmark visual -->
+          <div class="checkmark" id="check-{{ producto.id }}">✓</div>
 
           {% if producto.imagen %}
             <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
                  alt="{{ producto.nombre }}"
-                 style="width:100%; height:140px; object-fit:cover; display:block;"
+                 style="width:100%; height:130px; object-fit:cover; display:block;"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div style="display:none; width:100%; height:140px; background:var(--borde);
+            <div style="display:none; width:100%; height:130px; background:var(--borde);
                         align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
           {% else %}
-            <div style="display:flex; width:100%; height:140px; background:var(--borde);
+            <div style="display:flex; width:100%; height:130px; background:var(--borde);
                         align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
           {% endif %}
 
           <input type="checkbox" name="productos" value="{{ producto.id }}"
-                 style="position:absolute; top:0.75rem; right:0.75rem; width:20px; height:20px;"
-                 onchange="toggleCard({{ producto.id }})">
+                 id="cb-{{ producto.id }}" style="display:none;"
+                 onchange="actualizarResumen()">
 
           <div style="padding:0.9rem 1rem;">
-            <div style="font-weight:600; font-size:1rem; padding-right:1.5rem; margin-bottom:0.2rem;">{{ producto.nombre }}</div>
-            <div style="color:var(--gris); font-size:0.78rem; margin-bottom:0.3rem;">🏪 {{ vendedor_nombre }}</div>
-            <div style="color:var(--naranja); font-size:1.2rem; font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
-            <div style="color:var(--gris); font-size:0.82rem; margin-top:0.3rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
+            <div style="font-weight:600; font-size:0.95rem; margin-bottom:0.2rem;">{{ producto.nombre }}</div>
+            <div style="color:var(--naranja); font-size:1.1rem; font-weight:700;
+                        font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
+            <div style="color:var(--gris); font-size:0.78rem; margin-top:0.3rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
           </div>
-
         </div>
-      </label>
-      {% endfor %}
-    </div>
-
-    <div class="card" style="position:sticky; bottom:1rem;">
-      <div class="fila">
-        <div>
-          <div style="font-size:0.8rem; color:var(--gris);">Resumen</div>
-          <div id="resumen" style="font-weight:600; font-family:'Syne',sans-serif;">0 productos seleccionados</div>
-        </div>
-        <button type="submit" class="btn" style="width:auto; background:#FF5C00; color:#fff;">Confirmar pedido →</button>
+        {% endfor %}
       </div>
     </div>
+    {% endfor %}
+
+    <!-- Resumen sticky -->
+    <div id="barra-resumen" class="card" style="position:sticky; bottom:1rem; transition: all 0.2s;">
+      <div class="fila" style="align-items:center;">
+        <div>
+          <div style="font-size:0.75rem; color:var(--gris);">Resumen</div>
+          <div id="resumen-texto" style="font-weight:600; font-family:'Syne',sans-serif;">
+            0 productos seleccionados
+          </div>
+          <div id="resumen-tiempo" style="font-size:0.78rem; color:var(--gris); margin-top:0.1rem; display:none;">
+          </div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button type="button" id="btn-limpiar"
+                  onclick="limpiarSeleccion()"
+                  style="display:none; background:none; border:1px solid var(--borde);
+                         color:var(--gris); padding:0.5rem 0.9rem; border-radius:8px;
+                         cursor:pointer; font-size:0.82rem;">
+            Limpiar
+          </button>
+          <button type="submit" id="btn-confirmar" disabled
+                  style="background:#ccc; color:white; border:none; padding:0.7rem 1.25rem;
+                         border-radius:8px; font-weight:600; cursor:not-allowed;
+                         font-family:'DM Sans',sans-serif; font-size:0.95rem;
+                         transition: background 0.2s;">
+            Confirmar pedido →
+          </button>
+        </div>
+      </div>
+    </div>
+
   </form>
-
-  <script>
-    const precios = { {% for p, _ in productos %} {{ p.id }}: {{ p.precio }}, {% endfor %} };
-
-    function toggleCard(id) {
-      const card = document.getElementById('card-' + id);
-      const cb = card.querySelector('input[type="checkbox"]');
-      if (cb.checked) {
-        card.style.borderColor = 'var(--naranja)';
-        card.style.background = '#fff8f2';
-      } else {
-        card.style.borderColor = 'var(--borde)';
-        card.style.background = 'white';
-      }
-      actualizarResumen();
-    }
-
-    function actualizarResumen() {
-      const checks = document.querySelectorAll('input[name="productos"]:checked');
-      let total = 0;
-      checks.forEach(c => total += precios[c.value]);
-      const resumen = document.getElementById('resumen');
-      if (checks.length === 0) {
-        resumen.textContent = '0 productos seleccionados';
-      } else {
-        resumen.textContent = checks.length + ' producto(s) — Total: $' + total.toFixed(2);
-      }
-    }
-  </script>
 
   {% else %}
   <div class="card" style="text-align:center; padding:3rem;">
     <div style="font-size:3rem; margin-bottom:1rem;">😕</div>
     <h2>No hay productos disponibles</h2>
     <p class="texto-gris">Intenta más tarde cuando los vendedores estén activos.</p>
-    <a href="{{ url_for('dashboard_usuario') }}" class="btn btn-outline" style="margin-top:1rem; display:inline-block; width:auto;">Volver</a>
+    <a href="{{ url_for('dashboard_usuario') }}" class="btn btn-outline"
+       style="margin-top:1rem; display:inline-block; width:auto;">Volver</a>
   </div>
   {% endif %}
+
 </div>
-{% endblock %}
+
+<style>
+  .prod-card-pedido {
+    background: white;
+    border: 2px solid var(--borde);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    user-select: none;
+  }
+  .prod-card-pedido:hover {
+    border-color: #ffb380;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(255,92,0,0.1);
+  }
+  .prod-card-pedido.seleccionado {
+    border-color: var(--naranja);
+    background: #fff8f2;
+    box-shadow: 0 4px 16px rgba(255,92,0,0.2);
+  }
+  .checkmark {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--naranja);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .prod-card-pedido.seleccionado .checkmark {
+    display: flex;
+  }
+</style>
+
+<script>
+  const precios  = { {% for v, prods in restaurantes %}{% for p in prods %}{{ p.id }}: {{ p.precio }}, {% endfor %}{% endfor %} };
+  const tiempos  = { {% for v, prods in restaurantes %}{% for p in prods %}{{ p.id }}: {{ p.tiempo_preparacion }}, {% endfor %}{% endfor %} };
+
+  function toggleCard(id) {
+    const card = document.getElementById('card-' + id);
+    const cb   = document.getElementById('cb-' + id);
+    cb.checked = !cb.checked;
+    card.classList.toggle('seleccionado', cb.checked);
+    actualizarResumen();
+  }
+
+  function actualizarResumen() {
+    const checks = document.querySelectorAll('input[name="productos"]:checked');
+    const btnConfirmar = document.getElementById('btn-confirmar');
+    const btnLimpiar   = document.getElementById('btn-limpiar');
+    const textoResumen = document.getElementById('resumen-texto');
+    const tiempoResumen = document.getElementById('resumen-tiempo');
+
+    let total = 0;
+    let maxTiempo = 0;
+    checks.forEach(c => {
+      total += precios[c.value];
+      if (tiempos[c.value] > maxTiempo) maxTiempo = tiempos[c.value];
+    });
+
+    if (checks.length === 0) {
+      textoResumen.textContent = '0 productos selecc
