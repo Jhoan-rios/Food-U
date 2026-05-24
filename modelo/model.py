@@ -258,3 +258,27 @@ class SistemaFoodU:
         for v in self.vendedores:
             if v.nombre == nombre: return v
         return None
+
+    def crear_pedidos_por_vendedor(self, usuario, productos):
+        """Crea un pedido separado por cada vendedor involucrado."""
+        if not productos: raise PedidoVacioError()
+
+        # Agrupar productos por vendedor
+        grupos = {}
+        for p in productos:
+            for v in self.vendedores:
+                if p in v.productos:
+                    if v.nombre not in grupos:
+                        grupos[v.nombre] = {"vendedor": v, "productos": []}
+                    grupos[v.nombre]["productos"].append(p)
+                    break
+
+        pedidos_creados = []
+        for grupo in grupos.values():
+            pedido = usuario.realizar_pedido(grupo["productos"])
+            self.pedidos.append(pedido)
+            if pedido not in grupo["vendedor"].pedidos_activos:
+                grupo["vendedor"].pedidos_activos.append(pedido)
+            pedidos_creados.append((pedido, grupo["vendedor"]))
+
+        return pedidos_creados
