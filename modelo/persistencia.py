@@ -35,7 +35,8 @@ def guardar_datos(sistema, id_usuario, id_producto):
                 "nombre": p.nombre,
                 "precio": p.precio,
                 "tiempo_preparacion": p.tiempo_preparacion,
-                "disponible": p.disponible
+                "disponible": p.disponible,
+                "imagen": p.imagen
             })
         datos["vendedores"].append(vendedor_dict)
 
@@ -84,7 +85,8 @@ def cargar_datos(sistema):
                 p_dict["nombre"],
                 p_dict["precio"],
                 p_dict["tiempo_preparacion"],
-                p_dict["disponible"]
+                p_dict["disponible"],
+                p_dict.get("imagen", "")
             )
             vendedor.productos.append(producto)
         sistema.vendedores.append(vendedor)
