@@ -8,11 +8,10 @@
   {% if productos %}
   <form method="POST" id="form-pedido">
     <div class="card-grid" style="margin-bottom:1.5rem;">
-      {% for producto in productos %}
+      {% for producto, vendedor_nombre in productos %}
       <label style="cursor:pointer; display:block; text-transform:none; letter-spacing:0; font-weight:normal;">
         <div class="card" id="card-{{ producto.id }}" style="border:2px solid var(--borde); transition:all 0.15s; position:relative; padding:0; overflow:hidden;">
 
-          <!-- IMAGEN -->
           {% if producto.imagen %}
             <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
                  alt="{{ producto.nombre }}"
@@ -25,14 +24,13 @@
                         align-items:center; justify-content:center; font-size:2.5rem;">🍽️</div>
           {% endif %}
 
-          <!-- CHECKBOX -->
           <input type="checkbox" name="productos" value="{{ producto.id }}"
                  style="position:absolute; top:0.75rem; right:0.75rem; width:20px; height:20px;"
                  onchange="toggleCard({{ producto.id }})">
 
-          <!-- INFO -->
           <div style="padding:0.9rem 1rem;">
-            <div style="font-weight:600; font-size:1rem; padding-right:1.5rem; margin-bottom:0.3rem;">{{ producto.nombre }}</div>
+            <div style="font-weight:600; font-size:1rem; padding-right:1.5rem; margin-bottom:0.2rem;">{{ producto.nombre }}</div>
+            <div style="color:var(--gris); font-size:0.78rem; margin-bottom:0.3rem;">🏪 {{ vendedor_nombre }}</div>
             <div style="color:var(--naranja); font-size:1.2rem; font-weight:700; font-family:'Syne',sans-serif;">${{ "%.2f"|format(producto.precio) }}</div>
             <div style="color:var(--gris); font-size:0.82rem; margin-top:0.3rem;">⏱ {{ producto.tiempo_preparacion }} min</div>
           </div>
@@ -54,7 +52,7 @@
   </form>
 
   <script>
-    const precios = { {% for p in productos %} {{ p.id }}: {{ p.precio }}, {% endfor %} };
+    const precios = { {% for p, _ in productos %} {{ p.id }}: {{ p.precio }}, {% endfor %} };
 
     function toggleCard(id) {
       const card = document.getElementById('card-' + id);
