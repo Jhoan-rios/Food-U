@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modelo.model import Usuario, Vendedor, Producto, SistemaFoodU
 from modelo.persistencia import guardar_datos, cargar_datos
-from modelo.horario1 import Horario, Clase
+from modelo.horario1 import Horario, Clase, EDIFICIOS
 import json as _json_persist
 import json
 import os
@@ -64,6 +64,30 @@ def get_vendedor_actual():
     nombre = session.get("vendedor")
     if nombre:
         return sistema.buscar_vendedor(nombre)
+    return None
+
+
+def _salon_referencia(horario, hora_actual: str, dia_actual: str):
+    """Retorna el salón más relevante para el momento actual."""
+    from datetime import datetime as dt
+    ahora = dt.strptime(hora_actual, "%H:%M").time()
+    clases = horario.clases_del_dia(dia_actual)
+
+    # ¿Estamos dentro de una clase ahora?
+    for c in clases:
+        if c.hora_inicio <= ahora <= c.hora_fin and c.salon:
+            return c.salon
+
+    # ¿Hay una clase siguiente con salón?
+    futuras = [c for c in clases if c.hora_inicio > ahora and c.salon]
+    if futuras:
+        return min(futuras, key=lambda c: c.hora_inicio).salon
+
+    # ¿Última clase del día con salón?
+    pasadas = [c for c in clases if c.hora_fin <= ahora and c.salon]
+    if pasadas:
+        return max(pasadas, key=lambda c: c.hora_fin).salon
+
     return None
 
 
@@ -149,22 +173,46 @@ def dashboard_usuario():
     if not usuario:
         return redirect(url_for("login_usuario"))
 
-    # Recomendados como tuplas (producto, vendedor_nombre)
-    todos = []
-    for v in sistema.vendedores:
-        for p in v.productos:
-            todos.append(p)
-    recomendados_raw = sistema.recomendador.recomendar(usuario, todos)
-
+    # Mapa producto_id -> vendedor (objeto completo)
     mapa_vendedor = {}
     for v in sistema.vendedores:
         for p in v.productos:
-            mapa_vendedor[p.id] = v.nombre
+            mapa_vendedor[p.id] = v
 
-    recomendados = [(p, mapa_vendedor.get(p.id, "")) for p in recomendados_raw]
+    # Recomendados como tuplas (producto, vendedor)
+    todos = [p for v in sistema.vendedores for p in v.productos]
+    recomendados_raw = sistema.recomendador.recomendar(usuario, todos)
+    recomendados = [(p, mapa_vendedor.get(p.id)) for p in recomendados_raw]
 
-    return render_template("dashboard_usuario.html", usuario=usuario, recomendados=recomendados)
+    # Restaurante cercano según horario
+    restaurante_cercano = None
+    ahora = datetime.now()
+    dia_actual = ["lunes", "martes", "miércoles", "jueves", "viernes",
+                  "sábado", "domingo"][ahora.weekday()]
+    hora_actual = ahora.strftime("%H:%M")
 
+    if dia_actual in ["lunes", "martes", "miércoles", "jueves", "viernes"]:
+        horario = get_horario_usuario(usuario.nombre)
+        salon = _salon_referencia(horario, hora_actual, dia_actual)
+        if salon:
+            cafeteria_target = None
+            for key, cafeteria in EDIFICIOS.items():
+                if key in salon.lower():
+                    cafeteria_target = cafeteria
+                    break
+            if cafeteria_target:
+                for v in sistema.vendedores:
+                    if cafeteria_target.lower() in v.nombre.lower() or \
+                       cafeteria_target.lower() in v.ubicacion.lower():
+                        restaurante_cercano = v
+                        break
+
+    return render_template(
+        "dashboard_usuario.html",
+        usuario=usuario,
+        recomendados=recomendados,
+        restaurante_cercano=restaurante_cercano,
+    )
 
 
 @app.route("/usuario/menu")
@@ -172,15 +220,16 @@ def menu_productos():
     usuario = get_usuario_actual()
     if not usuario:
         return redirect(url_for("login_usuario"))
-    todos_disponibles = []
+
+    restaurantes = []
     for v in sistema.vendedores:
-        for p in v.productos:
-            if p.disponible:
-                todos_disponibles.append((p, v.nombre))
-    return render_template("menu_productos.html", usuario=usuario, productos=todos_disponibles)
+        disponibles = [p for p in v.productos if p.disponible]
+        if disponibles:
+            restaurantes.append((v, disponibles))
+
+    return render_template("menu_productos.html", usuario=usuario, restaurantes=restaurantes)
 
 
-@app.route("/usuario/pedido", methods=["GET", "POST"])
 @app.route("/usuario/pedido", methods=["GET", "POST"])
 def crear_pedido():
     global id_producto
@@ -188,7 +237,6 @@ def crear_pedido():
     if not usuario:
         return redirect(url_for("login_usuario"))
 
-    # Ahora es lista de tuplas (producto, vendedor_nombre)
     todos_disponibles = []
     for v in sistema.vendedores:
         for p in v.productos:
@@ -214,20 +262,19 @@ def crear_pedido():
 
     return render_template("crear_pedido.html", usuario=usuario, productos=todos_disponibles)
 
+
 @app.route("/usuario/historial")
 def historial_usuario():
     usuario = get_usuario_actual()
     if not usuario:
         return redirect(url_for("login_usuario"))
 
-    # Mapa producto_id -> vendedor_nombre para el historial
     mapa_vendedor = {}
     for v in sistema.vendedores:
         for p in v.productos:
             mapa_vendedor[p.id] = v.nombre
 
     return render_template("historial_usuario.html", usuario=usuario, mapa_vendedor=mapa_vendedor)
-
 
 
 @app.route("/usuario/calificar", methods=["GET", "POST"])
@@ -314,6 +361,28 @@ def dashboard_vendedor():
         return redirect(url_for("login_vendedor"))
     congestion = sistema.calcular_congestion(vendedor)
     return render_template("dashboard_vendedor.html", vendedor=vendedor, congestion=congestion)
+
+
+@app.route("/vendedor/perfil/editar", methods=["POST"])
+def editar_perfil_vendedor():
+    vendedor = get_vendedor_actual()
+    if not vendedor:
+        return redirect(url_for("login_vendedor"))
+
+    vendedor.ubicacion = request.form.get("ubicacion", "").strip()
+
+    if "logo" in request.files:
+        file = request.files["logo"]
+        if file and file.filename != "":
+            ext = file.filename.rsplit(".", 1)[-1].lower()
+            if ext in ["jpg", "jpeg", "png", "webp"]:
+                nombre_archivo = f"logo_{vendedor.nombre.replace(' ', '_')}.{ext}"
+                file.save(os.path.join("static/uploads", nombre_archivo))
+                vendedor.logo = nombre_archivo
+
+    guardar_datos(sistema, id_usuario, id_producto)
+    flash("Perfil actualizado correctamente.", "success")
+    return redirect(url_for("dashboard_vendedor"))
 
 
 @app.route("/vendedor/productos/agregar", methods=["GET", "POST"])
