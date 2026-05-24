@@ -7,7 +7,7 @@
       <h1>{{ vendedor.nombre }}</h1>
       <p class="subtitulo">⭐ {{ "%.1f"|format(vendedor.calificacion) if vendedor.calificacion > 0 else "Sin calificaciones aún" }}</p>
     </div>
-    <a href="{{ url_for('agregar_producto') }}" class="btn btn-primary" style="width:auto;">+ Agregar producto</a>
+    <a href="{{ url_for('agregar_producto') }}" class="btn" style="background: #FF5C00; color:#fff;">+ Agregar producto</a>
   </div>
 
   <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem;">
