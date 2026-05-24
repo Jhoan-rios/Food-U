@@ -3,6 +3,8 @@ import re
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modelo.model import Usuario, Vendedor, Producto, SistemaFoodU
 from modelo.persistencia import guardar_datos, cargar_datos
+import json
+import requests
 
 app = Flask(__name__)
 app.secret_key = "foodu-udem-2024"
@@ -319,3 +321,74 @@ def gestionar_pedidos():
 @app.route("/turnos")
 def pantalla_turnos():
     return render_template("turnos.html", pedidos=sistema.pedidos, vendedores=sistema.vendedores)
+
+
+
+
+# ─────────────────────────────────────────
+# CHATBOT IA
+# ─────────────────────────────────────────
+@app.route("/chatbot")
+def chatbot():
+    usuario = get_usuario_actual()
+    if not usuario:
+        return redirect(url_for("login_usuario"))
+
+    menu = []
+    for v in sistema.vendedores:
+        for p in v.productos:
+            if p.disponible:
+                menu.append({
+                    "nombre": p.nombre,
+                    "precio": p.precio,
+                    "tiempo": p.tiempo_preparacion,
+                    "vendedor": v.nombre
+                })
+
+    menu_json = json.dumps(menu, ensure_ascii=False)
+    return render_template("chatbot.html", usuario=usuario, menu_json=menu_json)
+
+
+@app.route("/chatbot/responder", methods=["POST"])
+def chatbot_responder():
+    data = request.get_json()
+    mensaje_usuario = data.get("mensaje", "")
+    menu = data.get("menu", [])
+
+    if menu:
+        menu_texto = "Menú disponible ahora mismo:\n"
+        for item in menu:
+            menu_texto += f"- {item['nombre']} | ${item['precio']} | {item['tiempo']} min | Vendedor: {item['vendedor']}\n"
+    else:
+        menu_texto = "No hay productos disponibles en este momento."
+
+    sistema_prompt = f"""Eres el asistente virtual de FoodU, una app de pedidos de comida universitaria en Colombia.
+Tu trabajo es ayudar a los estudiantes a decidir qué pedir según su tiempo disponible, presupuesto y gustos.
+Sé amigable, breve y usa emojis ocasionalmente.
+Responde siempre en español.
+
+{menu_texto}
+
+Cuando recomiendes productos, menciona el nombre, precio y tiempo de preparación.
+Si el estudiante no tiene mucho tiempo, recomienda lo más rápido.
+Si quiere algo económico, recomienda lo más barato."""
+
+    try:
+        respuesta = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={"Content-Type": "application/json"},
+            json={
+                "model": "claude-sonnet-4-20250514",
+                "max_tokens": 500,
+                "system": sistema_prompt,
+                "messages": [
+                    {"role": "user", "content": mensaje_usuario}
+                ]
+            }
+        )
+        data_respuesta = respuesta.json()
+        texto = data_respuesta["content"][0]["text"]
+        return json.dumps({"respuesta": texto}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+    except Exception as e:
+        return json.dumps({"respuesta": "Lo siento, no puedo responder ahora. Intenta más tarde."}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
