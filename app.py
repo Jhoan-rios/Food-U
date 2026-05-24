@@ -253,13 +253,33 @@ def crear_pedido():
             for p in todos_planos:
                 if p.id == id_num:
                     seleccionados.append(p)
+
         if not seleccionados:
             flash("Debes seleccionar al menos un producto.", "error")
             return redirect(url_for("crear_pedido"))
-        pedido = sistema.crear_pedido(usuario, seleccionados)
-        turno = sistema.asignar_turno(pedido)
+
+        pedidos_creados = sistema.crear_pedidos_por_vendedor(usuario, seleccionados)
         guardar_datos(sistema, id_usuario, id_producto)
-        flash(f"¡Pedido #{pedido.id} creado! Tu turno es el #{turno}. Total: ${pedido.total:.2f}", "success")
+
+        if len(pedidos_creados) == 1:
+            pedido, vendedor = pedidos_creados[0]
+            turno = sistema.asignar_turno(pedido)
+            flash(
+                f"¡Pedido #{pedido.id} en {vendedor.nombre} creado! "
+                f"Turno #{turno} · Total: ${pedido.total:.2f} · "
+                f"Listo en ~{pedido.tiempo_estimado} min",
+                "success"
+            )
+        else:
+            for pedido, vendedor in pedidos_creados:
+                turno = sistema.asignar_turno(pedido)
+                flash(
+                    f"📦 {vendedor.nombre} — Pedido #{pedido.id} · "
+                    f"Turno #{turno} · ${pedido.total:.2f} · "
+                    f"~{pedido.tiempo_estimado} min",
+                    "success"
+                )
+
         return redirect(url_for("historial_usuario"))
 
     precios_json = json.dumps({p.id: p.precio for v, prods in restaurantes for p in prods})
