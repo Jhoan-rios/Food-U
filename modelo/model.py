@@ -264,3 +264,111 @@ class Vendedor(Persona):
 
     def __str__(self):
         return f"Vendedor: {self.nombre} | Calificacion: {self.calificacion}"
+
+
+
+
+# ─────────────────────────────────────────
+# RECOMENDADOR
+# ─────────────────────────────────────────
+class Recomendador:
+    def recomendar(self, usuario: Usuario, todos_productos: list):
+        try:
+            if len(usuario.historial_pedidos) == 0:
+                disponibles = [p for p in todos_productos if p.disponible]
+                for i in range(len(disponibles)):
+                    for j in range(i + 1, len(disponibles)):
+                        if disponibles[i].precio > disponibles[j].precio:
+                            disponibles[i], disponibles[j] = disponibles[j], disponibles[i]
+                return disponibles[:3]
+
+            conteo = {}
+            for pedido in usuario.historial_pedidos:
+                for producto in pedido.productos:
+                    conteo[producto.id] = conteo.get(producto.id, 0) + 1
+
+            disponibles = [p for p in todos_productos if p.disponible]
+            for i in range(len(disponibles)):
+                for j in range(i + 1, len(disponibles)):
+                    veces_i = conteo.get(disponibles[i].id, 0)
+                    veces_j = conteo.get(disponibles[j].id, 0)
+                    if veces_i < veces_j:
+                        disponibles[i], disponibles[j] = disponibles[j], disponibles[i]
+            return disponibles[:3]
+
+        except Exception as e:
+            print(f"Error al generar recomendaciones: {e}")
+            return []
+
+
+# ─────────────────────────────────────────
+# SISTEMA FOODU
+# ─────────────────────────────────────────
+class SistemaFoodU:
+    def __init__(self):
+        self.usuarios: list = []
+        self.vendedores: list = []
+        self.pedidos: list = []
+        self.recomendador = Recomendador()
+
+    def registrar_usuario(self, usuario: Usuario):
+        try:
+            for u in self.usuarios:
+                if u.nombre == usuario.nombre:
+                    raise UsuarioDuplicadoError("nombre de usuario")
+                if u.correo == usuario.correo:
+                    raise UsuarioDuplicadoError("correo")
+            self.usuarios.append(usuario)
+            return "Usuario registrado correctamente"
+        except UsuarioDuplicadoError as e:
+            return str(e)
+
+    def registrar_vendedor(self, vendedor: Vendedor):
+        try:
+            for v in self.vendedores:
+                if v.nombre == vendedor.nombre:
+                    raise VendedorDuplicadoError(vendedor.nombre)
+            self.vendedores.append(vendedor)
+            return "Vendedor registrado correctamente"
+        except VendedorDuplicadoError as e:
+            return str(e)
+
+    def crear_pedido(self, usuario: Usuario, productos: list):
+        if not productos:
+            raise PedidoVacioError()
+        pedido = usuario.realizar_pedido(productos)
+        self.pedidos.append(pedido)
+        for vendedor in self.vendedores:
+            for p in productos:
+                if p in vendedor.productos:
+                    if pedido not in vendedor.pedidos_activos:
+                        vendedor.pedidos_activos.append(pedido)
+        return pedido
+
+    def asignar_turno(self, pedido: Pedido):
+        for i in range(len(self.pedidos)):
+            if self.pedidos[i] == pedido:
+                return i + 1
+        return -1
+
+    def calcular_congestion(self, vendedor: Vendedor):
+        return len(vendedor.pedidos_activos) / 10
+
+    def recomendar_menu(self, usuario: Usuario):
+        todos = []
+        for v in self.vendedores:
+            for p in v.productos:
+                todos.append(p)
+        return self.recomendador.recomendar(usuario, todos)
+
+    def buscar_usuario(self, nombre: str):
+        for u in self.usuarios:
+            if u.nombre == nombre:
+                return u
+        return None
+
+    def buscar_vendedor(self, nombre: str):
+        for v in self.vendedores:
+            if v.nombre == nombre:
+                return v
+        return None
