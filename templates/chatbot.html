@@ -26,7 +26,7 @@
         <input type="text" id="input-mensaje" placeholder="Escribe tu pregunta..."
                style="margin:0; flex:1;"
                onkeypress="if(event.key==='Enter') enviarMensaje()">
-        <button onclick="enviarMensaje()" class="btn btn-primary" style="width:auto; padding:0.7rem 1.25rem;">
+        <button onclick="enviarMensaje()" class="btn " style="width:auto; padding:0.7rem 1.25rem; background: #FF5C00; color:#fff">
           Enviar
         </button>
       </div>
@@ -34,7 +34,7 @@
     </div>
 
     <div style="margin-top:1rem; text-align:center;">
-      <a href="{{ url_for('dashboard_usuario') }}" class="texto-gris" style="font-size:0.9rem; text-decoration:none;">← Volver al dashboard</a>
+      <a href="{{ url_for('dashboard_usuario') }}" class="texto-gris" style="font-size:0.9rem; text-decoration:none; color:#FF5C00">← Volver al dashboard</a>
     </div>
   </div>
 </div>
