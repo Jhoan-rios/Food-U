@@ -145,11 +145,11 @@
     ],
     "vendedores": [
         {
-            "nombre": "Cafeteria Central",
+            "nombre": "Donde tavo",
             "calificacion": 4.5,
             "contrasena": "foodu2024",
             "logo": "",
-            "ubicacion": "Bloque 1 - Edificio Central",
+            "ubicacion": "Restaurante Ingenierias",
             "productos": [
                 {
                     "id": 1,
@@ -202,11 +202,11 @@
             ]
         },
         {
-            "nombre": "Donde Pepito",
+            "nombre": "Lo más agogo",
             "calificacion": 4.2,
             "contrasena": "foodu2024",
             "logo": "",
-            "ubicacion": "Bloque 6 - Zona de Bienestar",
+            "ubicacion": "Restaurante Ingenierias",
             "productos": [
                 {
                     "id": 7,
@@ -251,11 +251,11 @@
             ]
         },
         {
-            "nombre": "El Rincon Saludable",
+            "nombre": "Donde Dary",
             "calificacion": 4.7,
             "contrasena": "foodu2024",
             "logo": "",
-            "ubicacion": "Bloque 12 - Edificio Ingenieria",
+            "ubicacion": "Restaurante Ingenierias",
             "productos": [
                 {
                     "id": 12,
@@ -300,11 +300,11 @@
             ]
         },
         {
-            "nombre": "Pizzeria La U",
+            "nombre": "Pimientos",
             "calificacion": 4.3,
             "contrasena": "foodu2024",
             "logo": "",
-            "ubicacion": "Bloque 3 - Edificio Administrativo",
+            "ubicacion": "Restaurante Derecho",
             "productos": [
                 {
                     "id": 17,
@@ -341,11 +341,11 @@
             ]
         },
         {
-            "nombre": "Asados El Paisa",
+            "nombre": "El Kiosko",
             "calificacion": 4.6,
             "contrasena": "foodu2024",
             "logo": "",
-            "ubicacion": "Bloque 18 - Cafeteria Sur",
+            "ubicacion": "Kiosko Comunicaciones",
             "productos": [
                 {
                     "id": 21,
