@@ -11,15 +11,8 @@
     padding: 3rem 1.5rem;
     background: var(--crema);
   }
-
-  .prod-box {
-    width: 100%;
-    max-width: 520px;
-  }
-
-  .prod-header {
-    margin-bottom: 2rem;
-  }
+  .prod-box { width: 100%; max-width: 520px; }
+  .prod-header { margin-bottom: 2rem; }
   .prod-back {
     display: inline-flex;
     align-items: center;
@@ -38,10 +31,7 @@
     color: var(--oscuro);
     margin-bottom: 0.25rem;
   }
-  .prod-header p {
-    color: var(--gris);
-    font-size: 0.9rem;
-  }
+  .prod-header p { color: var(--gris); font-size: 0.9rem; }
 
   .prod-card {
     background: white;
@@ -50,13 +40,11 @@
     padding: 2rem;
     box-shadow: 0 4px 24px rgba(0,0,0,0.05);
   }
-
   .campo-fila {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-
   .campo-grupo {
     display: flex;
     flex-direction: column;
@@ -69,29 +57,17 @@
     color: var(--oscuro);
     letter-spacing: 0.02em;
   }
-
-  .input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
+  .input-wrap { position: relative; display: flex; align-items: center; }
   .input-prefix {
-    position: absolute;
-    left: 0.9rem;
-    color: var(--gris);
-    font-size: 0.9rem;
-    font-weight: 500;
+    position: absolute; left: 0.9rem;
+    color: var(--gris); font-size: 0.9rem; font-weight: 500;
     pointer-events: none;
-    user-select: none;
   }
   .input-suffix {
-    position: absolute;
-    right: 0.9rem;
-    color: var(--gris);
-    font-size: 0.8rem;
+    position: absolute; right: 0.9rem;
+    color: var(--gris); font-size: 0.8rem;
     pointer-events: none;
   }
-
   .campo-grupo input[type="text"],
   .campo-grupo input[type="number"] {
     width: 100%;
@@ -104,39 +80,50 @@
     background: white;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
   }
-  .campo-grupo input[type="text"]:focus,
-  .campo-grupo input[type="number"]:focus {
+  .campo-grupo input:focus {
     border-color: var(--naranja);
     box-shadow: 0 0 0 3px rgba(255,92,0,0.1);
   }
-  .campo-grupo input::placeholder { color: #c5bdb8; }
-
   .has-prefix input { padding-left: 2rem; }
   .has-suffix input { padding-right: 3.5rem; }
 
-  .campo-grupo input[type="file"] {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border: 1.5px solid var(--borde);
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    background: white;
+  /* ── Zona de imagen ── */
+  .imagen-zona {
+    border: 2px dashed var(--borde);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 1.1rem;
     cursor: pointer;
-    box-sizing: border-box;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: center;
+    position: relative;
   }
-
-  .preview-imagen {
-    display: none;
+  .imagen-zona:hover { border-color: var(--naranja); background: #fff8f5; }
+  .imagen-zona input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .imagen-preview {
     width: 100%;
     max-height: 160px;
     object-fit: cover;
     border-radius: 10px;
-    margin-top: 0.5rem;
-    border: 1px solid var(--borde);
+    display: none;
+    margin-bottom: 0.5rem;
   }
+  .imagen-hint {
+    font-size: 0.8rem;
+    color: var(--gris);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .imagen-hint span:first-child { font-size: 1.5rem; }
+  .imagen-hint strong { color: var(--naranja); }
 
+  /* ── Toggle disponible ── */
   .toggle-grupo {
     display: flex;
     align-items: center;
@@ -149,38 +136,21 @@
     cursor: pointer;
   }
   .toggle-info { display: flex; flex-direction: column; gap: 0.15rem; }
-  .toggle-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--oscuro);
-  }
-  .toggle-sub {
-    font-size: 0.75rem;
-    color: var(--gris);
-  }
-
-  .switch {
-    position: relative;
-    width: 44px;
-    height: 24px;
-    flex-shrink: 0;
-  }
+  .toggle-label { font-size: 0.9rem; font-weight: 600; color: var(--oscuro); }
+  .toggle-sub { font-size: 0.75rem; color: var(--gris); }
+  .switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .switch-slider {
-    position: absolute;
-    inset: 0;
-    background: #ddd;
-    border-radius: 999px;
-    transition: background 0.25s;
-    cursor: pointer;
+    position: absolute; inset: 0;
+    background: #ddd; border-radius: 999px;
+    transition: background 0.25s; cursor: pointer;
   }
   .switch-slider::before {
     content: '';
     position: absolute;
     width: 18px; height: 18px;
     left: 3px; top: 3px;
-    background: white;
-    border-radius: 50%;
+    background: white; border-radius: 50%;
     transition: transform 0.25s;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
   }
@@ -201,10 +171,7 @@
     transition: background 0.2s, transform 0.15s;
     box-shadow: 0 4px 16px rgba(26,16,8,0.2);
   }
-  .btn-prod:hover {
-    background: #2e2010;
-    transform: translateY(-1px);
-  }
+  .btn-prod:hover { background: #2e2010; transform: translateY(-1px); }
 
   @media (max-width: 500px) {
     .campo-fila { grid-template-columns: 1fr; }
@@ -218,9 +185,9 @@
   <div class="prod-box">
 
     <div class="prod-header">
-      <a href="{{ url_for('dashboard_vendedor') }}" class="prod-back">← Volver a mi tienda</a>
-      <h1>Nuevo producto</h1>
-      <p>Agrega un plato a tu menú</p>
+      <a href="{{ url_for('dashboard_vendedor') }}" class="prod-back">← Volver sin guardar</a>
+      <h1>Agregar producto</h1>
+      <p>Completa los datos del nuevo producto de <strong>{{ vendedor.nombre }}</strong></p>
     </div>
 
     <div class="prod-card">
@@ -243,18 +210,24 @@
           <div class="campo-grupo">
             <label for="tiempo">Tiempo de preparación</label>
             <div class="input-wrap has-suffix">
-              <input type="number" id="tiempo" name="tiempo" placeholder="15" min="1" required>
+              <input type="number" id="tiempo" name="tiempo" placeholder="10" min="1" required>
               <span class="input-suffix">min</span>
             </div>
           </div>
         </div>
 
+        <!-- Imagen -->
         <div class="campo-grupo">
-          <label for="imagen">Imagen del producto <span style="font-weight:normal; color:#aaa;">(opcional)</span></label>
-          <input type="file" id="imagen" name="imagen" accept="image/*"
-                 onchange="previewImg(this)">
-          <img id="preview" class="preview-imagen" alt="Vista previa">
-          <small style="color:#aaa;">Formatos: JPG, PNG, WEBP</small>
+          <label>Imagen del producto <span style="font-weight:normal;color:var(--gris);">(opcional)</span></label>
+          <div class="imagen-zona" id="zonaImagen">
+            <input type="file" name="imagen" id="inputImagen" accept="image/jpeg,image/png,image/webp">
+            <img id="imgPreview" class="imagen-preview">
+            <div class="imagen-hint" id="hintTexto">
+              <span>📷</span>
+              <span>Haz clic o arrastra una imagen</span>
+              <span>JPG, PNG o WEBP · máx. recomendado 2 MB</span>
+            </div>
+          </div>
         </div>
 
         <label class="toggle-grupo">
@@ -268,7 +241,7 @@
           </label>
         </label>
 
-        <button type="submit" class="btn-prod">Agregar al menú →</button>
+        <button type="submit" class="btn-prod">Agregar producto →</button>
 
       </form>
     </div>
@@ -277,16 +250,20 @@
 </div>
 
 <script>
-function previewImg(input) {
-  const preview = document.getElementById("preview");
-  if (input.files && input.files[0]) {
+  const input = document.getElementById('inputImagen');
+  const preview = document.getElementById('imgPreview');
+  const hint = document.getElementById('hintTexto');
+
+  input.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = e => {
       preview.src = e.target.result;
-      preview.style.display = "block";
+      preview.style.display = 'block';
+      hint.innerHTML = `<span>✅</span><span style="color:var(--naranja);font-weight:600;">${file.name}</span><span>Haz clic para cambiarla</span>`;
     };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
+    reader.readAsDataURL(file);
+  });
 </script>
 {% endblock %}
