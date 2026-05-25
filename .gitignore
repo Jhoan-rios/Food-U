@@ -32,3 +32,7 @@ Thumbs.db
 # Archivos de build (por si acaso)
 build/
 dist/
+
+datos.json
+horarios.json
+static/uploads/
