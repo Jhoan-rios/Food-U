@@ -5,22 +5,24 @@
   <div class="fila" style="margin-bottom:1.5rem; align-items:flex-start;">
     <div>
       <h1>Pedidos activos</h1>
-     <p class="subtitulo">Congestión actual: <strong>{{ (congestion * 100)|int }} %</strong></p>
+      <p class="subtitulo">Congestión actual: <strong>{{ (congestion * 100)|int }} %</strong></p>
     </div>
     <a href="{{ url_for('dashboard_vendedor') }}" class="btn btn-outline" style="width:auto;">← Mi tienda</a>
   </div>
 
-  {% if vendedor.pedidos_activos %}
-    {% for pedido in vendedor.pedidos_activos %}
+  {% set pedidos_activos = vendedor.pedidos_activos | selectattr('estado', 'ne', 'entregado') | selectattr('estado', 'ne', 'cancelado') | list %}
+  {% set pedidos_completados = vendedor.pedidos_activos | selectattr('estado', 'in', ['entregado', 'cancelado']) | list %}
+
+  <!-- PEDIDOS ACTIVOS -->
+  {% if pedidos_activos %}
+    {% for pedido in pedidos_activos %}
     <div class="card" style="margin-bottom:1rem;">
       <div class="fila" style="margin-bottom:1rem;">
         <span style="font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem;">Pedido #{{ pedido.id }}</span>
-        {% if pedido.estado == 'entregado' %}
-          <span class="badge badge-verde">{{ pedido.estado }}</span>
-        {% elif pedido.estado == 'cancelado' %}
-          <span class="badge badge-rojo">{{ pedido.estado }}</span>
-        {% elif pedido.estado == 'en preparacion' %}
+        {% if pedido.estado == 'en preparacion' %}
           <span class="badge badge-naranja">{{ pedido.estado }}</span>
+        {% elif pedido.estado == 'listo' %}
+          <span style="background:#d1fae5; color:#065f46; padding:0.25rem 0.75rem; border-radius:999px; font-size:0.78rem; font-weight:600;">{{ pedido.estado }}</span>
         {% else %}
           <span class="badge badge-gris">{{ pedido.estado }}</span>
         {% endif %}
@@ -45,8 +47,8 @@
           <option value="pendiente" {% if pedido.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
           <option value="en preparacion" {% if pedido.estado == 'en preparacion' %}selected{% endif %}>En preparación</option>
           <option value="listo" {% if pedido.estado == 'listo' %}selected{% endif %}>Listo</option>
-          <option value="entregado" {% if pedido.estado == 'entregado' %}selected{% endif %}>Entregado</option>
-          <option value="cancelado" {% if pedido.estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+          <option value="entregado">Entregado ✓</option>
+          <option value="cancelado">Cancelado</option>
         </select>
         <button type="submit" class="btn btn-outline btn-sm">Actualizar estado</button>
       </form>
@@ -59,5 +61,42 @@
       <p class="texto-gris">Cuando los clientes hagan pedidos de tus productos, aparecerán aquí.</p>
     </div>
   {% endif %}
+
+  <!-- PEDIDOS COMPLETADOS -->
+  {% if pedidos_completados %}
+  <div style="margin-top:2.5rem;">
+    <h2 style="margin-bottom:1rem; color:var(--gris); font-size:1.1rem; display:flex; align-items:center; gap:0.5rem;">
+      <span>📦 Pedidos completados</span>
+      <span style="background:var(--borde); color:var(--gris); border-radius:999px; padding:0.1rem 0.6rem; font-size:0.8rem;">{{ pedidos_completados|length }}</span>
+    </h2>
+
+    {% for pedido in pedidos_completados %}
+    <div class="card" style="margin-bottom:0.75rem; opacity:0.75; border-style:dashed;">
+      <div class="fila" style="margin-bottom:0.6rem;">
+        <span style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; color:var(--gris);">Pedido #{{ pedido.id }}</span>
+        {% if pedido.estado == 'entregado' %}
+          <span style="background:#d1fae5; color:#065f46; padding:0.2rem 0.65rem; border-radius:999px; font-size:0.75rem; font-weight:600;">✓ Entregado</span>
+        {% else %}
+          <span class="badge badge-rojo">Cancelado</span>
+        {% endif %}
+      </div>
+
+      <div style="color:var(--gris); font-size:0.82rem; margin-bottom:0.5rem;">👤 {{ pedido.usuario.nombre }}</div>
+
+      <div style="margin-bottom:0.5rem;">
+        {% for p in pedido.productos %}
+        <span style="display:inline-block; background:#f3f4f6; border-radius:6px; padding:0.2rem 0.5rem; font-size:0.78rem; margin:0.1rem; color:var(--gris);">{{ p.nombre }}</span>
+        {% endfor %}
+      </div>
+
+      <div class="fila">
+        <span style="color:var(--gris); font-size:0.82rem;">⏱ {{ pedido.tiempo_estimado }} min</span>
+        <span style="font-family:'Syne',sans-serif; font-weight:700; color:var(--gris);">${{ "%.2f"|format(pedido.total) }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}
