@@ -499,12 +499,22 @@ def editar_producto(producto_id):
         nuevo_precio = float(request.form["precio"])
         nuevo_tiempo = int(request.form["tiempo"])
         nueva_disp = request.form.get("disponible") == "on"
+
+        # Manejo de imagen (igual que en agregar_producto)
+        if "imagen" in request.files:
+            file = request.files["imagen"]
+            if file and file.filename != "":
+                ext = file.filename.rsplit(".", 1)[-1].lower()
+                if ext in ["jpg", "jpeg", "png", "webp"]:
+                    nombre_archivo = f"producto_{producto_id}.{ext}"
+                    file.save(os.path.join("static/uploads", nombre_archivo))
+                    producto.imagen = nombre_archivo
+
         vendedor.editar_producto(producto_id, nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
         guardar_datos(sistema, id_usuario, id_producto)
         flash("Producto actualizado.", "success")
         return redirect(url_for("dashboard_vendedor"))
     return render_template("editar_producto.html", vendedor=vendedor, producto=producto)
-
 
 @app.route("/vendedor/productos/eliminar/<int:producto_id>")
 def eliminar_producto(producto_id):
