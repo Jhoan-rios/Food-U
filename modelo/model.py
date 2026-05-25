@@ -1,27 +1,12 @@
 from abc import ABC, abstractmethod
-
-class FoodUError(Exception): pass
-
-class ProductoNoEncontradoError(FoodUError):
-    def __init__(self, producto_id):
-        super().__init__(f"No se encontro un producto con el ID {producto_id}")
-
-class PuntuacionInvalidaError(FoodUError):
-    def __init__(self, puntuacion):
-        super().__init__(f"La puntuacion {puntuacion} no es valida. Debe estar entre 1 y 5")
-
-class UsuarioDuplicadoError(FoodUError):
-    def __init__(self, campo):
-        super().__init__(f"Error: ese {campo} ya esta registrado")
-
-class VendedorDuplicadoError(FoodUError):
-    def __init__(self, nombre):
-        super().__init__(f"Error: el vendedor '{nombre}' ya existe")
-
-class PedidoVacioError(FoodUError):
-    def __init__(self):
-        super().__init__("El pedido debe tener al menos un producto")
-
+from modelo.error import (
+    FoodUException,
+    UsuarioDuplicadoError,
+    VendedorDuplicadoError,
+    ProductoNoEncontradoError,
+    PedidoVacioError,
+    CalificacionInvalidaError
+)
 
 class Persona(ABC):
     def __init__(self, nombre: str, contrasena: str):
@@ -148,7 +133,7 @@ class Usuario(Persona):
     def ver_historial(self): return self.historial_pedidos
 
     def calificar_vendedor(self, vendedor, puntuacion):
-        if not (1 <= puntuacion <= 5): raise PuntuacionInvalidaError(puntuacion)
+        if not (1 <= puntuacion <= 5): raise CalificacionInvalidaError(puntuacion)
         vendedor.calificacion = puntuacion if vendedor.calificacion == 0 \
             else (vendedor.calificacion + puntuacion) / 2
 
@@ -265,7 +250,6 @@ class SistemaFoodU:
         """Crea un pedido separado por cada vendedor involucrado."""
         if not productos: raise PedidoVacioError()
 
-        # Agrupar productos por vendedor
         grupos = {}
         for p in productos:
             for v in self.vendedores:

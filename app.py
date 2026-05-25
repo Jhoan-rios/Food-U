@@ -1,6 +1,14 @@
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from modelo.model import Usuario, Vendedor, Producto, SistemaFoodU
+from modelo.error import (
+    UsuarioDuplicadoError,
+    VendedorDuplicadoError,
+    PedidoVacioError,
+    ProductoNoEncontradoError,
+    CalificacionInvalidaError,
+    CorreoRegistradoError
+)
 from modelo.persistencia import guardar_datos, cargar_datos
 from modelo.horario1 import Horario, Clase, EDIFICIOS
 import json as _json_persist
@@ -147,14 +155,17 @@ def registro_usuario():
 
         contrasena_hash = bcrypt.hashpw(contrasena.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
         usuario = Usuario(id_usuario, nombre, correo, int(tiempo), contrasena_hash)
-        resultado = sistema.registrar_usuario(usuario)
-        if "correctamente" in resultado:
+        try:
+            sistema.registrar_usuario(usuario)
             id_usuario += 1
             guardar_datos(sistema, id_usuario, id_producto)
             flash("Cuenta creada exitosamente. Inicia sesión.", "success")
             return redirect(url_for("login_usuario"))
-        else:
-            flash(resultado, "error")
+        except UsuarioDuplicadoError as e:
+            flash(str(e), "error")
+            return redirect(url_for("registro_usuario"))
+        except CorreoRegistradoError as e:
+            flash(str(e), "error")
             return redirect(url_for("registro_usuario"))
     return render_template("registro_usuario.html")
 
@@ -297,7 +308,11 @@ def crear_pedido():
             flash("Debes seleccionar al menos un producto.", "error")
             return redirect(url_for("crear_pedido"))
 
-        pedidos_creados = sistema.crear_pedidos_por_vendedor(usuario, seleccionados)
+        try:
+            pedidos_creados = sistema.crear_pedidos_por_vendedor(usuario, seleccionados)
+        except PedidoVacioError as e:
+            flash(str(e), "error")
+            return redirect(url_for("crear_pedido"))
         guardar_datos(sistema, id_usuario, id_producto)
 
         if len(pedidos_creados) == 1:
@@ -352,12 +367,15 @@ def calificar_vendedor():
         vendedor = sistema.buscar_vendedor(nombre_vendedor)
         if vendedor is None:
             flash("Vendedor no encontrado.", "error")
-        elif not puntuacion.isdigit() or not (1 <= int(puntuacion) <= 5):
-            flash("La puntuación debe ser un número del 1 al 5.", "error")
+        elif not puntuacion.isdigit():
+            flash("La puntuación debe ser un número.", "error")
         else:
-            usuario.calificar_vendedor(vendedor, int(puntuacion))
-            guardar_datos(sistema, id_usuario, id_producto)
-            flash(f"¡Calificación registrada para {vendedor.nombre}!", "success")
+            try:
+                usuario.calificar_vendedor(vendedor, int(puntuacion))
+                guardar_datos(sistema, id_usuario, id_producto)
+                flash(f"¡Calificación registrada para {vendedor.nombre}!", "success")
+            except CalificacionInvalidaError as e:
+                flash(str(e), "error")
         return redirect(url_for("calificar_vendedor"))
     return render_template("calificar_vendedor.html", usuario=usuario, vendedores=sistema.vendedores)
 
@@ -397,13 +415,13 @@ def registro_vendedor():
             return redirect(url_for("registro_vendedor"))
         contrasena_hash = bcrypt.hashpw(contrasena.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
         vendedor = Vendedor(nombre, contrasena_hash)
-        resultado = sistema.registrar_vendedor(vendedor)
-        if "correctamente" in resultado:
+        try:
+            sistema.registrar_vendedor(vendedor)
             guardar_datos(sistema, id_usuario, id_producto)
             flash("Cuenta de vendedor creada. Inicia sesión.", "success")
             return redirect(url_for("login_vendedor"))
-        else:
-            flash(resultado, "error")
+        except VendedorDuplicadoError as e:
+            flash(str(e), "error")
             return redirect(url_for("registro_vendedor"))
     return render_template("registro_vendedor.html")
 
@@ -477,9 +495,10 @@ def agregar_producto():
             id_producto += 1
             guardar_datos(sistema, id_usuario, id_producto)
             flash(f"Producto '{nombre}' agregado correctamente.", "success")
-        except Exception:
-            flash("Error al agregar el producto. Verifica los datos.", "error")
-        return redirect(url_for("dashboard_vendedor"))
+        except ValueError as e:
+            flash(f"Datos inválidos: {str(e)}", "error")
+        except TypeError as e:
+            flash(f"Error de tipo: {str(e)}", "error")
     return render_template("agregar_producto.html", vendedor=vendedor)
 
 
@@ -512,9 +531,12 @@ def editar_producto(producto_id):
                     file.save(os.path.join("static/uploads", nombre_archivo))
                     producto.imagen = nombre_archivo
 
-        vendedor.editar_producto(producto_id, nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
-        guardar_datos(sistema, id_usuario, id_producto)
-        flash("Producto actualizado.", "success")
+        try:
+            vendedor.editar_producto(producto_id, nuevo_nombre, nuevo_precio, nuevo_tiempo, nueva_disp)
+            guardar_datos(sistema, id_usuario, id_producto)
+            flash("Producto actualizado.", "success")
+        except ProductoNoEncontradoError as e:
+            flash(str(e), "error")
         return redirect(url_for("dashboard_vendedor"))
     return render_template("editar_producto.html", vendedor=vendedor, producto=producto)
 
@@ -523,9 +545,12 @@ def eliminar_producto(producto_id):
     vendedor = get_vendedor_actual()
     if not vendedor:
         return redirect(url_for("login_vendedor"))
-    vendedor.eliminar_producto(producto_id)
-    guardar_datos(sistema, id_usuario, id_producto)
-    flash("Producto eliminado.", "success")
+    try:
+        vendedor.eliminar_producto(producto_id)
+        guardar_datos(sistema, id_usuario, id_producto)
+        flash("Producto eliminado.", "success")
+    except ProductoNoEncontradoError as e:
+        flash(str(e), "error")
     return redirect(url_for("dashboard_vendedor"))
 
 
