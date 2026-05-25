@@ -80,6 +80,7 @@
     background: white;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
   }
   .campo-grupo input:focus {
     border-color: var(--naranja);
@@ -88,6 +89,48 @@
   .has-prefix input { padding-left: 2rem; }
   .has-suffix input { padding-right: 3.5rem; }
 
+  /* ── Zona de imagen ── */
+  .imagen-zona {
+    border: 2px dashed var(--borde);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 1.1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: center;
+    position: relative;
+  }
+  .imagen-zona:hover { border-color: var(--naranja); background: #fff8f5; }
+  .imagen-zona input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .imagen-preview {
+    width: 100%;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: none;
+    margin-bottom: 0.5rem;
+  }
+  .imagen-actual {
+    width: 100%;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+  }
+  .imagen-hint {
+    font-size: 0.8rem;
+    color: var(--gris);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .imagen-hint span:first-child { font-size: 1.5rem; }
+  .imagen-hint strong { color: var(--naranja); }
+
+  /* ── Toggle disponible ── */
   .toggle-grupo {
     display: flex;
     align-items: center;
@@ -155,7 +198,7 @@
     </div>
 
     <div class="prod-card">
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
 
         <div class="campo-grupo">
           <label for="nombre">Nombre del producto</label>
@@ -180,6 +223,31 @@
           </div>
         </div>
 
+        <!-- Imagen -->
+        <div class="campo-grupo">
+          <label>Imagen del producto <span style="font-weight:normal;color:var(--gris);">(opcional)</span></label>
+          <div class="imagen-zona" id="zonaImagen">
+            <input type="file" name="imagen" id="inputImagen" accept="image/jpeg,image/png,image/webp">
+            {% if producto.imagen %}
+              <img src="{{ url_for('static', filename='uploads/' ~ producto.imagen) }}"
+                   alt="Imagen actual" class="imagen-actual" id="imgActual">
+              <img id="imgPreview" class="imagen-preview">
+              <div class="imagen-hint" id="hintTexto">
+                <span>🖼️</span>
+                <span>Imagen actual guardada</span>
+                <span>Haz clic o arrastra para <strong>reemplazarla</strong></span>
+              </div>
+            {% else %}
+              <img id="imgPreview" class="imagen-preview">
+              <div class="imagen-hint" id="hintTexto">
+                <span>📷</span>
+                <span>Haz clic o arrastra una imagen</span>
+                <span>JPG, PNG o WEBP · máx. recomendado 2 MB</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
         <label class="toggle-grupo">
           <div class="toggle-info">
             <span class="toggle-label">Disponible para pedir ahora</span>
@@ -198,4 +266,24 @@
 
   </div>
 </div>
+
+<script>
+  const input = document.getElementById('inputImagen');
+  const preview = document.getElementById('imgPreview');
+  const actual = document.getElementById('imgActual');
+  const hint = document.getElementById('hintTexto');
+
+  input.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      if (actual) actual.style.display = 'none';
+      hint.innerHTML = `<span>✅</span><span style="color:var(--naranja);font-weight:600;">${file.name}</span><span>Haz clic para cambiarla</span>`;
+    };
+    reader.readAsDataURL(file);
+  });
+</script>
 {% endblock %}
