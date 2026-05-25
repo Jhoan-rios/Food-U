@@ -1,71 +1,394 @@
 {
-    "id_usuario": 4,
-    "id_producto": 2,
+    "id_usuario": 21,
+    "id_producto": 31,
     "usuarios": [
         {
             "id": 1,
-            "nombre": "david",
-            "correo": "drios@gmail.com",
-            "contrasena": "12345",
-            "tiempo_disponible": 0
+            "nombre": "Carlos Mendoza",
+            "correo": "carlos.mendoza@udem.edu.co",
+            "contrasena": "$2b$12$gcnTKh6mgFO9LkcNoR0Zwujh6j7LVLuKYHh0Ip.agvNEujSLBAglC",
+            "tiempo_disponible": 20
         },
         {
             "id": 2,
-            "nombre": "Jhoan",
-            "correo": "jhoanrios@gmail.com",
-            "contrasena": "1111",
-            "tiempo_disponible": 0
+            "nombre": "Valentina Rios",
+            "correo": "valentina.rios@udem.edu.co",
+            "contrasena": "$2b$12$scpgscDU8A3slox/hIuKoOmihJ/XedlvIveQfRj5o/itjz5Mt.0O2",
+            "tiempo_disponible": 15
         },
         {
             "id": 3,
-            "nombre": "Jhoan Gay",
-            "correo": "soyjhoangay@udem.edu.co",
-            "contrasena": "$2b$12$3a7n2Lyi7HxVk/17KGFLtupUiXN04.Py5V/OaL3n6FSCw1tZccoaK",
-            "tiempo_disponible": 0
+            "nombre": "Santiago Gomez",
+            "correo": "santiago.gomez@udem.edu.co",
+            "contrasena": "$2b$12$1qj2HTX12VoDsOBxaAozWecsVMiGYpKMxbvtgJjLpSFlnCjzOn0QC",
+            "tiempo_disponible": 30
+        },
+        {
+            "id": 4,
+            "nombre": "Isabella Torres",
+            "correo": "isabella.torres@udem.edu.co",
+            "contrasena": "$2b$12$nXGx14MD5iDa1VGhWRGj3O.PYfoXHHaRlQ6C8oatUfioDb7vEfXTy",
+            "tiempo_disponible": 10
+        },
+        {
+            "id": 5,
+            "nombre": "Andres Castillo",
+            "correo": "andres.castillo@udem.edu.co",
+            "contrasena": "$2b$12$lX1fxs8X.9STnvTyj2zZ/uhSG6/n5ygOIovFwHpnga1UBrkV5jU36",
+            "tiempo_disponible": 25
+        },
+        {
+            "id": 6,
+            "nombre": "Mariana Lopez",
+            "correo": "mariana.lopez@udem.edu.co",
+            "contrasena": "$2b$12$KqjK6bKkrOQ1YbMbSxyFheIFAK3HGM7p4jlZblhTG.bqQwoX5GfBy",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 7,
+            "nombre": "Felipe Herrera",
+            "correo": "felipe.herrera@udem.edu.co",
+            "contrasena": "$2b$12$77jiPQHLB2GtDrItGWKLH.6PSVaWhmCBmM6X2VbpBjzFbLUonSMW.",
+            "tiempo_disponible": 15
+        },
+        {
+            "id": 8,
+            "nombre": "Daniela Vargas",
+            "correo": "daniela.vargas@udem.edu.co",
+            "contrasena": "$2b$12$k4CDVSNxwO0vgb5XyRfV8uDqFowooZQCSpW4PRVrwpSCMPNEc1S16",
+            "tiempo_disponible": 30
+        },
+        {
+            "id": 9,
+            "nombre": "Juan Esteban Mora",
+            "correo": "juane.mora@udem.edu.co",
+            "contrasena": "$2b$12$mRe6n78zG5yvAZIVKwOgF.talEQ70MmDNqFFsxY8WxPr4zbUuX5oy",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 10,
+            "nombre": "Sofia Cardona",
+            "correo": "sofia.cardona@udem.edu.co",
+            "contrasena": "$2b$12$cjOOd6.AXfxHoVK1yx1ghuRN1wj19r/rSn2Fffg81m2lWNFZvI9CW",
+            "tiempo_disponible": 10
+        },
+        {
+            "id": 11,
+            "nombre": "Miguel Angel Ruiz",
+            "correo": "miguel.ruiz@udem.edu.co",
+            "contrasena": "$2b$12$hX/bU9J.22eonPFCWxj/deD6.uGX5BQZJPNYBzwd6cmlJOS.kAPzC",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 12,
+            "nombre": "Camila Perez",
+            "correo": "camila.perez@udem.edu.co",
+            "contrasena": "$2b$12$JTNhLr4po1ji1T8t432v0ehkzpyBktGu0pEW1R7fiOp/kWZB9WgNm",
+            "tiempo_disponible": 25
+        },
+        {
+            "id": 13,
+            "nombre": "Nicolas Salazar",
+            "correo": "nicolas.salazar@udem.edu.co",
+            "contrasena": "$2b$12$dvPfsKoytoNYFImK.aGrCe77Ycgp0LllP7BxOhQoOCnmxnb2AOdXC",
+            "tiempo_disponible": 15
+        },
+        {
+            "id": 14,
+            "nombre": "Laura Jimenez",
+            "correo": "laura.jimenez@udem.edu.co",
+            "contrasena": "$2b$12$xGjiET4t9QJIbVOEsnq7cu24Iyyb7CQm03j2CdAC7q2ryiZrqe3UO",
+            "tiempo_disponible": 30
+        },
+        {
+            "id": 15,
+            "nombre": "Sebastian Munoz",
+            "correo": "sebastian.munoz@udem.edu.co",
+            "contrasena": "$2b$12$7ApPEApes6uEwsuqS61GEuQcPmsOKVoYEW.Q3mbIqVBwZr.4Gfsvm",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 16,
+            "nombre": "Manuela Restrepo",
+            "correo": "manuela.restrepo@udem.edu.co",
+            "contrasena": "$2b$12$nSr9JVLS/OTKH/x/kj8lF.5TF5lAAyDIRzZahTll1ywtfodCqhcu.",
+            "tiempo_disponible": 10
+        },
+        {
+            "id": 17,
+            "nombre": "Tomas Gutierrez",
+            "correo": "tomas.gutierrez@udem.edu.co",
+            "contrasena": "$2b$12$331qHj5EQ5HYFf5Bn0Pxb.bGdJg2yxbSIcavlA9PofQFQUQ7Z14KW",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 18,
+            "nombre": "Alejandra Medina",
+            "correo": "alejandra.medina@udem.edu.co",
+            "contrasena": "$2b$12$K.rQetlk0CYqSXkNyccQ2.mNNnd2LSW440UKoUl8DbbZ8BpVxQc22",
+            "tiempo_disponible": 25
+        },
+        {
+            "id": 19,
+            "nombre": "David Osorio",
+            "correo": "david.osorio@udem.edu.co",
+            "contrasena": "$2b$12$Y.AV.VXk8HGctAP.g/Rif.OpTl.RS2.PRi9ENStBgTD.ukmlpxddi",
+            "tiempo_disponible": 15
+        },
+        {
+            "id": 20,
+            "nombre": "Natalia Franco",
+            "correo": "natalia.franco@udem.edu.co",
+            "contrasena": "$2b$12$OdI7gsFwHQonJMKHok/T0e9hon8JRNxZyoFT.7P/v6FYF8HslAoWq",
+            "tiempo_disponible": 30
         }
     ],
     "vendedores": [
         {
-            "nombre": "tavo",
-            "calificacion": 0.0,
-            "contrasena": "1234",
+            "nombre": "Donde tavo",
+            "calificacion": 4.5,
+            "contrasena": "$2b$12$cp9j8oeZFxKCC9GYF8QfaesWWUYKiL2qVH4ZsG1Mq1FEnIQQFvX2q",
+            "logo": "logo_Donde_tavo.png",
+            "ubicacion": "Restaurante Ingenierias",
             "productos": [
                 {
                     "id": 1,
-                    "nombre": "salchipapa",
-                    "precio": 20.0,
+                    "nombre": "Bandeja Paisa",
+                    "precio": 14000.0,
+                    "tiempo_preparacion": 15,
+                    "disponible": true,
+                    "imagen": "producto_1.jpg"
+                },
+                {
+                    "id": 2,
+                    "nombre": "Sanduche de Jamon",
+                    "precio": 6500.0,
+                    "tiempo_preparacion": 5,
+                    "disponible": true,
+                    "imagen": "producto_2.jpeg"
+                },
+                {
+                    "id": 3,
+                    "nombre": "Jugo Natural",
+                    "precio": 3500.0,
+                    "tiempo_preparacion": 3,
+                    "disponible": true,
+                    "imagen": "producto_3.jpg"
+                },
+                {
+                    "id": 4,
+                    "nombre": "Almuerzo del dia",
+                    "precio": 11000.0,
                     "tiempo_preparacion": 10,
-                    "disponible": true
+                    "disponible": true,
+                    "imagen": "producto_4.png"
+                },
+                {
+                    "id": 5,
+                    "nombre": "Cafe con leche",
+                    "precio": 2500.0,
+                    "tiempo_preparacion": 2,
+                    "disponible": true,
+                    "imagen": "producto_5.jpg"
+                },
+                {
+                    "id": 6,
+                    "nombre": "Empanada de pipian",
+                    "precio": 2000.0,
+                    "tiempo_preparacion": 3,
+                    "disponible": true,
+                    "imagen": "producto_6.jpg"
                 }
             ]
         },
         {
-            "nombre": "Daniel Jesus",
-            "calificacion": 5,
-            "contrasena": "4040",
-            "productos": []
-        }
-    ],
-    "pedidos": [
-        {
-            "id": 1,
-            "usuario_nombre": "david",
-            "productos_ids": [
-                1
-            ],
-            "estado": "pendiente",
-            "tiempo_estimado": 10,
-            "total": 20.0
+            "nombre": "Lo más agogo",
+            "calificacion": 4.2,
+            "contrasena": "$2b$12$zk4Kv7UlkykHJYCtMe.5j.KOU8ybxx5zzH1Akiwyy.0v6xmG91DW6",
+            "logo": "logo_Lo_más_agogo.png",
+            "ubicacion": "Restaurante Ingenierias",
+            "productos": [
+                {
+                    "id": 7,
+                    "nombre": "Salchipapa Especial",
+                    "precio": 8000.0,
+                    "tiempo_preparacion": 10,
+                    "disponible": true,
+                    "imagen": "producto_7.jpg"
+                },
+                {
+                    "id": 8,
+                    "nombre": "Hamburguesa Sencilla",
+                    "precio": 9500.0,
+                    "tiempo_preparacion": 12,
+                    "disponible": true,
+                    "imagen": "producto_8.jpg"
+                },
+                {
+                    "id": 9,
+                    "nombre": "Perro Caliente",
+                    "precio": 6000.0,
+                    "tiempo_preparacion": 7,
+                    "disponible": true,
+                    "imagen": "producto_9.jpg"
+                },
+                {
+                    "id": 10,
+                    "nombre": "Gaseosa",
+                    "precio": 2500.0,
+                    "tiempo_preparacion": 1,
+                    "disponible": true,
+                    "imagen": "producto_10.jpg"
+                },
+                {
+                    "id": 11,
+                    "nombre": "Salchipapa con Queso",
+                    "precio": 9500.0,
+                    "tiempo_preparacion": 12,
+                    "disponible": true,
+                    "imagen": "producto_11.jpg"
+                }
+            ]
         },
         {
-            "id": 1,
-            "usuario_nombre": "Jhoan",
-            "productos_ids": [
-                1
-            ],
-            "estado": "pendiente",
-            "tiempo_estimado": 10,
-            "total": 20.0
+            "nombre": "Donde Dary",
+            "calificacion": 4.7,
+            "contrasena": "$2b$12$lNiU6Up1WGTQe3LyOpAFoeBnZmXuOVlN0sPk2JtE9Gghi6rraGUoK",
+            "logo": "logo_Donde_Dary.png",
+            "ubicacion": "Restaurante Ingenierias",
+            "productos": [
+                {
+                    "id": 12,
+                    "nombre": "Ensalada Cesar",
+                    "precio": 9000.0,
+                    "tiempo_preparacion": 8,
+                    "disponible": true,
+                    "imagen": "producto_12.jpg"
+                },
+                {
+                    "id": 13,
+                    "nombre": "Bowl de Frutas",
+                    "precio": 7500.0,
+                    "tiempo_preparacion": 5,
+                    "disponible": true,
+                    "imagen": "producto_13.jpg"
+                },
+                {
+                    "id": 14,
+                    "nombre": "Wrap de Pollo",
+                    "precio": 11000.0,
+                    "tiempo_preparacion": 10,
+                    "disponible": true,
+                    "imagen": "producto_14.jpg"
+                },
+                {
+                    "id": 15,
+                    "nombre": "Smoothie Verde",
+                    "precio": 6000.0,
+                    "tiempo_preparacion": 4,
+                    "disponible": true,
+                    "imagen": "producto_15.jpg"
+                },
+                {
+                    "id": 16,
+                    "nombre": "Tostadas con Aguacate",
+                    "precio": 8500.0,
+                    "tiempo_preparacion": 6,
+                    "disponible": true,
+                    "imagen": "producto_16.jpg"
+                }
+            ]
+        },
+        {
+            "nombre": "Pimientos",
+            "calificacion": 4.3,
+            "contrasena": "$2b$12$7neY7/E.FQTvDzaGvPNek.IOExOu06bc4QYlB73dGjUTMTB/xaXRW",
+            "logo": "logo_Pimientos.png",
+            "ubicacion": "Restaurante Derecho",
+            "productos": [
+                {
+                    "id": 17,
+                    "nombre": "Pizza Personal Hawaiana",
+                    "precio": 12000.0,
+                    "tiempo_preparacion": 18,
+                    "disponible": true,
+                    "imagen": "producto_17.jpg"
+                },
+                {
+                    "id": 18,
+                    "nombre": "Pizza Personal Pepperoni",
+                    "precio": 13000.0,
+                    "tiempo_preparacion": 18,
+                    "disponible": true,
+                    "imagen": "producto_18.jpg"
+                },
+                {
+                    "id": 19,
+                    "nombre": "Calzone de Jamon",
+                    "precio": 11000.0,
+                    "tiempo_preparacion": 20,
+                    "disponible": true,
+                    "imagen": "producto_19.jpg"
+                },
+                {
+                    "id": 20,
+                    "nombre": "Limonada de Coco",
+                    "precio": 4500.0,
+                    "tiempo_preparacion": 3,
+                    "disponible": true,
+                    "imagen": "producto_20.jpg"
+                }
+            ]
+        },
+        {
+            "nombre": "El Kiosko",
+            "calificacion": 4.6,
+            "contrasena": "$2b$12$WpDXr8.DSGvXU79hX9.tgO9vymKV7B6Tnyz7rBfUe7KLJa7A3heFa",
+            "logo": "logo_El_kiosko.png",
+            "ubicacion": "Kiosko Comunicaciones",
+            "productos": [
+                {
+                    "id": 21,
+                    "nombre": "Pechuga a la Plancha",
+                    "precio": 13500.0,
+                    "tiempo_preparacion": 15,
+                    "disponible": true,
+                    "imagen": "producto_21.jpg"
+                },
+                {
+                    "id": 22,
+                    "nombre": "Chuleta de Cerdo",
+                    "precio": 14000.0,
+                    "tiempo_preparacion": 18,
+                    "disponible": true,
+                    "imagen": "producto_22.jpg"
+                },
+                {
+                    "id": 23,
+                    "nombre": "Arroz con Pollo",
+                    "precio": 10500.0,
+                    "tiempo_preparacion": 12,
+                    "disponible": true,
+                    "imagen": "producto_23.jpg"
+                },
+                {
+                    "id": 24,
+                    "nombre": "Sopa del dia",
+                    "precio": 6000.0,
+                    "tiempo_preparacion": 5,
+                    "disponible": true,
+                    "imagen": "producto_24.jpg"
+                },
+                {
+                    "id": 25,
+                    "nombre": "Agua Panela con Queso",
+                    "precio": 2000.0,
+                    "tiempo_preparacion": 2,
+                    "disponible": true,
+                    "imagen": "producto_25.jpeg"
+                }
+            ]
         }
-    ]
+    ],
+    "pedidos": []
 }
