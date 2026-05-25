@@ -1,0 +1,394 @@
+{
+    "id_usuario": 21,
+    "id_producto": 31,
+    "usuarios": [
+        {
+            "id": 1,
+            "nombre": "Carlos Mendoza",
+            "correo": "carlos.mendoza@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 2,
+            "nombre": "Valentina Rios",
+            "correo": "valentina.rios@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 15
+        },
+        {
+            "id": 3,
+            "nombre": "Santiago Gomez",
+            "correo": "santiago.gomez@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 30
+        },
+        {
+            "id": 4,
+            "nombre": "Isabella Torres",
+            "correo": "isabella.torres@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 10
+        },
+        {
+            "id": 5,
+            "nombre": "Andres Castillo",
+            "correo": "andres.castillo@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 25
+        },
+        {
+            "id": 6,
+            "nombre": "Mariana Lopez",
+            "correo": "mariana.lopez@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 7,
+            "nombre": "Felipe Herrera",
+            "correo": "felipe.herrera@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 15
+        },
+        {
+            "id": 8,
+            "nombre": "Daniela Vargas",
+            "correo": "daniela.vargas@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 30
+        },
+        {
+            "id": 9,
+            "nombre": "Juan Esteban Mora",
+            "correo": "juane.mora@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 10,
+            "nombre": "Sofia Cardona",
+            "correo": "sofia.cardona@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 10
+        },
+        {
+            "id": 11,
+            "nombre": "Miguel Angel Ruiz",
+            "correo": "miguel.ruiz@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 12,
+            "nombre": "Camila Perez",
+            "correo": "camila.perez@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 25
+        },
+        {
+            "id": 13,
+            "nombre": "Nicolas Salazar",
+            "correo": "nicolas.salazar@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 15
+        },
+        {
+            "id": 14,
+            "nombre": "Laura Jimenez",
+            "correo": "laura.jimenez@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 30
+        },
+        {
+            "id": 15,
+            "nombre": "Sebastian Munoz",
+            "correo": "sebastian.munoz@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 16,
+            "nombre": "Manuela Restrepo",
+            "correo": "manuela.restrepo@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 10
+        },
+        {
+            "id": 17,
+            "nombre": "Tomas Gutierrez",
+            "correo": "tomas.gutierrez@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 20
+        },
+        {
+            "id": 18,
+            "nombre": "Alejandra Medina",
+            "correo": "alejandra.medina@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 25
+        },
+        {
+            "id": 19,
+            "nombre": "David Osorio",
+            "correo": "david.osorio@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 15
+        },
+        {
+            "id": 20,
+            "nombre": "Natalia Franco",
+            "correo": "natalia.franco@udem.edu.co",
+            "contrasena": "foodu2024",
+            "tiempo_disponible": 30
+        }
+    ],
+    "vendedores": [
+        {
+            "nombre": "Cafeteria Central",
+            "calificacion": 4.5,
+            "contrasena": "foodu2024",
+            "logo": "",
+            "ubicacion": "Bloque 1 - Edificio Central",
+            "productos": [
+                {
+                    "id": 1,
+                    "nombre": "Bandeja Paisa",
+                    "precio": 14000.0,
+                    "tiempo_preparacion": 15,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 2,
+                    "nombre": "Sanduche de Jamon",
+                    "precio": 6500.0,
+                    "tiempo_preparacion": 5,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 3,
+                    "nombre": "Jugo Natural",
+                    "precio": 3500.0,
+                    "tiempo_preparacion": 3,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 4,
+                    "nombre": "Almuerzo del dia",
+                    "precio": 11000.0,
+                    "tiempo_preparacion": 10,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 5,
+                    "nombre": "Cafe con leche",
+                    "precio": 2500.0,
+                    "tiempo_preparacion": 2,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 6,
+                    "nombre": "Empanada de pipian",
+                    "precio": 2000.0,
+                    "tiempo_preparacion": 3,
+                    "disponible": true,
+                    "imagen": ""
+                }
+            ]
+        },
+        {
+            "nombre": "Donde Pepito",
+            "calificacion": 4.2,
+            "contrasena": "foodu2024",
+            "logo": "",
+            "ubicacion": "Bloque 6 - Zona de Bienestar",
+            "productos": [
+                {
+                    "id": 7,
+                    "nombre": "Salchipapa Especial",
+                    "precio": 8000.0,
+                    "tiempo_preparacion": 10,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 8,
+                    "nombre": "Hamburguesa Sencilla",
+                    "precio": 9500.0,
+                    "tiempo_preparacion": 12,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 9,
+                    "nombre": "Perro Caliente",
+                    "precio": 6000.0,
+                    "tiempo_preparacion": 7,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 10,
+                    "nombre": "Gaseosa",
+                    "precio": 2500.0,
+                    "tiempo_preparacion": 1,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 11,
+                    "nombre": "Salchipapa con Queso",
+                    "precio": 9500.0,
+                    "tiempo_preparacion": 12,
+                    "disponible": true,
+                    "imagen": ""
+                }
+            ]
+        },
+        {
+            "nombre": "El Rincon Saludable",
+            "calificacion": 4.7,
+            "contrasena": "foodu2024",
+            "logo": "",
+            "ubicacion": "Bloque 12 - Edificio Ingenieria",
+            "productos": [
+                {
+                    "id": 12,
+                    "nombre": "Ensalada Cesar",
+                    "precio": 9000.0,
+                    "tiempo_preparacion": 8,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 13,
+                    "nombre": "Bowl de Frutas",
+                    "precio": 7500.0,
+                    "tiempo_preparacion": 5,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 14,
+                    "nombre": "Wrap de Pollo",
+                    "precio": 11000.0,
+                    "tiempo_preparacion": 10,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 15,
+                    "nombre": "Smoothie Verde",
+                    "precio": 6000.0,
+                    "tiempo_preparacion": 4,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 16,
+                    "nombre": "Tostadas con Aguacate",
+                    "precio": 8500.0,
+                    "tiempo_preparacion": 6,
+                    "disponible": true,
+                    "imagen": ""
+                }
+            ]
+        },
+        {
+            "nombre": "Pizzeria La U",
+            "calificacion": 4.3,
+            "contrasena": "foodu2024",
+            "logo": "",
+            "ubicacion": "Bloque 3 - Edificio Administrativo",
+            "productos": [
+                {
+                    "id": 17,
+                    "nombre": "Pizza Personal Hawaiana",
+                    "precio": 12000.0,
+                    "tiempo_preparacion": 18,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 18,
+                    "nombre": "Pizza Personal Pepperoni",
+                    "precio": 13000.0,
+                    "tiempo_preparacion": 18,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 19,
+                    "nombre": "Calzone de Jamon",
+                    "precio": 11000.0,
+                    "tiempo_preparacion": 20,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 20,
+                    "nombre": "Limonada de Coco",
+                    "precio": 4500.0,
+                    "tiempo_preparacion": 3,
+                    "disponible": true,
+                    "imagen": ""
+                }
+            ]
+        },
+        {
+            "nombre": "Asados El Paisa",
+            "calificacion": 4.6,
+            "contrasena": "foodu2024",
+            "logo": "",
+            "ubicacion": "Bloque 18 - Cafeteria Sur",
+            "productos": [
+                {
+                    "id": 21,
+                    "nombre": "Pechuga a la Plancha",
+                    "precio": 13500.0,
+                    "tiempo_preparacion": 15,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 22,
+                    "nombre": "Chuleta de Cerdo",
+                    "precio": 14000.0,
+                    "tiempo_preparacion": 18,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 23,
+                    "nombre": "Arroz con Pollo",
+                    "precio": 10500.0,
+                    "tiempo_preparacion": 12,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 24,
+                    "nombre": "Sopa del dia",
+                    "precio": 6000.0,
+                    "tiempo_preparacion": 5,
+                    "disponible": true,
+                    "imagen": ""
+                },
+                {
+                    "id": 25,
+                    "nombre": "Agua Panela con Queso",
+                    "precio": 2000.0,
+                    "tiempo_preparacion": 2,
+                    "disponible": true,
+                    "imagen": ""
+                }
+            ]
+        }
+    ],
+    "pedidos": []
+}
