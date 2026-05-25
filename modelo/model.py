@@ -29,9 +29,11 @@ class Persona(ABC):
         self.__contrasena = contrasena
 
     @property
-    def nombre(self): return self.__nombre
+    def nombre(self):
+        return self.__nombre
     @property
-    def contrasena(self): return self.__contrasena
+    def contrasena(self):
+        return self.__contrasena
 
     @nombre.setter
     def nombre(self, v):
