@@ -1,100 +1,344 @@
 {% extends "base.html" %}
 {% block titulo %}Mi tienda{% endblock %}
+
+{% block estilos %}
+<style>
+  /* ── HERO HEADER ── */
+  .vendedor-hero {
+    background: var(--oscuro);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .vendedor-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,92,0,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .vendedor-hero-left { display: flex; align-items: center; gap: 1.25rem; }
+  .logo-wrap {
+    position: relative;
+    width: 72px; height: 72px;
+    flex-shrink: 0;
+  }
+  .logo-wrap img, .logo-placeholder {
+    width: 72px; height: 72px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .logo-placeholder {
+    background: rgba(255,255,255,0.08);
+    display: flex; align-items: center;
+    justify-content: center; font-size: 2rem;
+  }
+  .vendedor-nombre {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0.2rem;
+  }
+  .vendedor-meta {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    font-size: 0.8rem; color: rgba(255,255,255,0.55);
+  }
+  .vendedor-meta span { display: flex; align-items: center; gap: 0.3rem; }
+  .vendedor-meta .highlight { color: var(--naranja); font-weight: 600; }
+
+  /* ── STATS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    padding: 1.25rem;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--naranja);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--gris); }
+
+  /* ── PERFIL FORM ── */
+  .perfil-card {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 20px;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .perfil-card h2 { font-size: 1.1rem; margin-bottom: 1.25rem; }
+
+  .upload-zona {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: #f9f6f3;
+    border: 2px dashed var(--borde);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .upload-zona:hover {
+    border-color: var(--naranja);
+    background: #fff8f2;
+  }
+  .upload-zona input[type="file"] { display: none; }
+  .upload-preview {
+    width: 64px; height: 64px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid var(--borde);
+  }
+  .upload-preview-placeholder {
+    width: 64px; height: 64px;
+    border-radius: 12px;
+    background: var(--borde);
+    display: flex; align-items: center;
+    justify-content: center; font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+  .upload-texto { flex: 1; }
+  .upload-titulo { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .upload-sub { font-size: 0.75rem; color: var(--gris); }
+  .upload-btn-label {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background: var(--oscuro);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .upload-btn-label:hover { background: #2e2010; }
+
+  .campo-grupo {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+  .campo-grupo label { font-size: 0.8rem; font-weight: 600; color: var(--oscuro); }
+  .campo-grupo input {
+    width: 100%; padding: 0.8rem 1rem;
+    border: 1.5px solid var(--borde); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    outline: none; box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .campo-grupo input:focus {
+    border-color: var(--naranja);
+    box-shadow: 0 0 0 3px rgba(255,92,0,0.1);
+  }
+  .campo-grupo input::placeholder { color: #c5bdb8; }
+
+  .btn-guardar {
+    background: var(--oscuro);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-guardar:hover { background: #2e2010; transform: translateY(-1px); }
+
+  /* ── TABLA MENÚ ── */
+  .menu-card {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 20px;
+    padding: 1.75rem;
+  }
+  .menu-card-header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 1.25rem;
+  }
+  .menu-card-header h2 { margin: 0; font-size: 1.1rem; }
+
+  .tabla-menu { width: 100%; border-collapse: collapse; }
+  .tabla-menu th {
+    text-align: left; font-size: 0.75rem;
+    font-weight: 600; color: var(--gris);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 0 0.75rem 0.75rem;
+    border-bottom: 1px solid var(--borde);
+  }
+  .tabla-menu td {
+    padding: 0.9rem 0.75rem;
+    border-bottom: 1px solid #f5f0eb;
+    vertical-align: middle;
+  }
+  .tabla-menu tr:last-child td { border-bottom: none; }
+  .tabla-menu tr:hover td { background: #fdfaf8; }
+
+  .prod-thumb {
+    width: 44px; height: 44px;
+    border-radius: 10px; object-fit: cover;
+  }
+  .prod-thumb-ph {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: #f1f3f5; display: flex;
+    align-items: center; justify-content: center; font-size: 1.3rem;
+  }
+  .prod-nombre { font-weight: 600; font-size: 0.92rem; }
+  .prod-precio { color: var(--naranja); font-weight: 700; font-family: 'Syne', sans-serif; }
+  .prod-tiempo { color: var(--gris); font-size: 0.85rem; }
+
+  .acciones { display: flex; gap: 0.4rem; }
+  .btn-editar {
+    padding: 5px 12px; border-radius: 7px; font-size: 0.78rem;
+    font-weight: 600; text-decoration: none;
+    border: 1.5px solid var(--borde); color: var(--oscuro);
+    background: white; transition: all 0.15s;
+  }
+  .btn-editar:hover { border-color: var(--oscuro); background: var(--oscuro); color: white; }
+  .btn-eliminar {
+    padding: 5px 12px; border-radius: 7px; font-size: 0.78rem;
+    font-weight: 600; text-decoration: none;
+    border: 1.5px solid #ffd5d5; color: var(--rojo);
+    background: #fff5f5; transition: all 0.15s;
+  }
+  .btn-eliminar:hover { background: var(--rojo); color: white; border-color: var(--rojo); }
+
+  .empty-menu {
+    text-align: center; padding: 2.5rem;
+    color: var(--gris); font-size: 0.9rem;
+  }
+  .empty-menu div { font-size: 2.5rem; margin-bottom: 0.5rem; }
+</style>
+{% endblock %}
+
 {% block contenido %}
 <div class="contenedor">
-  <div class="fila" style="margin-bottom:2rem; align-items:flex-start;">
-    <div style="display:flex; align-items:center; gap:1rem;">
-      {% if vendedor.logo %}
-        <img src="{{ url_for('static', filename='uploads/' + vendedor.logo) }}"
-             alt="Logo"
-             style="width:64px; height:64px; border-radius:14px; object-fit:cover; border:1px solid var(--borde);"
-             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <div style="display:none; width:64px; height:64px; border-radius:14px; background:var(--borde);
-                    align-items:center; justify-content:center; font-size:1.8rem;">🏪</div>
-      {% else %}
-        <div style="display:flex; width:64px; height:64px; border-radius:14px; background:var(--borde);
-                    align-items:center; justify-content:center; font-size:1.8rem;">🏪</div>
-      {% endif %}
+
+  <!-- HERO HEADER -->
+  <div class="vendedor-hero">
+    <div class="vendedor-hero-left">
+      <div class="logo-wrap">
+        {% if vendedor.logo %}
+          <img src="{{ url_for('static', filename='uploads/' + vendedor.logo) }}"
+               alt="Logo" class="logo-wrap"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="logo-placeholder" style="display:none;">🏪</div>
+        {% else %}
+          <div class="logo-placeholder">🏪</div>
+        {% endif %}
+      </div>
       <div>
-        <h1 style="margin-bottom:0.1rem;">{{ vendedor.nombre }}</h1>
-        <p class="subtitulo" style="margin:0;">
-          ⭐ {{ "%.1f"|format(vendedor.calificacion) if vendedor.calificacion > 0 else "Sin calificaciones aún" }}
-          {% if vendedor.ubicacion %}· 📍 {{ vendedor.ubicacion }}{% endif %}
-        </p>
+        <div class="vendedor-nombre">{{ vendedor.nombre }}</div>
+        <div class="vendedor-meta">
+          <span>⭐ <span class="highlight">{{ "%.1f"|format(vendedor.calificacion) if vendedor.calificacion > 0 else "Sin calificaciones" }}</span></span>
+          {% if vendedor.ubicacion %}<span>📍 {{ vendedor.ubicacion }}</span>{% endif %}
+          <span>{{ vendedor.productos|length }} producto{{ 's' if vendedor.productos|length != 1 }}</span>
+        </div>
       </div>
     </div>
-    <a href="{{ url_for('agregar_producto') }}" class="btn" style="background:#FF5C00; color:#fff;">+ Agregar producto</a>
+    <a href="{{ url_for('agregar_producto') }}"
+       style="background:var(--naranja); color:white; padding:0.7rem 1.25rem;
+              border-radius:10px; text-decoration:none; font-weight:600;
+              font-size:0.9rem; white-space:nowrap; flex-shrink:0;">
+      + Agregar producto
+    </a>
   </div>
 
   <!-- ESTADÍSTICAS -->
-  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem;">
-    <div class="card" style="text-align:center; padding:1.25rem;">
-      <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">{{ vendedor.productos|length }}</div>
-      <div style="font-size:0.8rem; color:var(--gris);">Productos en menú</div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num">{{ vendedor.productos|length }}</div>
+      <div class="stat-label">Productos en menú</div>
     </div>
-    <div class="card" style="text-align:center; padding:1.25rem;">
-      <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700; color:var(--naranja);">{{ vendedor.pedidos_activos|length }}</div>
-      <div style="font-size:0.8rem; color:var(--gris);">Pedidos activos</div>
+    <div class="stat-card">
+      <div class="stat-num">{{ vendedor.pedidos_activos|length }}</div>
+      <div class="stat-label">Pedidos activos</div>
     </div>
-    <div class="card" style="text-align:center; padding:1.25rem;">
-      <div style="font-size:1.8rem; font-family:'Syne',sans-serif; font-weight:700;
-        color:{% if congestion > 0.7 %}var(--rojo){% elif congestion > 0.4 %}#e65100{% else %}var(--verde){% endif %};">
+    <div class="stat-card">
+      <div class="stat-num" style="color:{% if congestion > 0.7 %}var(--rojo){% elif congestion > 0.4 %}#e65100{% else %}var(--verde){% endif %};">
         {{ (congestion * 100)|int }}%
       </div>
-      <div style="font-size:0.8rem; color:var(--gris);">Congestión</div>
+      <div class="stat-label">Congestión</div>
     </div>
-    <a href="{{ url_for('gestionar_pedidos') }}" style="text-decoration:none;">
-      <div class="card" style="text-align:center; padding:1.25rem; cursor:pointer;">
-        <div style="font-size:1.8rem;">📦</div>
-        <div style="font-size:0.85rem; font-weight:500; margin-top:0.25rem;">Ver pedidos</div>
-      </div>
+    <a href="{{ url_for('gestionar_pedidos') }}" class="stat-card">
+      <div class="stat-num" style="font-size:1.8rem;">📦</div>
+      <div class="stat-label" style="font-weight:500;">Ver pedidos</div>
     </a>
   </div>
 
   <!-- PERFIL DEL RESTAURANTE -->
-  <div class="card" style="margin-bottom:1.5rem;">
+  <div class="perfil-card">
     <h2>🏪 Perfil del restaurante</h2>
-    <form method="POST" action="{{ url_for('editar_perfil_vendedor') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('editar_perfil_vendedor') }}"
+          enctype="multipart/form-data" id="form-perfil">
 
-      <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:1.25rem;">
+      <!-- ZONA DE UPLOAD -->
+      <label class="upload-zona" for="input-logo">
+        <input type="file" id="input-logo" name="logo" accept="image/*"
+               onchange="previewLogo(this)">
         {% if vendedor.logo %}
           <img src="{{ url_for('static', filename='uploads/' + vendedor.logo) }}"
-               alt="Logo actual"
-               style="width:72px; height:72px; border-radius:14px; object-fit:cover; border:1px solid var(--borde);"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div style="display:none; width:72px; height:72px; border-radius:14px; background:var(--borde);
-                      align-items:center; justify-content:center; font-size:2rem;">🏪</div>
+               class="upload-preview" id="logo-preview" alt="Logo"
+               onerror="this.style.display='none'; document.getElementById('logo-ph').style.display='flex';">
+          <div class="upload-preview-placeholder" id="logo-ph" style="display:none;">🏪</div>
         {% else %}
-          <div style="display:flex; width:72px; height:72px; border-radius:14px; background:var(--borde);
-                      align-items:center; justify-content:center; font-size:2rem;">🏪</div>
+          <div class="upload-preview-placeholder" id="logo-ph">🏪</div>
+          <img id="logo-preview" class="upload-preview" style="display:none;" alt="Preview">
         {% endif %}
-        <div>
-          <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Logo del restaurante</label>
-          <input type="file" name="logo" accept="image/*" style="font-size:0.85rem;">
-          <div style="font-size:0.75rem; color:var(--gris); margin-top:3px;">JPG, PNG o WEBP</div>
+        <div class="upload-texto">
+          <div class="upload-titulo">Logo del restaurante</div>
+          <div class="upload-sub">Haz clic para seleccionar una imagen</div>
+          <span class="upload-btn-label">Seleccionar archivo</span>
         </div>
+      </label>
+
+      <!-- UBICACIÓN -->
+      <div class="campo-grupo">
+        <label for="ubicacion">Ubicación</label>
+        <input type="text" id="ubicacion" name="ubicacion"
+               value="{{ vendedor.ubicacion }}"
+               placeholder="Ej: Bloque 3 - Edificio Ingeniería">
       </div>
 
-      <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Ubicación</label>
-        <input type="text" name="ubicacion" value="{{ vendedor.ubicacion }}"
-               placeholder="Ej: Bloque 3 - Edificio Ingeniería"
-               style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--borde);
-                      border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.95rem;
-                      outline:none; box-sizing:border-box;">
-      </div>
-
-      <button type="submit" class="btn" style="width:auto; background:var(--oscuro); color:white;">
-        Guardar cambios
-      </button>
+      <button type="submit" class="btn-guardar">Guardar cambios →</button>
     </form>
   </div>
 
   <!-- MI MENÚ -->
-  <div class="card">
-    <h2>Mi menú</h2>
+  <div class="menu-card">
+    <div class="menu-card-header">
+      <h2>Mi menú</h2>
+    </div>
     {% if vendedor.productos %}
-    <table>
+    <table class="tabla-menu">
       <thead>
         <tr>
           <th>Producto</th>
@@ -107,20 +351,21 @@
       <tbody>
         {% for p in vendedor.productos %}
         <tr>
-          <td style="font-weight:500;">
-            <div style="display:flex; align-items:center; gap:0.6rem;">
+          <td>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
               {% if p.imagen %}
                 <img src="{{ url_for('static', filename='uploads/' + p.imagen) }}"
-                     style="width:40px; height:40px; border-radius:8px; object-fit:cover;">
+                     class="prod-thumb"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="prod-thumb-ph" style="display:none;">🍽️</div>
               {% else %}
-                <div style="width:40px; height:40px; border-radius:8px; background:#f1f3f5;
-                            display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🍽️</div>
+                <div class="prod-thumb-ph">🍽️</div>
               {% endif %}
-              {{ p.nombre }}
+              <span class="prod-nombre">{{ p.nombre }}</span>
             </div>
           </td>
-          <td style="color:var(--naranja); font-weight:600;">${{ "%.2f"|format(p.precio) }}</td>
-          <td style="color:var(--gris);">{{ p.tiempo_preparacion }} min</td>
+          <td class="prod-precio">${{ "%.2f"|format(p.precio) }}</td>
+          <td class="prod-tiempo">{{ p.tiempo_preparacion }} min</td>
           <td>
             {% if p.disponible %}
               <span class="badge badge-verde">Disponible</span>
@@ -129,9 +374,9 @@
             {% endif %}
           </td>
           <td>
-            <div style="display:flex; gap:0.5rem;">
-              <a href="{{ url_for('editar_producto', producto_id=p.id) }}" class="btn btn-outline btn-sm">Editar</a>
-              <a href="{{ url_for('eliminar_producto', producto_id=p.id) }}" class="btn btn-danger"
+            <div class="acciones">
+              <a href="{{ url_for('editar_producto', producto_id=p.id) }}" class="btn-editar">Editar</a>
+              <a href="{{ url_for('eliminar_producto', producto_id=p.id) }}" class="btn-eliminar"
                  onclick="return confirm('¿Eliminar {{ p.nombre }}?')">Eliminar</a>
             </div>
           </td>
@@ -140,11 +385,28 @@
       </tbody>
     </table>
     {% else %}
-    <div style="text-align:center; padding:2rem; color:var(--gris);">
+    <div class="empty-menu">
+      <div>🍽️</div>
       <p>Aún no tienes productos. ¡Agrega tu primer plato!</p>
     </div>
     {% endif %}
   </div>
 
 </div>
+
+<script>
+function previewLogo(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById("logo-preview");
+      const ph = document.getElementById("logo-ph");
+      preview.src = e.target.result;
+      preview.style.display = "block";
+      ph.style.display = "none";
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
 {% endblock %}
