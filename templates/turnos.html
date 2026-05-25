@@ -18,8 +18,8 @@
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: var(--oscuro);
-      color: white;
+      background: #e4e4e4;
+      color: var(--oscuro);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -27,38 +27,34 @@
 
     /* HEADER */
     header {
-      background: #111;
-      padding: 1.2rem 2.5rem;
+      background: white;
+      padding: 1rem 2.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 2px solid var(--naranja);
+      border-bottom: 3px solid var(--rojo);
     }
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--naranja);
-      letter-spacing: -1px;
+    .header-left { display: flex; align-items: center; gap: 1.25rem; }
+    .logo img { height: 100px; width: 100px; display: block; }
+    .subtitulo-header {
+      font-size: 0.82rem;
+      color: var(--gris);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border-left: 2px solid #e0d8d0;
+      padding-left: 1.25rem;
     }
-    .logo span { color: white; }
     .hora {
       font-family: 'Syne', sans-serif;
       font-size: 1.8rem;
       font-weight: 700;
-      color: white;
+      color: var(--oscuro);
       letter-spacing: 2px;
-    }
-    .subtitulo-header {
-      font-size: 0.85rem;
-      color: var(--gris);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
     }
 
     /* CONTENIDO */
     .contenido {
-      padding: 2rem 2.5rem;
+      padding: 2rem 2.5rem 6rem;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 1.5rem;
@@ -67,7 +63,7 @@
     /* COLUMNAS */
     .columna-titulo {
       font-family: 'Syne', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.15em;
@@ -76,9 +72,20 @@
       margin-bottom: 1rem;
       text-align: center;
     }
-    .col-pendiente .columna-titulo { background: #2a2a2a; color: #aaa; }
-    .col-preparacion .columna-titulo { background: #2d1f00; color: var(--amarillo); border: 1px solid var(--amarillo); }
-    .col-listo .columna-titulo { background: #0d2b1a; color: #4ade80; border: 1px solid #4ade80; }
+    .col-pendiente .columna-titulo {
+      background: #dcdcdc;
+      color: #777;
+    }
+    .col-preparacion .columna-titulo {
+      background: #fff8e1;
+      color: #92600a;
+      border: 1px solid var(--amarillo);
+    }
+    .col-listo .columna-titulo {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 1px solid #4ade80;
+    }
 
     /* TARJETA DE TURNO */
     .turno-card {
@@ -89,27 +96,27 @@
       overflow: hidden;
     }
     .col-pendiente .turno-card {
-      background: #1e1e1e;
-      border: 1px solid #333;
+      background: white;
+      border: 1px solid #d0ccc8;
     }
     .col-preparacion .turno-card {
-      background: #1f1400;
+      background: white;
       border: 1px solid var(--amarillo);
       animation: pulso 2s infinite;
     }
     .col-listo .turno-card {
-      background: #0a2018;
+      background: white;
       border: 2px solid #4ade80;
       animation: brillar 1.5s infinite;
     }
 
     @keyframes pulso {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-      50% { box-shadow: 0 0 20px 4px rgba(245, 158, 11, 0.2); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+      50%       { box-shadow: 0 0 18px 4px rgba(245,158,11,0.2); }
     }
     @keyframes brillar {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
-      50% { box-shadow: 0 0 25px 6px rgba(74, 222, 128, 0.25); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+      50%       { box-shadow: 0 0 22px 6px rgba(74,222,128,0.22); }
     }
 
     .turno-numero {
@@ -119,34 +126,30 @@
       line-height: 1;
       margin-bottom: 0.5rem;
     }
-    .col-pendiente .turno-numero { color: #555; }
-    .col-preparacion .turno-numero { color: var(--amarillo); }
-    .col-listo .turno-numero { color: #4ade80; }
+    .col-pendiente .turno-numero    { color: #bbb; }
+    .col-preparacion .turno-numero  { color: var(--amarillo); }
+    .col-listo .turno-numero        { color: #22c55e; }
 
     .turno-usuario {
       font-size: 1rem;
       font-weight: 500;
-      color: white;
+      color: var(--oscuro);
       margin-bottom: 0.3rem;
     }
     .turno-productos {
       font-size: 0.8rem;
-      color: #888;
+      color: var(--gris);
       margin-bottom: 0.5rem;
     }
-    .turno-tiempo {
-      font-size: 0.78rem;
-      color: #666;
-    }
-    .col-preparacion .turno-tiempo { color: var(--amarillo); opacity: 0.8; }
-    .col-listo .turno-tiempo { color: #4ade80; opacity: 0.8; }
+    .turno-tiempo { font-size: 0.78rem; color: #999; }
+    .col-preparacion .turno-tiempo { color: #b07d0a; }
+    .col-listo .turno-tiempo        { color: #16a34a; }
 
     .listo-badge {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: #4ade80;
-      color: #0a2018;
+      top: 1rem; right: 1rem;
+      background: #22c55e;
+      color: white;
       font-size: 0.7rem;
       font-weight: 700;
       padding: 0.25rem 0.6rem;
@@ -159,7 +162,7 @@
     .vacio {
       text-align: center;
       padding: 3rem 1rem;
-      color: #333;
+      color: #bbb;
       font-size: 0.9rem;
     }
     .vacio-icono { font-size: 2rem; margin-bottom: 0.5rem; }
@@ -167,25 +170,17 @@
     /* FOOTER */
     footer {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #111;
-      border-top: 1px solid #222;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      border-top: 1px solid #ddd;
       padding: 0.75rem 2.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .footer-texto {
-      font-size: 0.8rem;
-      color: #444;
-    }
-    .footer-texto span { color: var(--naranja); }
-    .actualiza {
-      font-size: 0.75rem;
-      color: #333;
-    }
+    .footer-texto { font-size: 0.8rem; color: #aaa; }
+    .footer-texto span { color: var(--rojo); font-weight: 600; }
+    .actualiza { font-size: 0.75rem; color: #bbb; }
 
     /* SIN PEDIDOS */
     .sin-pedidos {
@@ -196,18 +191,20 @@
     .sin-pedidos h2 {
       font-family: 'Syne', sans-serif;
       font-size: 2rem;
-      color: #333;
+      color: #aaa;
       margin-bottom: 0.5rem;
     }
-    .sin-pedidos p { color: #444; }
+    .sin-pedidos p { color: #bbb; }
   </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <div class="logo">Food<span>U</span></div>
-    <div class="subtitulo-header">Sistema de turnos</div>
+  <div class="header-left">
+    <div class="logo">
+      <img src="/static/img/logo FoodU transparente.png" alt="FoodU">
+    </div>
+    <div class="subtitulo-header" style="color:#000"><b>Sistema de turnos </b></div>
   </div>
   <div class="hora" id="reloj">--:--:--</div>
 </header>
@@ -215,8 +212,8 @@
 <div class="contenido">
 
   {% set pendientes = pedidos | selectattr('estado', 'equalto', 'pendiente') | list %}
-  {% set en_prep = pedidos | selectattr('estado', 'equalto', 'en preparacion') | list %}
-  {% set listos = pedidos | selectattr('estado', 'equalto', 'listo') | list %}
+  {% set en_prep    = pedidos | selectattr('estado', 'equalto', 'en preparacion') | list %}
+  {% set listos     = pedidos | selectattr('estado', 'equalto', 'listo') | list %}
 
   {% if pedidos | length == 0 %}
   <div class="sin-pedidos">
@@ -246,7 +243,7 @@
     {% endif %}
   </div>
 
-  <!-- COLUMNA EN PREPARACION -->
+  <!-- COLUMNA EN PREPARACIÓN -->
   <div class="col-preparacion">
     <div class="columna-titulo">🔥 En preparación ({{ en_prep | length }})</div>
     {% if en_prep %}
