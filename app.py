@@ -610,40 +610,109 @@ def chatbot():
 
 @app.route("/chatbot/responder", methods=["POST"])
 def chatbot_responder():
+    # 1. Verificar que el usuario tenga sesión activa en la app
+    nombre_sesion = session.get("usuario")
+    usuario_real = sistema.buscar_usuario(nombre_sesion) if nombre_sesion else None
+
+    if not usuario_real:
+        return json.dumps(
+            {"respuesta": "Debes iniciar sesión para interactuar con el asistente y realizar pedidos."}), 401
+
     data = request.get_json()
     mensaje_usuario = data.get("mensaje", "")
     menu = data.get("menu", [])
 
+    # 2. Mapear el menú incluyendo los IDs para que la IA los conozca
     if menu:
         menu_texto = "Menú disponible ahora mismo:\n"
         for item in menu:
-            menu_texto += f"- {item['nombre']} | ${item['precio']} | {item['tiempo']} min | Vendedor: {item['vendedor']}\n"
+            menu_texto += f"- ID: {item.get('id')} | {item['nombre']} | ${item['precio']} | {item['tiempo']} min | Vendedor: {item['vendedor']}\n"
     else:
         menu_texto = "No hay productos disponibles en este momento."
 
-    sistema_prompt = f"""Eres el asistente virtual de FoodU, una app de pedidos de comida universitaria en Colombia...
-    {menu_texto}"""
+    # 3. ESTA ES LA FUNCIÓN QUE LA IA VA A EJECUTAR SOLA EN TU BACKEND
+    def realizar_pedido_interno(producto_id: int):
+        """
+        Ejecuta la acción de crear un pedido real en el sistema FoodU basándose en el ID numérico del producto.
+        """
+        global id_usuario, id_producto
+
+        # Buscar el producto disponible en el sistema global
+        todos_productos = [p for v in sistema.vendedores for p in v.productos if p.disponible]
+        producto_seleccionado = None
+
+        for p in todos_productos:
+            if p.id == producto_id:
+                producto_seleccionado = p
+                break
+
+        if not producto_seleccionado:
+            return f"Lo siento, no encontré ningún producto disponible con el ID {producto_id}."
+
+        try:
+            # Crear el pedido asignándoselo al usuario real de la sesión
+            pedidos_creados = sistema.crear_pedidos_por_vendedor(usuario_real, [producto_seleccionado])
+
+            if pedidos_creados:
+                pedido, vendedor = pedidos_creados[0]
+                turno = sistema.asignar_turno(pedido)
+
+                # Forzar que se agregue al historial del usuario si tu modelo lo requiere
+                if hasattr(usuario_real, 'añadir_pedido'):
+                    usuario_real.añadir_pedido(pedido)
+                elif hasattr(usuario_real, 'pedidos') and isinstance(usuario_real.pedidos, list):
+                    if pedido not in usuario_real.pedidos:
+                        usuario_real.pedidos.append(pedido)
+
+                # Guardar los cambios inmediatamente en tus archivos JSON de persistencia
+                guardar_datos(sistema, id_usuario, id_producto)
+
+                return (f"¡Éxito! Pedido #{pedido.id} creado en '{vendedor.nombre}'. "
+                        f"Tu turno es el #{turno}. El total es ${pedido.total} "
+                        f"y estará listo en aproximadamente {pedido.tiempo_estimado} minutos.")
+            return "No se pudo procesar el pedido en el sistema."
+        except Exception as err:
+            return f"Hubo un error interno al registrar el pedido: {str(err)}"
+
+    # 4. Ajustar el Prompt del Sistema
+    sistema_prompt = f"""Eres el asistente virtual de FoodU, una app de pedidos de comida universitaria en Colombia.
+Tu trabajo es ayudar a los estudiantes a decidir qué pedir según su tiempo disponible, presupuesto y gustos, Y ADEMÁS procesar sus pedidos si te lo piden.
+
+{menu_texto}
+
+Reglas:
+1. Sé amigable, breve y usa emojis. Responde siempre en español.
+2. Si el usuario te confirma explícitamente que quiere comprar, pedir o encargar un producto del menú, DEBES llamar a la función 'realizar_pedido_interno' pasando el ID exacto del producto.
+3. Una vez ejecutada la función, confírmale al usuario los detalles del turno, precio y tiempo que la función te devuelva."""
 
     try:
-        # Usando la API de Gemini
-        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "AIzaSyAFDmScV-fLaBwyQscmVwMXLkUWBYoKcqI"))
+        # Pega aquí tu NUEVA API KEY generada de Google AI Studio
+        NUEVA_API_KEY = "AIzaSyCWWYO6A1FiAenxM6rxTFCv-N5Gp06CiYk"
 
+        client = genai.Client(api_key=NUEVA_API_KEY)
+
+        # Enviamos la petición registrando la herramienta (tools)
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=mensaje_usuario,
             config=types.GenerateContentConfig(
                 system_instruction=sistema_prompt,
-                max_output_tokens=500
+                max_output_tokens=500,
+                tools=[realizar_pedido_interno]  # <-- Conexión mágica entre la IA y tu código
             )
         )
 
         return json.dumps({"respuesta": response.text}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
-    except Exception as e:
-        print(f"❌ Error en Gemini: {str(e)}")
-        return json.dumps({"respuesta": "Lo siento, no puedo responder ahora."}, ensure_ascii=False), 200, {
-            "Content-Type": "application/json"}
 
-# ─────────────────────────────────────────
+    except Exception as e:
+        # Esto te mostrará en la terminal el error exacto si vuelve a fallar la conexión
+        print(f"❌ ERROR EN EL CHATBOT PEDIDOS: {str(e)}")
+        return json.dumps({"respuesta": "Lo siento, no puedo responder ahora. Verifica la conexión."},
+                          ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+
+
+
 # HORARIO SINCRONIZADO
 # ─────────────────────────────────────────
 
