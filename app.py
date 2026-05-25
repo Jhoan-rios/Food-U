@@ -9,6 +9,8 @@ import os
 import re
 import requests
 import bcrypt
+from google import genai
+from google.genai import types
 
 app = Flask(__name__)
 app.secret_key = "foodu-udem-2024"
@@ -577,6 +579,10 @@ def chatbot():
     return render_template("chatbot.html", usuario=usuario, menu_json=menu_json)
 
 
+# Cambiar el inicio de tu archivo agregando:
+# from google import genai
+# from google.genai import types
+
 @app.route("/chatbot/responder", methods=["POST"])
 def chatbot_responder():
     data = request.get_json()
@@ -590,34 +596,27 @@ def chatbot_responder():
     else:
         menu_texto = "No hay productos disponibles en este momento."
 
-    sistema_prompt = f"""Eres el asistente virtual de FoodU, una app de pedidos de comida universitaria en Colombia.
-Tu trabajo es ayudar a los estudiantes a decidir qué pedir según su tiempo disponible, presupuesto y gustos.
-Sé amigable, breve y usa emojis ocasionalmente.
-Responde siempre en español.
-
-{menu_texto}
-
-Cuando recomiendes productos, menciona el nombre, precio y tiempo de preparación.
-Si el estudiante no tiene mucho tiempo, recomienda lo más rápido.
-Si quiere algo económico, recomienda lo más barato."""
+    sistema_prompt = f"""Eres el asistente virtual de FoodU, una app de pedidos de comida universitaria en Colombia...
+    {menu_texto}"""
 
     try:
-        respuesta = requests.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={"Content-Type": "application/json"},
-            json={
-                "model": "claude-sonnet-4-20250514",
-                "max_tokens": 500,
-                "system": sistema_prompt,
-                "messages": [{"role": "user", "content": mensaje_usuario}]
-            }
-        )
-        data_respuesta = respuesta.json()
-        texto = data_respuesta["content"][0]["text"]
-        return json.dumps({"respuesta": texto}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
-    except Exception:
-        return json.dumps({"respuesta": "Lo siento, no puedo responder ahora. Intenta más tarde."}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+        # Usando la API de Gemini
+        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "AIzaSyAFDmScV-fLaBwyQscmVwMXLkUWBYoKcqI"))
 
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=mensaje_usuario,
+            config=types.GenerateContentConfig(
+                system_instruction=sistema_prompt,
+                max_output_tokens=500
+            )
+        )
+
+        return json.dumps({"respuesta": response.text}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+    except Exception as e:
+        print(f"❌ Error en Gemini: {str(e)}")
+        return json.dumps({"respuesta": "Lo siento, no puedo responder ahora."}, ensure_ascii=False), 200, {
+            "Content-Type": "application/json"}
 
 # ─────────────────────────────────────────
 # HORARIO SINCRONIZADO
